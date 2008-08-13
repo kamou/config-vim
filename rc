@@ -126,4 +126,18 @@ nmap <unique> <silent> <leader>mn <Plug>MarkClear
 " Have vimball put file in $USERVIM.
 let g:vimball_home=$USERVIM
 
+" For switching buffers.
+nmap <silent> <M-Right> :bn<CR>
+nmap <silent> <M-Left> :bp<CR>
+nmap <silent> <M-1> :brewind<CR>
+nmap <silent> <M-2> :brewind <bar> bn<CR>
+nmap <silent> <M-3> :brewind <bar> bn 2<CR>
+nmap <silent> <M-4> :brewind <bar> bn 3<CR>
+nmap <silent> <M-5> :brewind <bar> bn 4<CR>
+nmap <silent> <M-6> :brewind <bar> bn 5<CR>
+nmap <silent> <M-7> :brewind <bar> bn 6<CR>
+nmap <silent> <M-8> :brewind <bar> bn 7<CR>
+nmap <silent> <M-9> :brewind <bar> bn 8<CR>
+nmap <silent> <M-0> :blast<CR>
+
 " vim: ft=vim sw=2
