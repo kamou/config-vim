@@ -1,4 +1,11 @@
 
 language C
 
+" No wrapping.
+set nowrap
+
+" Show line numbers.
+set number
+set numberwidth=5
+
 " vim: ft=vim sw=2
