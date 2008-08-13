@@ -18,6 +18,10 @@ set backspace=2
 set wildmenu
 set wildmode=list:longest,full
 
+" No search highlight, incremental search.
+set nohlsearch
+set incsearch
+
 " Change the select/visual mode behavior.
 behave xterm
 set selectmode=key
@@ -160,5 +164,15 @@ endfunction
 
 " For deleting current buffer (and closing window when needed).
 map <silent> <F4> :call DeleteBuffer()<CR>
+
+" For switching search highlighting on/off.
+function! ToggleSearchHighlighting()
+  if &hlsearch
+    set nohlsearch
+  else
+    set hlsearch
+  endif
+endfunction
+map <silent> <F6> :call ToggleSearchHighlighting()<CR>
 
 " vim: ft=vim sw=2
