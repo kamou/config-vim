@@ -26,4 +26,13 @@ set keymodel=startsel
 " Syntax highlighting.
 syntax on
 
+" Load specific term keys setting.
+" Needed for some mappings to work properly.
+if !has("gui_running")
+  let keys=$USERVIM."/keys/".$TERM
+  if filereadable(keys)
+    execute "source " . keys
+  endif
+endif
+
 " vim: ft=vim sw=2
