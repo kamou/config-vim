@@ -8,4 +8,7 @@ set nowrap
 set number
 set numberwidth=5
 
+" Syntax highlighting.
+syntax on
+
 " vim: ft=vim sw=2
