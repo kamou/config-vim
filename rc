@@ -1,6 +1,9 @@
 
 language C
 
+" Not VI compatible.
+set nocompatible
+
 " No wrapping.
 set nowrap
 
