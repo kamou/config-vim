@@ -1,4 +1,10 @@
 
+" Load user config (username, email, ...).
+let user=$USERVIM."/user"
+if filereadable(user)
+  execute "source " . user
+endif
+
 language C
 
 " Not VI compatible.

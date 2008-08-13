@@ -1,0 +1,4 @@
+let username='Benoit Pierre'
+let useremail='benoit.pierre@gmail.com'
+
+" vim: ft=vim sw=2
