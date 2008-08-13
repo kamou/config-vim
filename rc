@@ -35,6 +35,42 @@ if !has("gui_running")
   endif
 endif
 
+" Cscope support.
+
+if has("cscope")
+
+  set cscopequickfix=s-,g-,d-,c-,t-,e-,f-,i-
+  set cspc=3
+  set csto=0
+  set cst
+  set nocsverb
+
+  " Add any database in current directory.
+  if filereadable("cscope.out")
+    cs add cscope.out
+    " Add database pointed to by environment.
+  elseif $CSCOPE_DB != ""
+    cs add $CSCOPE_DB
+  endif
+  set csverb
+
+  " Uses cstag (and so cscope if available...).
+  set cst
+  " Search the tags database before the scope database...
+  set csto=1
+
+  " Mappings.
+  nmap <unique> <Leader>tg <C-]>
+  nmap <unique> <Leader>ts :exe "cscope find s <cword>"<CR>
+  nmap <unique> <Leader>td :exe "cscope find d <cword>"<CR>
+  nmap <unique> <Leader>tc :exe "cscope find c <cword>"<CR>
+  nmap <unique> <Leader>ta :exe "cscope find t <cword>"<CR>
+  nmap <unique> <Leader>tf :exe "cscope find f <cfile>"<CR>
+  nmap <unique> <Leader>ti :exe "cscope find i ^%:t$"<CR>
+  nmap <unique> <Leader>tu :exe "silent! cscope k 0" \| exe "silent !cscope -R -v -b -s ." \| exe "silent cscope add cscope.out"<CR>
+
+endif
+
 " To update a ctags database.
 nmap <unique> <Leader>tU :exe "silent! !ctags --c-kinds=+cdefgmnpstuvx --fields=+S -R -o tags ."<CR>
 
