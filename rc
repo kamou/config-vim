@@ -18,6 +18,11 @@ set backspace=2
 set wildmenu
 set wildmode=list:longest,full
 
+" Change the select/visual mode behavior.
+behave xterm
+set selectmode=key
+set keymodel=startsel
+
 " Syntax highlighting.
 syntax on
 
