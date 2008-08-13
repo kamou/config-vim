@@ -130,6 +130,9 @@ nmap <unique> <silent> <leader>mn <Plug>MarkClear
 " Have vimball put file in $USERVIM.
 let g:vimball_home=$USERVIM
 
+" Silence NERD commenter plugin.
+let NERDShutUp=1
+
 " For switching buffers.
 nmap <silent> <M-Right> :bn<CR>
 nmap <silent> <M-Left> :bp<CR>
