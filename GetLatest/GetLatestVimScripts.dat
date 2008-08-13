@@ -6,3 +6,4 @@ ScriptID SourceID Filename
 294 8407 :AutoInstall: Align.vim
 273 7701 :AutoInstall: taglist.vim
 1218 9031 :AutoInstall: NERD_commenter.vim
+90 8827 :AutoInstall: vcscommand.vim
