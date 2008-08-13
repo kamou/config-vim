@@ -4,4 +4,7 @@ let g:moria_style='black'
 set background=dark
 colorscheme moria
 
+" Deactivate cursor blinking.
+set guicursor=a:blinkon0
+
 " vim: ft=vim sw=2
