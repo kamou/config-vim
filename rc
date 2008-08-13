@@ -35,4 +35,39 @@ if !has("gui_running")
   endif
 endif
 
+" Improved completion.
+
+set complete=.,t,i,k
+
+function! CleverTab()
+  let to_pos=strpart(getline('.'), 0, col('.') - 1 )
+  let from_pos=strpart(getline('.'), col('.') - 2, col('$'))
+  if to_pos =~ '^\s*#\s*include'
+    if to_pos =~ '^\s*#\s*include\s*$'
+      return " \"\<C-X>\<C-F>\"\<Left>"
+    endif
+    return "\<C-X>\<C-F>"
+  elseif from_pos =~ '^\k'
+    return "\<C-P>"
+  endif
+  return "\<Tab>"
+endfunction
+inoremap <Tab> <C-R>=CleverTab()<CR>
+
+function! SCleverTab()
+  let to_pos=strpart(getline('.'), 0, col('.') - 1 )
+  let from_pos=strpart(getline('.'), col('.') - 2, col('$'))
+  if from_pos =~ '^\k'
+    return "\<C-N>"
+  endif
+  return "\<Tab>"
+endfunction
+inoremap <S-Tab> <C-R>=SCleverTab()<CR>
+
+inoremap <C-]> <C-x><C-]>
+inoremap <C-f> <C-x><C-f>
+inoremap <C-d> <C-x><C-d>
+inoremap <C-l> <C-x><C-l>
+inoremap <C-k> <C-x><C-k>
+
 " vim: ft=vim sw=2
