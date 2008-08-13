@@ -11,6 +11,9 @@ set nowrap
 set number
 set numberwidth=5
 
+" Allow backspacing over everything in insert mode.
+set backspace=2
+
 " Syntax highlighting.
 syntax on
 
