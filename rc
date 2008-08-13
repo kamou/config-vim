@@ -70,6 +70,13 @@ inoremap <C-d> <C-x><C-d>
 inoremap <C-l> <C-x><C-l>
 inoremap <C-k> <C-x><C-k>
 
+" Mappings for mark plugin.
+nmap <unique> <silent> <leader>mm <Plug>MarkSet
+vmap <unique> <silent> <leader>mm <Plug>MarkSet
+nmap <unique> <silent> <leader>mr <Plug>MarkRegex
+vmap <unique> <silent> <leader>mr <Plug>MarkRegex
+nmap <unique> <silent> <leader>mn <Plug>MarkClear
+
 " Have vimball put file in $USERVIM.
 let g:vimball_home=$USERVIM
 
