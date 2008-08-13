@@ -144,6 +144,10 @@ nmap <silent> <M-8> :brewind <bar> bn 7<CR>
 nmap <silent> <M-9> :brewind <bar> bn 8<CR>
 nmap <silent> <M-0> :blast<CR>
 
+" For iterating on errors.
+nmap <silent> <M-up> :cp<CR>
+nmap <silent> <M-down> :cn<CR>
+
 " For saving current buffer.
 map <silent> <F2> :w<CR>
 
