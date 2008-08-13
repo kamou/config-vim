@@ -70,4 +70,7 @@ inoremap <C-d> <C-x><C-d>
 inoremap <C-l> <C-x><C-l>
 inoremap <C-k> <C-x><C-k>
 
+" Have vimball put file in $USERVIM.
+let g:vimball_home=$USERVIM
+
 " vim: ft=vim sw=2
