@@ -14,6 +14,10 @@ set numberwidth=5
 " Allow backspacing over everything in insert mode.
 set backspace=2
 
+" Use status line to display possible completions.
+set wildmenu
+set wildmode=list:longest,full
+
 " Syntax highlighting.
 syntax on
 
