@@ -35,6 +35,9 @@ if !has("gui_running")
   endif
 endif
 
+" To update a ctags database.
+nmap <unique> <Leader>tU :exe "silent! !ctags --c-kinds=+cdefgmnpstuvx --fields=+S -R -o tags ."<CR>
+
 " Ctags list plugin config.
 let Tlist_Enable_Fold_Column = 0
 let Tlist_Sort_Type = "name"
