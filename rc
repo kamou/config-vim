@@ -33,6 +33,11 @@ behave xterm
 set selectmode=key
 set keymodel=startsel
 
+" Activate use of filetype, indent, and plugin.
+filetype on
+filetype indent on
+filetype plugin on
+
 " Syntax highlighting.
 syntax on
 
