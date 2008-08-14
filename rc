@@ -141,6 +141,10 @@ nmap <unique> <silent> <leader>mn <Plug>MarkClear
 " Have vimball put file in $USERVIM.
 let g:vimball_home=$USERVIM
 
+" Configure tSkeleton plugin.
+let g:tskelUserName=username
+let g:tskelUserEmail=useremail
+
 " Silence NERD commenter plugin.
 let NERDShutUp=1
 
