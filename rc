@@ -47,6 +47,13 @@ set laststatus=2
 " Better status line.
 set statusline=%<%f\ %h%y\ %{&ff}\ %{&fenc}\ %m%r%=%-24.(\ %l,%c%V\ [%b,0x%B]\ %)\ %P
 
+" Put swap files in $USERVIM/swap or ~/tmp
+" (fallback to current dir if not possible).
+if !isdirectory($USERVIM."/swap")
+  silent !mkdir $USERVIM"/swap"
+endif
+set directory=$USERVIM/swap//,~/tmp//,.
+
 " Load specific term keys setting.
 " Needed for some mappings to work properly.
 if !has("gui_running")
