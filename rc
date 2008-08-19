@@ -203,4 +203,26 @@ function! ToggleSearchHighlighting()
 endfunction
 map <silent> <F6> :call ToggleSearchHighlighting()<CR>
 
+" For indenting and retabing a range.
+
+function! Indent_and_Retab() range
+  if exists("g:listBlanks")
+    silent! execute a:firstline.",".a:lastline.'s/\s*\?$'
+  end
+  execute a:firstline.",".a:lastline.'retab'
+  execute "normal ".a:firstline."G=".a:lastline . 'G'
+endfunction
+
+function! Indent_and_Retab_operator(type)
+  :'[,']call Indent_and_Retab()
+endfunction
+
+function! Indent_and_Retab_visual()
+  call Indent_and_Retab_mark('<', '>')
+endfun
+
+vmap <silent> ,= :call Indent_and_Retab()<CR>
+nmap <silent> ,= :set opfunc=Indent_and_Retab_operator<CR>g@
+nmap <silent> ,== :.call Indent_and_Retab()<CR>
+
 " vim: ft=vim sw=2
