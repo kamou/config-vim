@@ -20,6 +20,11 @@ set numberwidth=5
 " Allow backspacing over everything in insert mode.
 set backspace=2
 
+" To keep hidden buffers
+" (so we can change buffer without
+" the need to write changes ...).
+set hidden
+
 " Use status line to display possible completions.
 set wildmenu
 set wildmode=list:longest,full
