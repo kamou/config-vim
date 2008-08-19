@@ -102,6 +102,10 @@ let Tlist_Show_One_File = 1
 let Tlist_Show_Menu = 0
 nmap <silent> <unique> <Leader>tl :exe "Tlist"\|wincmd p<CR>
 
+" To toggle whitespace ignore for diffs.
+map <unique> <Leader>d<space> :if &diffopt =~ ',\?iwhite\>' <Bar> set diffopt-=iwhite <Bar> else <Bar> set diffopt+=iwhite <Bar> endif <CR>
+map <unique> <Leader>dd       :if &diff <Bar> set nodiff <Bar> set noscrollbind <Bar> else <Bar> diffthis <Bar> endif <CR>
+
 " Improved completion.
 
 set complete=.,t,i,k
