@@ -33,6 +33,9 @@ set wildmode=list:longest,full
 set nohlsearch
 set incsearch
 
+" Save info file in the user VIM directory.
+let &viminfo="!,'20,\"50,n".$USERVIM."/info"
+
 " Change the select/visual mode behavior.
 behave xterm
 set selectmode=key
