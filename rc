@@ -10,8 +10,9 @@ language C
 " Not VI compatible.
 set nocompatible
 
-" No wrapping.
+" No wrapping, but use ^ and $ for incomplete lines.
 set nowrap
+set lcs=precedes:^,extends:$
 
 " Show line numbers.
 set number
