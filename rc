@@ -224,7 +224,8 @@ map <silent> <F4> :call DeleteBuffer()<CR>
 
 " }}}
 
-" For switching search highlighting on/off.
+" Search highlighting. {{{
+
 function! ToggleSearchHighlighting()
   if &hlsearch
     set nohlsearch
@@ -232,7 +233,10 @@ function! ToggleSearchHighlighting()
     set hlsearch
   endif
 endfunction
+
 map <silent> <F6> :call ToggleSearchHighlighting()<CR>
+
+" }}}
 
 " Indent and retab. {{{
 
