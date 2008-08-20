@@ -260,6 +260,31 @@ map <silent> <F6> :call ToggleSearchHighlighting()<CR>
 
 " }}}
 
+" Launch various commands. {{{
+
+let cmd_1="make"
+let cmd_2="make clean"
+let cmd_3="make -C %:p:h"
+let cmd_4="make -C %:p:h clean"
+
+function! Launch_Command(name)
+  if exists("b:".a:name)
+    execute "let l:cmd=b:".a:name
+  elseif exists("g:".a:name)
+    execute "let l:cmd=g:".a:name
+  else
+    return
+  endif
+  execute "echo \"" . cmd . "\" \| " . cmd
+endfunction
+
+noremap <F9>  :call Launch_Command("cmd_1")<CR>
+noremap <F10> :call Launch_Command("cmd_2")<CR>
+noremap <F11> :call Launch_Command("cmd_3")<CR>
+noremap <F12> :call Launch_Command("cmd_4")<CR>
+
+" }}}
+
 " Indent and retab. {{{
 
 function! Indent_and_Retab() range
