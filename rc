@@ -104,7 +104,7 @@ if has("cscope")
   nmap <unique> <Leader>ta :exe "cscope find t <cword>"<CR>
   nmap <unique> <Leader>tf :exe "cscope find f <cfile>"<CR>
   nmap <unique> <Leader>ti :exe "cscope find i ^%:t$"<CR>
-  nmap <unique> <Leader>tu :exe "silent! cscope k 0" \| exe "silent !cscope -R -v -b -s ." \| exe "silent cscope add cscope.out"<CR>
+  nmap <unique> <Leader>tu :exe "silent! cscope k 0" \| exe "!cscope -q -R -v -b -s ." \| exe "silent cscope add cscope.out"<CR>
 
 endif
 
