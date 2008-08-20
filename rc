@@ -224,6 +224,22 @@ map <silent> <F4> :call DeleteBuffer()<CR>
 
 " }}}
 
+" Trailing spaces/tabs highlighting. {{{
+
+set listchars+=tab:__,trail:_
+
+function! ToggleListBlanks()
+  if &list
+    setlocal nolist
+  else
+    setlocal list
+  endif
+endfunction
+
+map <silent> <F5> :call ToggleListBlanks()<CR>
+
+" }}}
+
 " Search highlighting. {{{
 
 function! ToggleSearchHighlighting()
