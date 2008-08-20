@@ -211,4 +211,26 @@ function! ToggleSearchHighlighting()
 endfunction
 map <silent> <F6> :call ToggleSearchHighlighting()<CR>
 
+" To swap two pieces of text.
+
+function! SwapText()
+
+  let l1=line("'.")
+  let c1=col("'.")
+
+  let l2=line("'>")
+  let c2=col("'>")
+  let s2=c2-col("'<")
+
+  exe 'normal gvP'
+  if l1 == l2 && c1 >= c2
+    let c1+=s2
+  endif
+  cal cursor(l1,  c1)
+  exe 'normal "*P'
+ 
+endfunction
+
+vnoremap <C-s> <Esc>:call SwapText()<CR>
+
 " vim: ft=vim sw=2
