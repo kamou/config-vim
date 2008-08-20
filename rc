@@ -238,7 +238,7 @@ map <silent> <F6> :call ToggleSearchHighlighting()<CR>
 
 function! Indent_and_Retab() range
   if exists("g:listBlanks")
-    silent! execute a:firstline.",".a:lastline.'s/\s*\?$'
+    silent! execute a:firstline.",".a:lastline.'s/\s*\r\?$'
   end
   execute a:firstline.",".a:lastline.'retab'
   execute "normal ".a:firstline."G=".a:lastline . 'G'
