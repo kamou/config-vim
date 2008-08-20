@@ -10,8 +10,9 @@ language C
 " Not VI compatible.
 set nocompatible
 
-" No wrapping.
+" No wrapping, but use ^ and $ for incomplete lines.
 set nowrap
+set lcs=precedes:^,extends:$
 
 " Show line numbers.
 set number
@@ -54,6 +55,13 @@ set laststatus=2
 
 " Better status line.
 set statusline=%<%f\ %h%y\ %{&ff}\ %{&fenc}\ %m%r%=%-24.(\ %l,%c%V\ [%b,0x%B]\ %)\ %P
+
+" Put swap files in $USERVIM/swap or ~/tmp
+" (fallback to current dir if not possible).
+if !isdirectory($USERVIM."/swap")
+  silent !mkdir $USERVIM"/swap"
+endif
+set directory=$USERVIM/swap//,~/tmp//,.
 
 " Load specific term keys setting.
 " Needed for some mappings to work properly.
@@ -247,6 +255,30 @@ endfun
 vmap <silent> ,= :call Indent_and_Retab()<CR>
 nmap <silent> ,= :set opfunc=Indent_and_Retab_operator<CR>g@
 nmap <silent> ,== :.call Indent_and_Retab()<CR>
+
+" }}}
+
+" Swap two pieces of text. {{{
+
+function! SwapText()
+
+  let l1=line("'.")
+  let c1=col("'.")
+
+  let l2=line("'>")
+  let c2=col("'>")
+  let s2=c2-col("'<")
+
+  exe 'normal gvP'
+  if l1 == l2 && c1 >= c2
+    let c1+=s2
+  endif
+  cal cursor(l1,  c1)
+  exe 'normal "*P'
+ 
+endfunction
+
+vnoremap <C-s> <Esc>:call SwapText()<CR>
 
 " }}}
 
