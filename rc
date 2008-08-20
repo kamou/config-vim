@@ -59,6 +59,9 @@ set showcmd
 " Better status line.
 set statusline=%<%f\ %h%y\ %{&ff}\ %{&fenc}\ %m%r%=%-24.(\ %l,%c%V\ [%b,0x%B]\ %)\ %P
 
+" Need -w to correctly parse compilation errors when switching directories.
+set makeprg=make\ -w
+
 " Put swap files in $USERVIM/swap or ~/tmp
 " (fallback to current dir if not possible).
 if !isdirectory($USERVIM."/swap")
