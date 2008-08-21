@@ -116,6 +116,8 @@ endif
 
 " }}}
 
+" Ctags support. {{{
+
 " To update a ctags database.
 nmap <unique> <Leader>tU :exe "silent! !ctags --c-kinds=+cdefgmnpstuvx --fields=+S -R -o tags ."<CR>
 
@@ -125,6 +127,8 @@ let Tlist_Sort_Type = "name"
 let Tlist_Show_One_File = 1
 let Tlist_Show_Menu = 0
 nmap <silent> <unique> <Leader>tl :exe "Tlist"\|wincmd p<CR>
+
+" }}}
 
 " To toggle whitespace ignore for diffs.
 map <unique> <Leader>d<space> :if &diffopt =~ ',\?iwhite\>' <Bar> set diffopt-=iwhite <Bar> else <Bar> set diffopt+=iwhite <Bar> endif <CR>
