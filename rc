@@ -69,14 +69,22 @@ if !isdirectory($USERVIM."/swap")
 endif
 set directory=$USERVIM/swap//,~/tmp//,.
 
-" Load specific term keys setting.
-" Needed for some mappings to work properly.
+" Terminal only settings. {{{
+
 if !has("gui_running")
+
+  " Load specific term keys setting.
+  " Needed for some mappings to work properly.
   let keys=$USERVIM."/keys/".$TERM
   if filereadable(keys)
     execute "source " . keys
   endif
+
+  set background=dark
+
 endif
+
+" }}}
 
 " Cscope support. {{{
 
