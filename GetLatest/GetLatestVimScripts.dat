@@ -13,3 +13,4 @@ ScriptID SourceID Filename
 489 9078 :AutoInstall: ManPageView
 1863 8834 :AutoInstall: tlib.vim
 1160 8126 :AutoInstall: tSkeleton.vim
+2048 7817 :AutoInstall: blockdiff.vim
