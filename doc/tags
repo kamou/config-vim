@@ -309,7 +309,9 @@ g:bufExplorerShowDirectories	bufexplorer.txt	/*g:bufExplorerShowDirectories*
 g:bufExplorerShowRelativePath	bufexplorer.txt	/*g:bufExplorerShowRelativePath*
 g:bufExplorerShowUnlisted	bufexplorer.txt	/*g:bufExplorerShowUnlisted*
 g:bufExplorerSortBy	bufexplorer.txt	/*g:bufExplorerSortBy*
+g:bufExplorerSplitBelow	bufexplorer.txt	/*g:bufExplorerSplitBelow*
 g:bufExplorerSplitOutPathName	bufexplorer.txt	/*g:bufExplorerSplitOutPathName*
+g:bufExplorerSplitRight	bufexplorer.txt	/*g:bufExplorerSplitRight*
 g:decho_bufenter	Decho.txt	/*g:decho_bufenter*
 g:decho_bufname	Decho.txt	/*g:decho_bufname*
 g:dechomode	Decho.txt	/*g:dechomode*

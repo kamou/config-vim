@@ -69,14 +69,22 @@ if !isdirectory($USERVIM."/swap")
 endif
 set directory=$USERVIM/swap//,~/tmp//,.
 
-" Load specific term keys setting.
-" Needed for some mappings to work properly.
+" Terminal only settings. {{{
+
 if !has("gui_running")
+
+  " Load specific term keys setting.
+  " Needed for some mappings to work properly.
   let keys=$USERVIM."/keys/".$TERM
   if filereadable(keys)
     execute "source " . keys
   endif
+
+  set background=dark
+
 endif
+
+" }}}
 
 " Cscope support. {{{
 
@@ -116,6 +124,8 @@ endif
 
 " }}}
 
+" Ctags support. {{{
+
 " To update a ctags database.
 nmap <unique> <Leader>tU :exe "silent! !ctags --c-kinds=+cdefgmnpstuvx --fields=+S -R -o tags ."<CR>
 
@@ -125,6 +135,8 @@ let Tlist_Sort_Type = "name"
 let Tlist_Show_One_File = 1
 let Tlist_Show_Menu = 0
 nmap <silent> <unique> <Leader>tl :exe "Tlist"\|wincmd p<CR>
+
+" }}}
 
 " To toggle whitespace ignore for diffs.
 map <unique> <Leader>d<space> :if &diffopt =~ ',\?iwhite\>' <Bar> set diffopt-=iwhite <Bar> else <Bar> set diffopt+=iwhite <Bar> endif <CR>
@@ -288,7 +300,7 @@ noremap <F12> :call Launch_Command("cmd_4")<CR>
 " Indent and retab. {{{
 
 function! Indent_and_Retab() range
-  if exists("g:listBlanks")
+  if &list
     silent! execute a:firstline.",".a:lastline.'s/\s*\r\?$'
   end
   execute a:firstline.",".a:lastline.'retab'

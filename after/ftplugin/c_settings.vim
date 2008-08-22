@@ -7,6 +7,9 @@ setlocal expandtab
 setlocal shiftwidth=4
 setlocal softtabstop=4
 
+" Indentation settings.
+set cinoptions=>1s,c0,(0,u0,g1s,h1s,:0,=1s
+
 " Highlight trailing white spaces, tabs.
 setlocal list
 

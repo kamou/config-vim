@@ -10,4 +10,8 @@ set guifont=Bitstream\ Vera\ Sans\ Mono\ Bold\ 10
 " Deactivate cursor blinking.
 set guicursor=a:blinkon0
 
+" No toolbar, use console dialogs instead of popup dialogs for simple choices.
+set guioptions-=T
+set guioptions+=c
+
 " vim: ft=vim sw=2
