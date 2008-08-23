@@ -423,8 +423,8 @@ fun! manpageview#ManPageView(viamap,bknum,...) range
   endif
 
   " add some maps for multiple manpage handling {{{3
-  nmap <silent> <script> <buffer> <PageUp>				:call search("^NAME$",'bw')<cr>z<cr>5<c-y>
-  nmap <silent> <script> <buffer> <PageDown>			:call search("^NAME$",'w')<cr>z<cr>5<c-y>
+  "nmap <silent> <script> <buffer> <PageUp>				:call search("^NAME$",'bw')<cr>z<cr>5<c-y>
+  "nmap <silent> <script> <buffer> <PageDown>			:call search("^NAME$",'w')<cr>z<cr>5<c-y>
 
   " allow user to specify file encoding {{{3
   if exists("g:manpageview_fenc")
