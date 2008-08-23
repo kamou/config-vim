@@ -50,14 +50,26 @@ filetype plugin on
 " Syntax highlighting.
 syntax on
 
-" Show statusline even if only one window is visible.
-set laststatus=2
-
 " More info during some commands (like visual selection).
 set showcmd
 
+" Status line. {{{
+
+" Show statusline even if only one window is visible.
+set laststatus=2
+
+function VarExists(var, val)
+  if exists(a:var) | return a:val | else | return '' | endif
+endfunction
+
+function IfTrue(var, val)
+  if a:var | return a:val | else | return '' | endif
+endfunction
+
 " Better status line.
-set statusline=%<%f\ %h%y\ %{&ff}\ %{&fenc}\ %m%r%=%-24.(\ %l,%c%V\ [%b,0x%B]\ %)\ %P
+set statusline=%<%f\ %h%y\ %{&ff}\ %{&fenc}%(\ %{IfTrue(&diff,\ '[d]')}%)%(\ %m%)%(\ %r%)%=%-24.(\ %l,%c%V\ [%b,0x%B]\ %)\ %P
+
+" }}}
 
 " Need -w to correctly parse compilation errors when switching directories.
 set makeprg=make\ -w
