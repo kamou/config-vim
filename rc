@@ -247,7 +247,7 @@ map <silent> <F2> :w<CR>
 function! DeleteBuffer()
   let bid = bufnr('%')
   let wid = winnr()
-  if &buftype ==# "quickfix" || &buftype ==# "nowrite" || &buftype ==# "nofile" || &buftype ==# "help"
+  if &buftype ==# "quickfix" || &buftype ==# "nowrite" || &buftype ==# "nofile" || &buftype ==# "help" || &previewwindow
     silent close
   else
     silent! exe "bprev | bdel " . bid
