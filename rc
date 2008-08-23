@@ -123,14 +123,14 @@ if has("cscope")
   set csto=1
 
   " Mappings.
-  nmap <unique> <Leader>tg <C-]>
-  nmap <unique> <Leader>ts :exe "cscope find s <cword>"<CR>
-  nmap <unique> <Leader>td :exe "cscope find d <cword>"<CR>
-  nmap <unique> <Leader>tc :exe "cscope find c <cword>"<CR>
-  nmap <unique> <Leader>ta :exe "cscope find t <cword>"<CR>
-  nmap <unique> <Leader>tf :exe "cscope find f <cfile>"<CR>
-  nmap <unique> <Leader>ti :exe "cscope find i ^%:t$"<CR>
-  nmap <unique> <Leader>tu :exe "silent! cscope k 0" \| exe "!cscope -q -R -v -b -s ." \| exe "silent cscope add cscope.out"<CR>
+  nmap <unique> <silent> <Leader>tg <C-]>
+  nmap <unique> <silent> <Leader>ts :exe "cscope find s <cword>"<CR>
+  nmap <unique> <silent> <Leader>td :exe "cscope find d <cword>"<CR>
+  nmap <unique> <silent> <Leader>tc :exe "cscope find c <cword>"<CR>
+  nmap <unique> <silent> <Leader>ta :exe "cscope find t <cword>"<CR>
+  nmap <unique> <silent> <Leader>tf :exe "cscope find f <cfile>"<CR>
+  nmap <unique> <silent> <Leader>ti :exe "cscope find i ^%:t$"<CR>
+  nmap <unique> <silent> <Leader>tu :exe "silent! cscope k 0" \| exe "!cscope -q -R -v -b -s ." \| exe "silent cscope add cscope.out"<CR>
 
 endif
 
