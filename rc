@@ -245,16 +245,23 @@ map <silent> <F2> :w<CR>
 " Delete the current buffer, issuing bnext in all windows
 " where displayed before that.
 function! DeleteBuffer()
+
   let bid = bufnr('%')
   let wid = winnr()
-  if &buftype ==# "quickfix" || &buftype ==# "nowrite" || &buftype ==# "nofile" || &buftype ==# "help" || &previewwindow
+
+  if &previewwindow
     silent close
+  elseif &buftype ==# 'quickfix' || &buftype ==# 'nowrite' || &buftype ==# 'nofile' || &buftype ==# 'help'
+    silent close
+  elseif &ft ==# 'man'
   else
     silent! exe "bprev | bdel " . bid
   end
+
   if bid == bufnr('%')
     :q
   end
+
 endfunction
 
 " For deleting current buffer (and closing window when needed).
