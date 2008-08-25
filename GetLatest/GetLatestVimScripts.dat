@@ -15,3 +15,4 @@ ScriptID SourceID Filename
 1160 8126 :AutoInstall: tSkeleton.vim
 2048 7817 :AutoInstall: blockdiff.vim
 389 4652 :AutoInstall: scratch.vim
+1545 6087 :AutoInstall: parenquote.vim
