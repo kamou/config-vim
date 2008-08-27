@@ -365,7 +365,7 @@ function! SwapText()
   endif
   cal cursor(l1,  c1)
   exe 'normal "*P'
- 
+
 endfunction
 
 vnoremap <C-s> <Esc>:call SwapText()<CR>
