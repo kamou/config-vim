@@ -379,4 +379,12 @@ if has('autocmd')
   autocmd WinLeave    * set nocursorline nocursorcolumn
 endif
 
+" Folding. {{{
+
+set foldcolumn=2
+set foldlevelstart=99
+set foldmethod=syntax
+
+" }}}
+
 " vim: ft=vim sw=2 foldmethod=marker
