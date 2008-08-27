@@ -372,4 +372,11 @@ vnoremap <C-s> <Esc>:call SwapText()<CR>
 
 " }}}
 
+" Cursor cross.
+if has('autocmd')
+  autocmd BufWinEnter * set cursorline cursorcolumn
+  autocmd WinEnter    * set cursorline cursorcolumn
+  autocmd WinLeave    * set nocursorline nocursorcolumn
+endif
+
 " vim: ft=vim sw=2 foldmethod=marker
