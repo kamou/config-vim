@@ -1,3 +1,24 @@
+"
+" VIM RC to be used so VIM act as a replacement for less.
+"
+" Put it in ~/.vim/rc.less.
+"
+" To replace less if you use ZSH, put this in your ~/.zshrc:
+"
+" less()
+" {
+"   if [ $# -eq 0 ]
+"   then
+"     view -u ~/.vim/rc.less -
+"   else
+"     view -u ~/.vim/rc.less "$@"
+"   fi
+" }
+"
+" And this to use VIM as a pager when calling man:
+"
+" export MANPAGER="sh -c 'col -x -b | view -u ~/.vim/rc.less -c \"set ft=man\" -'"
+"
 
 source ~/.vimrc
 
