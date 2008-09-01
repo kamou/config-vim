@@ -123,7 +123,7 @@ if &background == "dark"
     hi lCursor guibg=#00e700 ctermbg=40 guifg=#000000 ctermfg=0 gui=none
     hi MatchParen guibg=#008b8b ctermbg=30 gui=none
     hi PreProc guibg=bg guifg=#d7a0d7 ctermfg=182 gui=none
-    hi Special guibg=bg guifg=#e8b87e ctermfg=180 gui=none
+    hi Special guibg=bg guifg=#e8b87e ctermfg=215 gui=none
     hi Todo guibg=#e0e000 ctermbg=184 guifg=#000000 ctermfg=0 gui=none
     hi Underlined guibg=bg guifg=#00a0ff ctermfg=39 gui=underline
 
