@@ -92,8 +92,10 @@ if !has("gui_running")
     execute "source " . keys
   endif
 
+  " Colorscheme.
+  let g:moria_style='black'
   set background=dark
-  colorscheme peaksea
+  colorscheme moria_256
 
 endif
 
