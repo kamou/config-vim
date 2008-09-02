@@ -13,3 +13,8 @@ set cinoptions=>1s,c0,(0,u0,g1s,h1s,:0,=1s
 " Highlight trailing white spaces, tabs.
 setlocal list
 
+" Dictionary for completion.
+setlocal dictionary+=$USERVIM/dictionaries/c.dic
+
+" Activate doxygen syntax highlighting.
+let g:load_doxygen_syntax=1

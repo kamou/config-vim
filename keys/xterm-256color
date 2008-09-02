@@ -1,3 +1,7 @@
+
+imap <C-h> <C-BS>
+cmap <C-h> <C-BS>
+
 nmap 0 <M-0>
 nmap 1 <M-1>
 nmap 2 <M-2>
