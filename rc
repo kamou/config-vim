@@ -92,6 +92,9 @@ if !has("gui_running")
     execute "source " . keys
   endif
 
+  " Fast escape key.
+  set timeout timeoutlen=3000 ttimeoutlen=100
+
   " Colorscheme.
   let g:moria_style='black'
   set background=dark
