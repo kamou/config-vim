@@ -16,3 +16,5 @@ setlocal list
 " Dictionary for completion.
 setlocal dictionary+=$USERVIM/dictionaries/c.dic
 
+" Activate doxygen syntax highlighting.
+let g:load_doxygen_syntax=1
