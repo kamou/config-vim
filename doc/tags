@@ -222,8 +222,12 @@ decho_hide	Decho.txt	/*decho_hide*
 decho_options	Decho.txt	/*decho_options*
 decho_settings	Decho.txt	/*decho_settings*
 decho_winheight	Decho.txt	/*decho_winheight*
+defining-skeletons	yasnippets.txt	/*defining-skeletons*
+defining-snippets	yasnippets.txt	/*defining-snippets*
 dfunc	Decho.txt	/*dfunc*
 dret	Decho.txt	/*dret*
+expand-command	yasnippets.txt	/*expand-command*
+file-skeletons	yasnippets.txt	/*file-skeletons*
 g:bufExplorerDefaultHelp	bufexplorer.txt	/*g:bufExplorerDefaultHelp*
 g:bufExplorerDetailedHelp	bufexplorer.txt	/*g:bufExplorerDetailedHelp*
 g:bufExplorerFindActive	bufexplorer.txt	/*g:bufExplorerFindActive*
@@ -290,6 +294,7 @@ glvs-install	pi_getscript.txt	/*glvs-install*
 glvs-options	pi_getscript.txt	/*glvs-options*
 glvs-plugins	pi_getscript.txt	/*glvs-plugins*
 glvs-usage	pi_getscript.txt	/*glvs-usage*
+keyword-snippets	yasnippets.txt	/*keyword-snippets*
 loaded_nerd_comments	NERD_commenter.txt	/*loaded_nerd_comments*
 manpage-pagedown	manpageview.txt	/*manpage-pagedown*
 manpage-pageup	manpageview.txt	/*manpage-pageup*
@@ -309,8 +314,12 @@ manpageview-php	manpageview.txt	/*manpageview-php*
 manpageview-usage	manpageview.txt	/*manpageview-usage*
 manpageview.txt	manpageview.txt	/*manpageview.txt*
 manpageview_extend	manpageview.txt	/*manpageview_extend*
+newline-snippets	yasnippets.txt	/*newline-snippets*
 pi_getscript.txt	pi_getscript.txt	/*pi_getscript.txt*
 pi_vimball.txt	pi_vimball.txt	/*pi_vimball.txt*
+skeleton-ask	yasnippets.txt	/*skeleton-ask*
+skeletons-shared	yasnippets.txt	/*skeletons-shared*
+snippet-markers	yasnippets.txt	/*snippet-markers*
 tSkeletion-<+&+>	tSkeleton.txt	/*tSkeletion-<+&+>*
 tSkeletion-<+?+>	tSkeleton.txt	/*tSkeletion-<+?+>*
 tSkeletion-<+AUTHOR+>	tSkeleton.txt	/*tSkeletion-<+AUTHOR+>*
@@ -551,3 +560,10 @@ vimball-extract	pi_vimball.txt	/*vimball-extract*
 vimball-history	pi_vimball.txt	/*vimball-history*
 vimball-intro	pi_vimball.txt	/*vimball-intro*
 vimball-manual	pi_vimball.txt	/*vimball-manual*
+yasnippets	yasnippets.txt	/*yasnippets*
+yasnippets-file	yasnippets.txt	/*yasnippets-file*
+yasnippets-jump	yasnippets.txt	/*yasnippets-jump*
+yasnippets-nlkey	yasnippets.txt	/*yasnippets-nlkey*
+yasnippets-plugin	yasnippets.txt	/*yasnippets-plugin*
+yasnippets-settings	yasnippets.txt	/*yasnippets-settings*
+yasnippets.txt	yasnippets.txt	/*yasnippets.txt*
