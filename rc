@@ -18,9 +18,6 @@ set lcs=precedes:^,extends:$
 set number
 set numberwidth=5
 
-" Allow backspacing over everything in insert mode.
-set backspace=2
-
 " To keep hidden buffers
 " (so we can change buffer without
 " the need to write changes ...).
@@ -92,10 +89,26 @@ if !has("gui_running")
     execute "source " . keys
   endif
 
+  " Fast escape key.
+  set timeout timeoutlen=3000 ttimeoutlen=100
+
+  " Colorscheme.
+  let g:moria_style='black'
   set background=dark
-  colorscheme peaksea
+  colorscheme moria_256
 
 endif
+
+" }}}
+
+" Backspace/Delete behaviour. {{{
+
+" Allow backspacing over everything in insert mode.
+set backspace=2
+
+" Backward delete word and delete word in instert and command mode.
+imap <C-BS> <C-w>
+cmap <C-BS> <C-w>
 
 " }}}
 
