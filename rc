@@ -167,6 +167,9 @@ nmap <silent> <unique> <Leader>tl :exe "Tlist"\|wincmd p<CR>
 " Diffing. {{{
 
 " To toggle whitespace ignore for diffs.
+map <unique> <silent> <Leader>dg :diffget<CR>
+map <unique> <silent> <Leader>dp :diffput<CR>
+map <unique> <silent> <Leader>du :diffupdate<CR>
 map <unique> <silent> <Leader>d<space> :if &diffopt =~ ',\?iwhite\>' <Bar> set diffopt-=iwhite <Bar> else <Bar> set diffopt+=iwhite <Bar> endif <CR>
 map <unique> <silent> <Leader>dd       :if &diff <Bar> set nodiff <Bar> set noscrollbind <Bar> else <Bar> diffthis <Bar> endif <CR>
 
