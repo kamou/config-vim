@@ -1,0 +1,25 @@
+nmap 0 <M-0>
+nmap 1 <M-1>
+nmap 2 <M-2>
+nmap 3 <M-3>
+nmap 4 <M-4>
+nmap 5 <M-5>
+nmap 6 <M-6>
+nmap 7 <M-7>
+nmap 8 <M-8>
+nmap 9 <M-9>
+
+nmap OP <F1>
+nmap OQ <F2>
+nmap OR <F3>
+nmap OS <F4>
+nmap [15~ <F5>
+nmap [17~ <F6>
+nmap [18~ <F7>
+nmap [19~ <F8>
+nmap [20~ <F9>
+nmap [21~ <F10>
+nmap [23~ <F11>
+nmap [24~ <F12>
+
+" vim: ft=vim sw=2
