@@ -35,4 +35,50 @@ set readonly
 set nonumber
 set foldcolumn=0
 
+" Options parsing. {{{
+
+let g:vless_opt_F=0
+
+for opt in split($VLESS_OPT)
+  if opt ==# '-F'
+    let g:vless_opt_F=1
+  endif
+endfor
+
+" }}}
+
+" Emulate less -F option. {{{
+
+if g:vless_opt_F
+
+  let g:vless_orig_laststatus=&laststatus
+
+  set laststatus=0
+
+  function QuitIfWholeBufferVisible()
+
+    let blines=line('$')
+
+    if blines <= winheight(0) && (blines + 1) <= &lines
+      redraw
+      q
+    endif
+
+    let &laststatus=g:vless_orig_laststatus
+    unlet g:vless_orig_laststatus
+
+    augroup! vless
+
+    endfunction
+
+    augroup vless
+      if 1 == argc()
+        autocmd BufWinEnter * call QuitIfWholeBufferVisible()
+      endif
+    augroup END
+
+  endif
+
+" }}}
+
 " vim: ft=vim sw=2 foldmethod=marker
