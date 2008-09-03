@@ -5,11 +5,10 @@ ruby << EOF
 
 def align_range(left, pre_match, surround_pre, delim_match, surround_post, post_match, range = nil)
 
-  b = VIM::Buffer.current
   s = VIM::evaluate('a:firstline').to_i
   e = VIM::evaluate('a:lastline').to_i
 
-  align(b, left, pre_match, surround_pre, delim_match, surround_post, post_match, s, e, range)
+  align($curbuf, left, pre_match, surround_pre, delim_match, surround_post, post_match, s, e, range)
 
 end
 
