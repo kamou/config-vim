@@ -1,3 +1,6 @@
+__FILE__
+__FUNCTION__
+__LINE__
 __attribute__
 asm
 auto
