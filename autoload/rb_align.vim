@@ -39,7 +39,7 @@ function! rb_align#AlignRightComma_operator(type)
 endfunction
 
 function! rb_align#AlignDec() range
-  ruby align_range(true, '(\b(static|const|volatile|enum|struct|union)\b\s+)*\w+\s*', ' ', ['\**', 3], '', '\s*', 0..0)
+  ruby align_range(true, '^\s*((PUBLIC|PRIVATE|static)\s+)?((const|volatile|enum|struct|union)\s+)?((unsigned|signed)\s+(char|short|int|long\s+long|long)|long\s+long|\w+)\s*', ' ', ['\**', 8], '', '\s*', 0..0)
 endfunction
 
 function! rb_align#AlignDec_operator(type)
