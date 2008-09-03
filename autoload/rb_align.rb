@@ -25,6 +25,8 @@ def align(buffer, left, pre_match, surround_pre, delim_match, surround_post, pos
 
   rx = /(#{pre_match})(#{delim_match})(#{post_match})/
 
+  max = range ? (range.end - range.begin) : nil
+
   lines = (start_line..end_line).collect { |n|
 
     line = buffer[n]
@@ -35,14 +37,24 @@ def align(buffer, left, pre_match, surround_pre, delim_match, surround_post, pos
 
     line.scan(rx) {
 
-      pre, delim, post = $~[1], $~[delim_group], $~[delim_group + 1]
+      next if max and parts.size > max
 
-      pre.strip!
-      post.strip!
+      m = $~
 
-      parts << Part.new(prev[0] + line[prev[1]..($~.begin(0)-1)] + pre, delim)
+      pre, delim, post = m[1], m[delim_group], m[delim_group + 1]
 
-      prev = [post, $~.end(delim_group + 1)]
+      next unless (pre and delim and post)
+
+      pre.sub!(/\s*$/, '')
+      post.sub!(/^\s*/, '')
+
+      s = prev[0]
+      s << line[prev[1]..(m.begin(0)-1)] if m.begin(0) > 0
+      s << pre
+
+      parts << Part.new(s, delim)
+
+      prev = [post, m.end(delim_group + 1)]
     }
 
     parts << prev[0] + line[prev[1]..-1]
@@ -89,9 +101,27 @@ if __FILE__ == $0
   require 'pp'
 
   lines = STDIN.readlines
+  lines.each { |line| line.chomp! }
 
-  #align(lines, true, '\s+|[^=<>+-]', ' ', '=', ' ', '\s*', 0, lines.size - 1)
-  align(lines, true, '(\b(static|const|volatile|enum|struct|union)\b\s+)*\w+\s*', ' ', ['\**', 3], '', '\s*', 0, lines.size - 1, 0..0)
+  case ARGV[0]
+
+  when 'T,'
+
+    align(lines, false, '\s*', '', ',', ' ', '\s*', 0, lines.size - 1)
+
+  when 't,'
+
+    align(lines, true, '\s*', '', ',', ' ', '\s*', 0, lines.size - 1)
+
+  when 't='
+
+    align(lines, true, '\s+|[^=<>+-]', ' ', '=', ' ', '\s*', 0, lines.size - 1)
+
+  when 'adec'
+
+    align(lines, true, '^\s*((PUBLIC|PRIVATE|static)\s+)?((const|volatile|enum|struct|union)\s+)?((unsigned|signed)\s+(char|short|int|long\s+long|long)|long\s+long|\w+)\s*', ' ', ['\**', 8], '', '\s*.', 0, lines.size - 1, 0..0)
+
+  end
 
   puts lines
 
