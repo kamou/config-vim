@@ -32,7 +32,7 @@ if exists("syntax_on")
     syntax reset
 endif
 
-let colors_name = "moria"
+let colors_name = "moria_256"
 
 if &background == "dark"
     if s:moria_style == "dark"
