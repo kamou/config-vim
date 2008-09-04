@@ -182,7 +182,6 @@ vmap <unique> <silent> <Leader>d2 :call BlockDiff_GetBlock2()<CR>
 " Improved completion. {{{
 
 set complete=.,t,i,k
-set completeopt+=longest
 
 function! CleverTab()
   let to_pos=strpart(getline('.'), 0, col('.') - 1 )
@@ -193,11 +192,7 @@ function! CleverTab()
     endif
     return "\<C-X>\<C-F>"
   elseif from_pos =~ '^\k'
-    if pumvisible()
-      return "\<C-X>\<C-P>"
-    else
-      return "\<C-P>"
-    endif
+    return "\<C-P>"
   endif
   return "\<Tab>"
 endfunction
@@ -207,11 +202,7 @@ function! SCleverTab()
   let to_pos=strpart(getline('.'), 0, col('.') - 1 )
   let from_pos=strpart(getline('.'), col('.') - 2, col('$'))
   if from_pos =~ '^\k'
-    if pumvisible()
-      return "\<C-X>\<C-N>"
-    else
-      return "\<C-N>"
-    endif
+    return "\<C-N>"
   endif
   return "\<Tab>"
 endfunction
