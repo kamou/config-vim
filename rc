@@ -106,7 +106,7 @@ endif
 " Allow backspacing over everything in insert mode.
 set backspace=2
 
-" Backward delete word and delete word in instert and command mode.
+" Backward delete word and delete word in insert and command mode.
 imap <C-BS> <C-w>
 cmap <C-BS> <C-w>
 
