@@ -179,6 +179,14 @@ b:VCSCommandCommand	vcscommand.txt	/*b:VCSCommandCommand*
 b:VCSCommandOriginalBuffer	vcscommand.txt	/*b:VCSCommandOriginalBuffer*
 b:VCSCommandSourceFile	vcscommand.txt	/*b:VCSCommandSourceFile*
 b:VCSCommandVCSType	vcscommand.txt	/*b:VCSCommandVCSType*
+bpierre-config	bpierre-config.txt	/*bpierre-config*
+bpierre-config-about	bpierre-config.txt	/*bpierre-config-about*
+bpierre-config-contents	bpierre-config.txt	/*bpierre-config-contents*
+bpierre-config-copyright	bpierre-config.txt	/*bpierre-config-copyright*
+bpierre-config-install	bpierre-config.txt	/*bpierre-config-install*
+bpierre-config-mappings	bpierre-config.txt	/*bpierre-config-mappings*
+bpierre-config-plugins	bpierre-config.txt	/*bpierre-config-plugins*
+bpierre-config.txt	bpierre-config.txt	/*bpierre-config.txt*
 bufexplorer	bufexplorer.txt	/*bufexplorer*
 bufexplorer-changelog	bufexplorer.txt	/*bufexplorer-changelog*
 bufexplorer-credits	bufexplorer.txt	/*bufexplorer-credits*

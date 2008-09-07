@@ -67,17 +67,19 @@ if g:vless_opt_F
     let &laststatus=g:vless_orig_laststatus
     unlet g:vless_orig_laststatus
 
-    augroup! vless
-
-    endfunction
-
     augroup vless
-      if 1 == argc()
-        autocmd BufWinEnter * call QuitIfWholeBufferVisible()
-      endif
+      autocmd!
     augroup END
 
-  endif
+  endfunction
+
+  augroup vless
+    if 1 == argc()
+      autocmd BufWinEnter * call QuitIfWholeBufferVisible()
+    endif
+  augroup END
+
+endif
 
 " }}}
 
