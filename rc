@@ -193,7 +193,7 @@ function! CleverTab()
   endif
   return "\<Tab>"
 endfunction
-inoremap <Tab> <C-R>=CleverTab()<CR>
+inoremap <silent> <Tab> <C-R>=CleverTab()<CR>
 
 function! SCleverTab()
   let to_pos=strpart(getline('.'), 0, col('.') - 1 )
@@ -203,7 +203,7 @@ function! SCleverTab()
   endif
   return "\<Tab>"
 endfunction
-inoremap <S-Tab> <C-R>=SCleverTab()<CR>
+inoremap <silent> <S-Tab> <C-R>=SCleverTab()<CR>
 
 inoremap <C-]> <C-x><C-]>
 inoremap <C-f> <C-x><C-f>
