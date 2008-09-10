@@ -213,6 +213,8 @@ inoremap <C-k> <C-x><C-k>
 
 " }}}
 
+" Plugins. {{{
+
 " Mappings for mark plugin.
 nmap <unique> <silent> <leader>mm <Plug>MarkSet
 vmap <unique> <silent> <leader>mm <Plug>MarkSet
@@ -229,6 +231,12 @@ let g:tskelUserEmail=useremail
 
 " Silence NERD commenter plugin.
 let NERDShutUp=1
+
+" Do not switch tab/window when selecting an already opened buffer with
+" bufexplorer.
+let g:bufExplorerFindActive=0
+
+" }}}
 
 " Buffer navigation. {{{
 
