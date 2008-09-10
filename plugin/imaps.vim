@@ -184,7 +184,7 @@ function! IMAP(lhs, rhs, ft, ...)
 	end
 	exe 'inoremap <silent>'
 				\ escape(lastLHSChar, '|')
-				\ '<C-r>=<SID>LookupCharacter("' .
+				\ '<C-r>=IMAP_LookupCharacter("' .
 				\ escape(lastLHSChar, '\|"') .
 				\ '")<CR>'
 endfunction
@@ -208,13 +208,13 @@ function! IMAP_list(lhs)
 				\ s:phs_{ft}_{hash} . " and " . s:phe_{ft}_{hash}
 endfunction
 " }}}
-" LookupCharacter: inserts mapping corresponding to this character {{{
+" IMAP_LookupCharacter: inserts mapping corresponding to this character {{{
 "
 " This function extracts from s:LHS_{&ft}_{a:char} or s:LHS__{a:char}
 " the longest lhs matching the current text.  Then it replaces lhs with the
 " corresponding rhs saved in s:Map_{ft}_{lhs} .
 " The place-holder variables are passed to IMAP_PutTextWithMovement() .
-function! s:LookupCharacter(char)
+function! IMAP_LookupCharacter(char)
 	if IMAP_GetVal('Imap_FreezeImap', 0) == 1
 		return a:char
 	endif
