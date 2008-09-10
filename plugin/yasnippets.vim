@@ -50,7 +50,7 @@ let g:yasnippets_nl['all'] = []
 " <<<1 FreezeIndent() and UnfreezeIndent() - not change indent
 function! FreezeIndent()
     let b:yasnippets_indent_backup = &indentexpr
-    setlocal indentexpr=-1
+    setlocal indentexpr=indent(line('.')-1)
     return ''
 endfunction
 function! UnfreezeIndent()
