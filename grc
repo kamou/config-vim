@@ -5,13 +5,27 @@ set background=dark
 colorscheme moria
 
 " Font.
-set guifont=Bitstream\ Vera\ Sans\ Mono\ Bold\ 10
+if has('win32')
+  " Since selecting an unavailable font will crash the GUI in Windows, and the
+  " default font looks ok, don't override it...
+else
+  set guifont=Bitstream\ Vera\ Sans\ Mono\ Bold\ 10
+endif
 
 " Deactivate cursor blinking.
 set guicursor=a:blinkon0
+
+" GUI options. {{{
 
 " No toolbar, use console dialogs instead of popup dialogs for simple choices.
 set guioptions-=T
 set guioptions+=c
 
-" vim: ft=vim sw=2
+if has('win32')
+  " Auto-yank of visual/modeless selection.
+  set guioptions+=a
+endif
+
+" }}}
+
+" vim: ft=vim sw=2 foldmethod=marker
