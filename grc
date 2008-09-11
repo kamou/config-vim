@@ -15,6 +15,8 @@ endif
 " Deactivate cursor blinking.
 set guicursor=a:blinkon0
 
+" GUI options. {{{
+
 " No toolbar, use console dialogs instead of popup dialogs for simple choices.
 set guioptions-=T
 set guioptions+=c
@@ -24,4 +26,6 @@ if has('win32')
   set guioptions+=a
 endif
 
-" vim: ft=vim sw=2
+" }}}
+
+" vim: ft=vim sw=2 foldmethod=marker
