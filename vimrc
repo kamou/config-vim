@@ -1,6 +1,7 @@
 
-let $USERVIM=$HOME."/.vim"
+let $USERVIM=$HOME.'/.vim'
 set runtimepath+=$USERVIM
+set runtimepath+=$USERVIM/after
 
 if has('win32') && !strlen($CYGPATH)
   let $CYGPATH='c:/cygwin'
