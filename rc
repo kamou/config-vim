@@ -50,6 +50,31 @@ syntax on
 " More info during some commands (like visual selection).
 set showcmd
 
+" Win32 specific config. {{{
+
+if has('win32')
+
+  if !executable('sh') && strlen($CYGPATH)
+    let $PATH=$CYGPATH.'/bin;'.$PATH
+  end
+
+  " Look for a real shell.
+  if executable('sh')
+    set shell=sh
+    set shellcmdflag=-c
+    set shellpipe=2&>1\|\ tee
+    set shellquote=
+    set shellredir=>%s\ 2>&1
+    set shellslash
+    set shelltemp
+    set shellxquote=\"
+  endif
+
+
+endif
+
+" }}}
+
 " Status line. {{{
 
 " Show statusline even if only one window is visible.
@@ -73,10 +98,11 @@ set makeprg=make\ -w
 
 " Put swap files in $USERVIM/swap or ~/tmp
 " (fallback to current dir if not possible).
-if !isdirectory($USERVIM."/swap")
-  silent !mkdir $USERVIM"/swap"
+let swap=$USERVIM."/swap"
+if !isdirectory(swap)
+  call mkdir(swap)
 endif
-set directory=$USERVIM/swap//,~/tmp//,.
+let &directory=swap.'//,~/tmp//,.'
 
 " Terminal only settings. {{{
 
@@ -122,6 +148,16 @@ if has("cscope")
   set cst
   set nocsverb
 
+  " Check for either stock cscope executable or for the multi-lingual cscope
+  " version (which is the one available in Cygwin).
+  if !executable(&cscopeprg)
+    if executable('cscope')
+      set cscopeprg=cscope
+    elseif executable('mlcscope')
+      set cscopeprg=mlcscope
+    endif
+  endif
+
   " Add any database in current directory.
   if filereadable("cscope.out")
     cs add cscope.out
@@ -138,13 +174,13 @@ if has("cscope")
 
   " Mappings.
   nmap <unique> <silent> <Leader>tg <C-]>
-  nmap <unique> <silent> <Leader>ts :exe "cscope find s <cword>"<CR>
-  nmap <unique> <silent> <Leader>td :exe "cscope find d <cword>"<CR>
-  nmap <unique> <silent> <Leader>tc :exe "cscope find c <cword>"<CR>
-  nmap <unique> <silent> <Leader>ta :exe "cscope find t <cword>"<CR>
-  nmap <unique> <silent> <Leader>tf :exe "cscope find f <cfile>"<CR>
-  nmap <unique> <silent> <Leader>ti :exe "cscope find i ^%:t$"<CR>
-  nmap <unique> <silent> <Leader>tu :exe "silent! cscope k 0" \| exe "!cscope -q -R -v -b -s ." \| exe "silent cscope add cscope.out"<CR>
+  nmap <unique> <silent> <Leader>ts :exe 'cscope find s <cword>'<CR>
+  nmap <unique> <silent> <Leader>td :exe 'cscope find d <cword>'<CR>
+  nmap <unique> <silent> <Leader>tc :exe 'cscope find c <cword>'<CR>
+  nmap <unique> <silent> <Leader>ta :exe 'cscope find t <cword>'<CR>
+  nmap <unique> <silent> <Leader>tf :exe 'cscope find f <cfile>'<CR>
+  nmap <unique> <silent> <Leader>ti :exe 'cscope find i ^%:t$'<CR>
+  nmap <unique> <silent> <Leader>tu :exe 'silent! cscope k 0' \| exe '!'.&cscopeprg.' -q -R -b -s .' \| exe 'silent cscope add cscope.out'<CR>
 
 endif
 
@@ -242,6 +278,12 @@ let NERDShutUp=1
 " Do not switch tab/window when selecting an already opened buffer with
 " bufexplorer.
 let g:bufExplorerFindActive=0
+
+" Don't load plugins depending on ruby if feature is not available.
+if !has('ruby')
+  let loaded_rb_align=1
+  let loaded_yasnippets=1
+end
 
 " }}}
 

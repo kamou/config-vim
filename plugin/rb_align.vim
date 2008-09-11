@@ -1,3 +1,12 @@
+if exists("loaded_rb_align")
+  finish
+endif
+let loaded_rb_align=1
+
+if !has('ruby')
+  echomsg 'ruby support not available, rb_align plugin will not be loaded!'
+  finish
+endif
 
 vmap <silent> <Leader>t= :call rb_align#AlignLeftEqual()<CR>
 nmap <silent> <Leader>t= :set opfunc=rb_align#AlignLeftEqual_operator<CR>g@
