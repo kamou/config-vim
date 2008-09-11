@@ -2,6 +2,10 @@
 let $USERVIM=$HOME."/.vim"
 set runtimepath+=$USERVIM
 
+if has('win32') && !strlen($CYGPATH)
+  let $CYGPATH='c:/cygwin'
+endif
+
 " Load user vimrc from $USERVIM/rc.
 let user_rc=$USERVIM."/rc"
 if filereadable(user_rc)

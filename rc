@@ -50,6 +50,31 @@ syntax on
 " More info during some commands (like visual selection).
 set showcmd
 
+" Win32 specific config. {{{
+
+if has('win32')
+
+  if !executable('sh') && strlen($CYGPATH)
+    let $PATH=$CYGPATH.'/bin;'.$PATH
+  end
+
+  " Look for a real shell.
+  if executable('sh')
+    set shell=sh
+    set shellcmdflag=-c
+    set shellpipe=2&>1\|\ tee
+    set shellquote=
+    set shellredir=>%s\ 2>&1
+    set shellslash
+    set shelltemp
+    set shellxquote=\"
+  endif
+
+
+endif
+
+" }}}
+
 " Status line. {{{
 
 " Show statusline even if only one window is visible.
