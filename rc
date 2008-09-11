@@ -148,6 +148,16 @@ if has("cscope")
   set cst
   set nocsverb
 
+  " Check for either stock cscope executable or for the multi-lingual cscope
+  " version (which is the one available in Cygwin).
+  if !executable(&cscopeprg)
+    if executable('cscope')
+      set cscopeprg=cscope
+    elseif executable('mlcscope')
+      set cscopeprg=mlcscope
+    endif
+  endif
+
   " Add any database in current directory.
   if filereadable("cscope.out")
     cs add cscope.out
@@ -164,13 +174,13 @@ if has("cscope")
 
   " Mappings.
   nmap <unique> <silent> <Leader>tg <C-]>
-  nmap <unique> <silent> <Leader>ts :exe "cscope find s <cword>"<CR>
-  nmap <unique> <silent> <Leader>td :exe "cscope find d <cword>"<CR>
-  nmap <unique> <silent> <Leader>tc :exe "cscope find c <cword>"<CR>
-  nmap <unique> <silent> <Leader>ta :exe "cscope find t <cword>"<CR>
-  nmap <unique> <silent> <Leader>tf :exe "cscope find f <cfile>"<CR>
-  nmap <unique> <silent> <Leader>ti :exe "cscope find i ^%:t$"<CR>
-  nmap <unique> <silent> <Leader>tu :exe "silent! cscope k 0" \| exe "!cscope -q -R -v -b -s ." \| exe "silent cscope add cscope.out"<CR>
+  nmap <unique> <silent> <Leader>ts :exe 'cscope find s <cword>'<CR>
+  nmap <unique> <silent> <Leader>td :exe 'cscope find d <cword>'<CR>
+  nmap <unique> <silent> <Leader>tc :exe 'cscope find c <cword>'<CR>
+  nmap <unique> <silent> <Leader>ta :exe 'cscope find t <cword>'<CR>
+  nmap <unique> <silent> <Leader>tf :exe 'cscope find f <cfile>'<CR>
+  nmap <unique> <silent> <Leader>ti :exe 'cscope find i ^%:t$'<CR>
+  nmap <unique> <silent> <Leader>tu :exe 'silent! cscope k 0' \| exe '!'.&cscopeprg.' -q -R -b -s .' \| exe 'silent cscope add cscope.out'<CR>
 
 endif
 
