@@ -1,5 +1,6 @@
 
 let $USERVIM=$HOME."/.vim"
+set runtimepath+=$USERVIM
 
 " Load user vimrc from $USERVIM/rc.
 let user_rc=$USERVIM."/rc"
