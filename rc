@@ -73,10 +73,11 @@ set makeprg=make\ -w
 
 " Put swap files in $USERVIM/swap or ~/tmp
 " (fallback to current dir if not possible).
-if !isdirectory($USERVIM."/swap")
-  silent !mkdir $USERVIM"/swap"
+let swap=$USERVIM."/swap"
+if !isdirectory(swap)
+  call mkdir(swap)
 endif
-set directory=$USERVIM/swap//,~/tmp//,.
+let &directory=swap.'//,~/tmp//,.'
 
 " Terminal only settings. {{{
 
