@@ -155,6 +155,9 @@ if !has("gui_running")
   set background=dark
   colorscheme moria_256
 
+  " Enable mouse support for all modes.
+  set mouse=a
+
 endif
 
 " }}}
