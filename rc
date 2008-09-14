@@ -1,5 +1,4 @@
 
-
 " Fix runtimepath. {{{
 
 " Make sure $USERVIM is present first in runtimepath, and $USERVIM/after last.
@@ -179,9 +178,7 @@ if has("cscope")
 
   set cscopequickfix=s-,g-,d-,c-,t-,e-,f-,i-
   set cspc=3
-  set csto=0
-  set cst
-  set nocsverb
+  set csverb
 
   " Check for either stock cscope executable or for the multi-lingual cscope
   " version (which is the one available in Cygwin).
@@ -195,12 +192,11 @@ if has("cscope")
 
   " Add any database in current directory.
   if filereadable("cscope.out")
-    cs add cscope.out
+    silent cs add cscope.out
     " Add database pointed to by environment.
-  elseif $CSCOPE_DB != ""
-    cs add $CSCOPE_DB
+  elseif strlen($CSCOPE_DB)
+    silent cs add $CSCOPE_DB
   endif
-  set csverb
 
   " Uses cstag (and so cscope if available...).
   set cst
