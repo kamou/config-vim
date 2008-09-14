@@ -12,7 +12,7 @@ Copyright: (c) 2008 by Benoit Pierre			*bpierre-config-copyright*
 	1. Contents......................: |bpierre-config-contents|
 	2. About.........................: |bpierre-config-about|
 	3. Installation..................: |bpierre-config-install|
-	4. Manual........................: |bpierre-config|
+	4. Manual........................: |bpierre-config-manual|
 	4.1 Mappings.....................: |bpierre-config-mappings|
 	4.2 Plugins......................: |bpierre-config-plugins|
 
@@ -32,84 +32,90 @@ Goals:
  * edit .vim/user
 
 ==============================================================================
-4. Manual						*bpierre-config*
+4. Manual						*bpierre-config-manual*
 
 ------------------------------------------------------------------------------
 4.1 Mappings						*bpierre-config-mappings*
 
+ n -> normal mode
+ v -> visual mode
+ i -> insert mode
+ o -> operator
+
  |cscope|:
 
- <Leader>tg
- <Leader>ts
- <Leader>td
- <Leader>tc
- <Leader>ta
- <Leader>tf
- <Leader>ti
- <Leader>tu
+ <Leader>tg   n   Equivalent to CTRL-]
+ <Leader>ts   n   'cscope find s' on identifier under cursor
+ <Leader>td   n   'cscope find d' on identifier under cursor.
+ <Leader>tc   n   'cscope find c' on identifier under cursor.
+ <Leader>ta   n   'cscope find t' on identifier under cursor.
+ <Leader>tf   n   'cscope find f' on filename under cursor.
+ <Leader>ti   n   'cscope find i' on filename under cursor.
+ <Leader>tu   n   Update/create database in current directory.
 
  |ctags|:
 
- <Leader>tU
+ <Leader>tU   n   Update/create database in current directory.
 
  |diff|:
 
- <Leader>dg
- <Leader>dp
- <Leader>du
- <Leader>d<space>
- <Leader>dd
- <Leader>d1
- <Leader>d2
+ <Leader>dg	    n/v   Equivalent to |:diffget|.
+ <Leader>dp	    n/v   Equivalent to |:diffput|.
+ <Leader>du	    n/v   Equivalent to |:diffupdate|.
+ <Leader>d<space>   n     Toggle 'diffopt' iwhite flag.
+ <Leader>dd	    n     Toggle 'diff' mode on current buffer.
+ <Leader>d1         v
+ <Leader>d2         v
 
  |completion|:
 
- <Tab>
- <S-Tab>
- <C-]> <C-x><C-]>
- <C-f> <C-x><C-f>
- <C-d> <C-x><C-d>
- <C-l> <C-x><C-l>
- <C-k> <C-x><C-k>
+ <Tab>     i
+ <S-Tab>   i
+ <C-]>     i   Equivalent to |i_CTRL-X_CTRL-]|.
+ <C-f>     i   Equivalent to |i_CTRL-X_CTRL-F|.
+ <C-d>     i   Equivalent to |i_CTRL-X_CTRL-D|.
+ <C-l>     i   Equivalent to |i_CTRL-X_CTRL-L|.
+ <C-k>     i   Equivalent to |i_CTRL-X_CTRL-K|.
 
  |buffers|:
 
- <M-Right>
- <M-Left>
- <M-1>
- <M-2>
- <M-3>
- <M-4>
- <M-5>
- <M-6>
- <M-7>
- <M-8>
- <M-9>
- <M-0>
- <F2>
- <F4>
+ <M-Right>   n
+ <M-Left>    n
+ <M-1>       n
+ <M-2>       n
+ <M-3>       n
+ <M-4>       n
+ <M-5>       n
+ <M-6>       n
+ <M-7>       n
+ <M-8>       n
+ <M-9>       n
+ <M-0>       n
+ <F2>        n   Equivalent to |:w|.
+ <F4>        n
 
  |quickfix|:
 
- <M-up>
- <M-down>
+ <M-up>     n   Equivalent to |:cp|
+ <M-down>   n   Equivalent to |:cn|
 
  misc/other:
 
- ,=
- ,=
- ,==
+ ,=    v/o
+ ,==   n
 
- <C-s>
+ ,s    v/o
+ ,ss   n
+
  <C-BS>
 
- <F5> 
- <F6> 
- <F8> 
- <F9> 
- <F10>
- <F11>
- <F12>
+ <F5>    n   Toggle 'list' option.
+ <F6>    n   Toggle 'hlsearch' option.
+ <F8>    n
+ <F9>    n   Launch custom command 1.
+ <F10>   n   Launch custom command 2.
+ <F11>   n   Launch custom command 3.
+ <F12>   n   Launch custom command 4.
 
 ------------------------------------------------------------------------------
 4.2 Plugins						*bpierre-config-plugins*
@@ -121,7 +127,7 @@ The following plugins are provided:
  * cecutil: |cecutil.txt|
  * Decho: |decho.txt|
  * DirDiff: support for diffing directories
- * file:line: support for :e file:linenumber
+ * file_line: support for :e file:linenumber
  * GetLatestVimScripts: |pi_getscript.txt|
  * manpageview: |manpageview.txt|
  * mark: highlight several words in different colors simultaneously
