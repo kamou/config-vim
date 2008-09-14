@@ -448,25 +448,42 @@ nmap <silent> ,== :.call Indent_and_Retab()<CR>
 
 " Swap two pieces of text. {{{
 
-function! SwapText()
+function! SwapText(start, end, visual)
 
-  let l1=line("'.")
-  let c1=col("'.")
+  let b1 = line2byte(line("'.")) + col("'.") - 1
+  let b2 = line2byte(line("'".a:start)) + col("'".a:start)
 
-  let l2=line("'>")
-  let c2=col("'>")
-  let s2=c2-col("'<")
+  if b1 > b2
+    let s1 = strlen(getreg())
+    let s2 = line2byte(line("'".a:end)) + col("'".a:end) - b2 + 1
+    let b1 -= s2 - s1
+  end
 
-  exe 'normal gvP'
-  if l1 == l2 && c1 >= c2
-    let c1+=s2
+  if a:visual
+    exe 'normal gvP'
+  else
+    exe 'normal `'.a:start.'v`'.a:end.'P'
   endif
-  cal cursor(l1,  c1)
+  exe 'goto '.b1
   exe 'normal "*P'
 
 endfunction
 
-vnoremap <C-s> <Esc>:call SwapText()<CR>
+function! SwapText_operator(type)
+  call SwapText('[', ']', 0)
+endfunction
+
+function! SwapText_visual() range
+  call SwapText('<', '>', 1)
+endfunction
+
+function! SwapText_line()
+  exe 'normal V,s'
+endfunction
+
+vmap <silent> ,s :call SwapText_visual()<CR>
+nmap <silent> ,s :set opfunc=SwapText_operator<CR>g@
+nmap <silent> ,ss :call SwapText_line()<CR>
 
 " }}}
 
