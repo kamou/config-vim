@@ -437,18 +437,17 @@ nmap <silent> ,== :.call Indent_and_Retab()<CR>
 
 function! SwapText()
 
-  let l1=line("'.")
-  let c1=col("'.")
+  let b1 = line2byte(line("'.")) + col("'.") - 1
+  let b2 = line2byte(line("'<")) + col("'<")
 
-  let l2=line("'>")
-  let c2=col("'>")
-  let s2=c2-col("'<")
+  if b1 > b2
+    let s1 = strlen(getreg())
+    let s2 = line2byte(line("'>")) + col("'>") - b2 + 1
+    let b1 -= s2 - s1
+  end
 
   exe 'normal gvP'
-  if l1 == l2 && c1 >= c2
-    let c1+=s2
-  endif
-  cal cursor(l1,  c1)
+  exe 'goto '.b1
   exe 'normal "*P'
 
 endfunction
