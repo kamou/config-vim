@@ -1,0 +1,15 @@
+#ifndef <%= f = File.basename(filename).upcase.gsub(/[^A-Z0-9]/, "_") %>
+# define <%= f %>
+
+# ifdef __cplusplus
+extern "C" {
+# endif
+
+<++>
+
+# ifdef __cplusplus
+}
+# endif
+
+#endif /* !<%= f %> */
+/* delete_line, filematch: {{/.*\.h$/}}, vim: set ft=eruby: */
