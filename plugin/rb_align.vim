@@ -11,6 +11,9 @@ endif
 vmap <silent> <Leader>t= :call rb_align#AlignLeftEqual()<CR>
 nmap <silent> <Leader>t= :set opfunc=rb_align#AlignLeftEqual_operator<CR>g@
 
+vmap <silent> <Leader>t: :call rb_align#AlignLeftColon()<CR>
+nmap <silent> <Leader>t: :set opfunc=rb_align#AlignLeftColon_operator<CR>g@
+
 vmap <silent> <Leader>t, :call rb_align#AlignLeftComma()<CR>
 nmap <silent> <Leader>t, :set opfunc=rb_align#AlignLeftComma_operator<CR>g@
 

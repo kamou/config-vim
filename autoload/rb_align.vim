@@ -22,6 +22,14 @@ function! rb_align#AlignLeftEqual_operator(type)
   :'[,']call rb_align#AlignLeftEqual()
 endfunction
 
+function! rb_align#AlignLeftColon() range
+  ruby align_range(true, '\s*', '', ':', ' ', '\s*')
+endfunction
+
+function! rb_align#AlignLeftColon_operator(type)
+  :'[,']call rb_align#AlignLeftColon()
+endfunction
+
 function! rb_align#AlignLeftComma() range
   ruby align_range(true, '\s*', '', ',', ' ', '\s*')
 endfunction
