@@ -28,8 +28,6 @@ let loaded_yasnippets = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-runtime plugin/imaps.vim
-
 " <<<1 Variables
 if !exists("g:yasnippets_nlkey")
     let g:yasnippets_nlkey = "<cr>"
