@@ -22,7 +22,7 @@ if 0 != len(newrl)
     call insert(newrl, uvim, 0)
   endif
   if uvim_after != newrl[-1]
-    call append(newrl, uvim_after)
+    call add(newrl, uvim_after)
   endif
 endif
 
