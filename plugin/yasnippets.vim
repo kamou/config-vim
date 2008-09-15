@@ -45,139 +45,14 @@ let g:yasnippets_nl        = {}
 let g:yasnippets_nl['all'] = []
 
 
-" <<<1 FreezeIndent() and UnfreezeIndent() - not change indent
-function! FreezeIndent()
-    let b:yasnippets_indent_backup = &indentexpr
-    setlocal indentexpr=indent(line('.')-1)
-    return ''
-endfunction
-function! UnfreezeIndent()
-    execute "setlocal indentexpr=" . b:yasnippets_indent_backup
-    return ''
-endfunction
-
-
-" <<<1 NLexpand() - insert newline snippet
-function! NLexpand()
-    let left_part = strpart(getline('.'), 0, col('.') - 1)
-    let right_part = strpart(getline('.'), col('.') - 1, strlen(getline('.')))
-    if has_key(g:yasnippets_nl, &ft)
-        for item in g:yasnippets_nl[&ft]
-            if match(left_part, item[0]) >= 0 && match(right_part, item[1]) >= 0
-                "return item[2]
-                return "\<C-O>o\<C-R>=IMAP_PutTextWithMovement('" . item[2] . "', '<+', '+>')\<CR>"
-            endif
-        endfor
-    endif
-    for item in g:yasnippets_nl['all']
-        if match(left_part, item[0]) >= 0 && match(right_part, item[1]) >= 0
-            "return item[2]
-            return "\<C-O>o\<C-R>=IMAP_PutTextWithMovement('" . item[2] . "', '<+', '+>')\<CR>"
-        endif
-    endfor
-    return g:yasnippets_nlkey_insert
-endfunction
-
-
-" <<<1 s:loadskeleton(filetype) - load skeleton file by filetype
-function! s:loadskeleton(filetype)
-ruby <<END
-    filename = VIM::evaluate("expand('%:p')")
-    filetype = VIM::evaluate("a:filetype")
-
-# <<<2 Skeleton class
-    class Skeleton
-        attr_reader :filename
-
-        def initialize(filename, filetype)
-            @filename = filename
-        end
-
-        def get_binding
-            binding
-        end
-
-        def ask(prompt)
-            return yield if @yes_to_all
-            answer = VIM::evaluate("input('#{prompt} [y/n/a] ')").strip.downcase
-            if answer =~ /(yes|y|all|a)/
-                @yes_to_all = true if answer =~ /(all|a)/
-                yield
-            end
-        end
-    end
-
-# <<<2 Include shared.rb
-    VIM::evaluate("&runtimepath").
-        split(",").
-        collect {|directory| Dir.glob("#{directory}/skeletons/shared.rb")}.
-        flatten.
-        each {|file| load file}
-
-# <<<2 Find skeletons
-    skeletons = VIM::evaluate("&runtimepath").
-        split(",").
-        collect {|directory| ["#{filetype}", "#{filetype}-*", "all-*"].
-            collect {|name| Dir.glob("#{directory}/skeletons/#{name}")}}.
-        flatten.
-        sort_by {|name| [(File.basename(name).
-            sub(/^([^-]+).*$/, '\1') == filetype ? 1 : 0), File.basename(name)]}.
-        reverse.
-        select {|name| ((IO.readlines(name).last =~
-            /filematch:\s*\{\{(\/.*\/)\}\}/ and filename !~ eval($1)) ? false : true)}
-
-    if skeletons.length > 1
-        answer = VIM::evaluate("inputlist(['There is more than one skeleton:', " +
-            skeletons.
-            zip((1..skeletons.length).to_a).
-            collect {|name, number| "'#{number}. #{File.basename(name).sub(/^[^-]+-/, "").capitalize}'"}.
-            join(", ") +
-            "])").to_i
-    else
-        answer = skeletons.length
-    end
-
-# <<<2 Load skeletons
-    if answer > 0 and answer <= skeletons.length
-        skeleton_lines = IO.readlines(skeletons[answer - 1])
-        skeleton_lines.pop if skeleton_lines.last =~ /\Wdelete_line\W/
-        begin
-            require 'erb'
-        rescue LoadError
-            VIM::command("echoerr 'ERB library not found'")
-        else
-            begin
-                result = ERB.new(skeleton_lines.join, nil, '-').result(Skeleton.new(filename, filetype).get_binding)
-            rescue Exception
-                VIM::command("echoerr 'Error in skeleton: #{skeletons[answer - 1]}'")
-            else
-                result.gsub!('<+', VIM::evaluate("IMAP_GetPlaceHolderStart()"))
-                result.gsub!('+>', VIM::evaluate("IMAP_GetPlaceHolderEnd()"))
-                result.split("\n").each_with_index do |line, number|
-                    if number == 0
-                        VIM::Buffer.current[1] = line
-                    else
-                        VIM::Buffer.current.append(number, line)
-                    end
-                end
-                VIM::command("call cursor(1, 1)")
-                VIM::command("set nomodified")
-                VIM::command("execute \"normal i\\<c-r>=IMAP_Jumpfunc('', 0)\\<CR>\"")
-            end
-        end
-    end
-END
-endfunction
-
-
 " <<<1 Mappings and autocommands
-exec "inoremap ".g:yasnippets_nlkey." <c-r>=NLexpand()<cr>"
+exec "inoremap ".g:yasnippets_nlkey." <c-r>=yasnippets#NLexpand()<cr>"
 exec "autocmd Syntax * syntax region Todo display oneline keepend"
     \ "start=/" . IMAP_GetPlaceHolderStart() . "/"
     \ "end=/" . IMAP_GetPlaceHolderEnd() . "/"
 augroup skeleton
     autocmd!
-    autocmd FileType * if line2byte(line('$') + 1) == -1 | call s:loadskeleton(&filetype) | endif
+    autocmd FileType * if line2byte(line('$') + 1) == -1 | call yasnippets#LoadSkeleton(&filetype) | endif
 augroup END
 
 
@@ -220,7 +95,7 @@ load $snippets_file
 for snippet in $snippets
     keyword = snippet.shift
     text = snippet.pop.strip.gsub("\n", '\<cr>')
-    text.gsub!(/\^\^\^\\<cr>/, "\\<C-R>=FreezeIndent()\\<CR>\\<CR>\\<C-R>=UnfreezeIndent()\\<CR>")
+    text.gsub!(/\^\^\^\\<cr>/, "\\<C-R>=yasnippets#FreezeIndent()\\<CR>\\<CR>\\<C-R>=yasnippets#UnfreezeIndent()\\<CR>")
     for filetype in snippet
         filetype = '' if filetype.to_s == 'all'
         VIM::command("call IMAP('#{keyword}', \"#{text}\", '#{filetype}', '<+', '+>')")
