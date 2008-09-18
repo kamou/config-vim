@@ -155,7 +155,7 @@ if !has("gui_running")
   colorscheme moria_256
 
   " Enable mouse support for all modes but command line.
-  set mouse=nvir
+  set mouse=nvi
 
 endif
 
