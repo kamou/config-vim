@@ -3,7 +3,7 @@
 Author:  Benoit Pierre <benoit.pierre@gmail.com>
 Copyright: (c) 2008 by Benoit Pierre			*bpierre-config-copyright*
            The FIXME LICENSE applies to ...
-	   No warranty, express or implied.  Use At-Your-Own-Risk.
+           No warranty, express or implied.  Use At-Your-Own-Risk.
 
 
 ==============================================================================
@@ -30,6 +30,11 @@ Goals:
  * fetch with bzr on launchpad: bzr branch lp:bpierre-config-vim .vim
  * link/copy bootstrap file: ln -s .vim/vimrc .vimrc
  * edit .vim/user
+ 
+ On Windows: you can install Cygwin (with ctags and mlcscope), and make sure
+ $CYGPATH is correctly set in ~/.vimrc. You can also install Ruby, for those
+ plugins that use it. VIM will automatically pick the Ruby library DLL if
+ found in your $PATH.
 
 ==============================================================================
 4. Manual						*bpierre-config-manual*
@@ -37,6 +42,7 @@ Goals:
 ------------------------------------------------------------------------------
 4.1 Mappings						*bpierre-config-mappings*
 
+ c -> command mode
  n -> normal mode
  v -> visual mode
  i -> insert mode
@@ -56,16 +62,17 @@ Goals:
  |ctags|:
 
  <Leader>tU   n   Update/create database in current directory.
+ <Leader>tl   n   Toggle taglist window.
 
  |diff|:
 
- <Leader>dg	    n/v   Equivalent to |:diffget|.
- <Leader>dp	    n/v   Equivalent to |:diffput|.
- <Leader>du	    n/v   Equivalent to |:diffupdate|.
+ <Leader>dg         n/v   Equivalent to |:diffget|.
+ <Leader>dp         n/v   Equivalent to |:diffput|.
+ <Leader>du         n/v   Equivalent to |:diffupdate|.
  <Leader>d<space>   n     Toggle 'diffopt' iwhite flag.
- <Leader>dd	    n     Toggle 'diff' mode on current buffer.
- <Leader>d1         v
- <Leader>d2         v
+ <Leader>dd         n     Toggle 'diff' mode on current buffer.
+ <Leader>d1         v     Select first block for blockdiff.
+ <Leader>d2         v     Select second block and start blockdiff.
 
  |completion|:
 
@@ -99,15 +106,19 @@ Goals:
  <M-up>     n   Equivalent to |:cp|
  <M-down>   n   Equivalent to |:cn|
 
- misc/other:
+ indent and retab/clean:
 
  ,=    v/o
  ,==   n
 
+ text swap with last delete:
+
  ,s    v/o
  ,ss   n
 
- <C-BS>
+ misc/other:
+
+ <C-BS>  i/c  Backward delete word.
 
  <F5>    n   Toggle 'list' option.
  <F6>    n   Toggle 'hlsearch' option.
