@@ -38,7 +38,11 @@ if !exists("g:yasnippets_nlkey_insert")
 endif
 
 if !exists("g:yasnippets_file")
-    let g:yasnippets_file = "~/.vim/snippets.rb"
+    let g:yasnippets_file = expand('~/.vim/snippets.rb')
+endif
+
+if !exists("g:yasnippets_skeletons")
+    let g:yasnippets_skeletons = expand('~/.vim/skeletons')
 endif
 
 let g:yasnippets_nl        = {}
@@ -52,9 +56,12 @@ exec "autocmd Syntax * syntax region Todo display oneline keepend"
     \ "end=/" . IMAP_GetPlaceHolderEnd() . "/"
 augroup skeleton
     autocmd!
-    autocmd FileType * if line2byte(line('$') + 1) == -1 | call yasnippets#LoadSkeleton(&filetype) | endif
+    autocmd FileType * if line2byte(line('$') + 1) == -1 | call yasnippets#LoadSkeletonByFileType(&filetype) | endif
 augroup END
 
+
+command! -nargs=? -complete=custom,yasnippets#SelectSkeleton LoadSkeleton
+            \ call yasnippets#LoadSkeletonByName(<q-args>)
 
 " <<<1 Read user snippets
 ruby <<END

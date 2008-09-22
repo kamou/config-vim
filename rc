@@ -303,6 +303,11 @@ let g:vimball_home=$USERVIM
 let g:tskelUserName=username
 let g:tskelUserEmail=useremail
 
+if has('ruby')
+  ruby $AUTHOR = VIM::evaluate('g:tskelUserName')
+  ruby $EMAIL = VIM::evaluate('g:tskelUserEmail')
+end
+
 " Silence NERD commenter plugin.
 let NERDShutUp=1
 

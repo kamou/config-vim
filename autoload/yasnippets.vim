@@ -30,12 +30,9 @@ function! yasnippets#UnfreezeIndent()
     return ''
 endfunction
 
-
-" <<<1 yasnippets#LoadSkeleton(filetype) - load skeleton file by filetype
-function! yasnippets#LoadSkeleton(filetype)
+" <<<1 Init code.
+"
 ruby <<END
-    filename = VIM::evaluate("expand('%:p')")
-    filetype = VIM::evaluate("a:filetype")
 
 # <<<2 Skeleton class
     class Skeleton
@@ -66,11 +63,62 @@ ruby <<END
         flatten.
         each {|file| load file}
 
+# <<<2 Load a skeleton shared.rb
+    def load_skeleton(skeleton, filename, filetype)
+        skeleton_lines = IO.readlines(skeleton)
+        skeleton_lines.pop if skeleton_lines.last =~ /\Wdelete_line\W/
+        begin
+            require 'erb'
+        rescue LoadError
+            VIM::command("echoerr 'ERB library not found'")
+        else
+            begin
+                result = ERB.new(skeleton_lines.join, nil, '-').result(Skeleton.new(filename, filetype).get_binding)
+            rescue Exception
+                VIM::command("echoerr 'Error in skeleton: #{skeleton}'")
+            else
+                comments = VIM::evaluate('&comments').split(':')
+                buf = VIM::Buffer.current
+                pre = buf.line if comments.find { |str| str =~ /^\s*#{Regexp.escape(str)}/ }
+                pres = pre.sub(/\s*$/, '') if pre
+                result.gsub!('<+', VIM::evaluate("IMAP_GetPlaceHolderStart()"))
+                result.gsub!('+>', VIM::evaluate("IMAP_GetPlaceHolderEnd()"))
+                lines = result.split("\n")
+                lines.each_with_index do |line, number|
+                    if pre
+                      if line.empty?
+                        line = pres
+                      else
+                        line = pre + line
+                      end
+                    end
+                    if number == 0
+                        buf[buf.line_number] = line
+                    else
+                        buf.append(buf.line_number + number - 1, line)
+                    end
+                end
+                VIM::command("normal #{buf.line_number + lines.size}G")
+                VIM::command("set nomodified")
+                VIM::command("execute \"normal i\\<c-r>=IMAP_Jumpfunc('', 0)\\<CR>\"")
+            end
+        end
+
+    end
+
+END
+
+" <<<1 yasnippets#LoadSkeletonByFileType(filetype) - load skeleton file by filetype
+function! yasnippets#LoadSkeletonByFileType(filetype)
+ruby <<END
+    filename = VIM::evaluate("expand('%:p')")
+    filetype = VIM::evaluate("a:filetype")
+
 # <<<2 Find skeletons
     skeletons = VIM::evaluate("&runtimepath").
         split(",").
         collect {|directory| ["#{filetype}", "#{filetype}-*", "all-*"].
-            collect {|name| Dir.glob("#{directory}/skeletons/#{name}")}}.
+            collect {|name| Dir.glob("#{directory}/skeletons/templates/#{name}")}}.
         flatten.
         sort_by {|name| [(File.basename(name).
             sub(/^([^-]+).*$/, '\1') == filetype ? 1 : 0), File.basename(name)]}.
@@ -91,32 +139,7 @@ ruby <<END
 
 # <<<2 Load skeletons
     if answer > 0 and answer <= skeletons.length
-        skeleton_lines = IO.readlines(skeletons[answer - 1])
-        skeleton_lines.pop if skeleton_lines.last =~ /\Wdelete_line\W/
-        begin
-            require 'erb'
-        rescue LoadError
-            VIM::command("echoerr 'ERB library not found'")
-        else
-            begin
-                result = ERB.new(skeleton_lines.join, nil, '-').result(Skeleton.new(filename, filetype).get_binding)
-            rescue Exception
-                VIM::command("echoerr 'Error in skeleton: #{skeletons[answer - 1]}'")
-            else
-                result.gsub!('<+', VIM::evaluate("IMAP_GetPlaceHolderStart()"))
-                result.gsub!('+>', VIM::evaluate("IMAP_GetPlaceHolderEnd()"))
-                result.split("\n").each_with_index do |line, number|
-                    if number == 0
-                        VIM::Buffer.current[1] = line
-                    else
-                        VIM::Buffer.current.append(number, line)
-                    end
-                end
-                VIM::command("call cursor(1, 1)")
-                VIM::command("set nomodified")
-                VIM::command("execute \"normal i\\<c-r>=IMAP_Jumpfunc('', 0)\\<CR>\"")
-            end
-        end
+      load_skeleton(skeletons[answer - 1], filename, filetype)
     end
 END
 endfunction
@@ -141,6 +164,47 @@ function! yasnippets#NLexpand()
         endif
     endfor
     return g:yasnippets_nlkey_insert
+endfunction
+
+function! yasnippets#SelectSkeleton(ArgLead, CmdLine, CursorPos)
+
+    let cwd = getcwd()
+    let matches = []
+
+    silent exe 'chdir '.g:yasnippets_skeletons
+
+    for pattern in [&filetype.'/*', 'general/*', 'templates/'.&filetype, 'templates/'.&filetype.'-*']
+      call add(matches, glob(pattern))
+    endfor
+
+    silent exe 'chdir '.cwd
+
+    let smatches = join(matches, "\n")
+    "let matches = split(smatches, "\n")
+    "let matches = sort(matches)
+    "let smatches = join(matches, "\n")
+
+    return smatches
+
+endfunction
+
+function! yasnippets#LoadSkeletonByName(filename)
+
+  if filereadable(a:filename)
+    let skeleton = a:filename
+  else
+    let skeleton = g:yasnippets_skeletons.'/'.a:filename
+  end
+
+  ruby <<END
+
+    skeleton = VIM::evaluate('skeleton')
+    filename = VIM::evaluate("expand('%:p')")
+    filetype = VIM::evaluate('&filetype')
+
+    load_skeleton(skeleton, filename, filetype)
+END
+
 endfunction
 
 " vim:fdm=marker fmr=<<<,>>>

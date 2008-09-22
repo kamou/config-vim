@@ -1,0 +1,2 @@
+Copyright (C) <%=Time.now.strftime('%Y')%> <%=$AUTHOR%> <<%=$EMAIL%>>
+<++>
