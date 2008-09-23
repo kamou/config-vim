@@ -20,27 +20,3 @@ endfunction
 
 end
 
-expand 'keyword<' do
-
-  defsnippet '#include', :cpp, %q[
-    #include <<+header+>>
-  ]
-
-  defsnippet '#inc', :c, :cpp, %q[
-    #include <<+header+>>
-  ]
-
-end
-
-expand 'keyword"' do
-
-  defsnippet '#include', :c, :cpp, %q[
-    #include \"<+header+>\"
-  ]
-
-  defsnippet '#inc', :c, :cpp, %q[
-    #include \"<+header+>\"
-  ]
-
-end
-
