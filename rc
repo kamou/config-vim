@@ -303,9 +303,13 @@ let g:vimball_home=$USERVIM
 let g:tskelUserName=username
 let g:tskelUserEmail=useremail
 
+" Configure yasnippets.
 if has('ruby')
   ruby $AUTHOR = VIM::evaluate('g:tskelUserName')
   ruby $EMAIL = VIM::evaluate('g:tskelUserEmail')
+  imap <Leader>sl <C-o>:silent LoadSkeleton<space>
+else
+  let loaded_yasnippets = 1
 end
 
 " Silence NERD commenter plugin.
@@ -315,10 +319,9 @@ let NERDShutUp=1
 " bufexplorer.
 let g:bufExplorerFindActive=0
 
-" Don't load plugins depending on ruby if feature is not available.
+" Don't load rb_align plugin if ruby feature is not available.
 if !has('ruby')
   let loaded_rb_align=1
-  let loaded_yasnippets=1
 end
 
 " }}}
