@@ -272,6 +272,10 @@ function! CleverTab()
   if to_pos =~ '\w\(\.\|->\)$'
     return "\<C-X>\<C-O>"
   endif
+  let fn = matchlist(to_pos, '\<\(\w\+\)($')
+  if !empty(fn)
+    return FunctionComplete(fn[1])
+  endif
   if to_pos =~ '^\s*#\s*include'
     if to_pos =~ '^\s*#\s*include\s*$'
       return " \"\<C-X>\<C-F>\"\<Left>"
