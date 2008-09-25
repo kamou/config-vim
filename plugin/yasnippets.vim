@@ -101,7 +101,9 @@ load $snippets_file
 
 for snippet in $snippets
     keyword = snippet.shift
-    text = snippet.pop.strip.gsub("\n", '\<cr>')
+    text = snippet.pop
+    text.strip!
+    text.gsub!("\n", '\<cr>')
     text.gsub!(/\^\^\^\\<cr>/, "\\<C-R>=yasnippets#FreezeIndent()\\<CR>\\<CR>\\<C-R>=yasnippets#UnfreezeIndent()\\<CR>")
     for filetype in snippet
         filetype = '' if filetype.to_s == 'all'

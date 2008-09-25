@@ -310,7 +310,21 @@ function! IMAP_PutTextWithMovement(str, ...)
 		let phe = escape(a:2, '\')
 	endif
 
-	let text = a:str
+	if has('ruby')
+		ruby << EOF
+
+		require 'erb'
+
+		text = VIM::evaluate('a:str')
+
+		text = ERB.new(text, nil, '-').result
+		text.gsub!(/["]/, '\\\1')
+
+		VIM::command("let text = \"#{text}\"")
+EOF
+    else
+		let text = a:str
+	endif
 
 	" The user's placeholder settings.
 	let phsUser = IMAP_GetPlaceHolderStart()

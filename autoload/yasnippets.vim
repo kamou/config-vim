@@ -166,6 +166,46 @@ function! yasnippets#NLexpand()
     return g:yasnippets_nlkey_insert
 endfunction
 
+function! yasnippets#CompleteSkeleton(findstart, base)
+
+  if a:findstart
+
+    let line = getline('.')
+    let start = col('.') - 1
+
+    while start > 0 && line[start - 1] != '=' && line[start - 1] =~ '\f'
+      let start -= 1
+    endwhile
+
+    return start
+
+  endif
+
+  let cwd = getcwd()
+  let matches = []
+
+  silent exe 'chdir '.g:yasnippets_skeletons
+
+  for pattern in [&filetype.'/*', 'general/*', 'templates/'.&filetype, 'templates/'.&filetype.'-*']
+    call add(matches, glob(pattern))
+  endfor
+
+  silent exe 'chdir '.cwd
+
+  let smatches = join(matches, "\n")
+  let lmatches = split(smatches, "\n")
+  let rmatches = []
+
+  for m in lmatches
+    if m =~ '^'.a:base
+      call add(rmatches, m)
+    endif
+  endfor
+
+  return rmatches
+
+endfunction
+
 function! yasnippets#SelectSkeleton(ArgLead, CmdLine, CursorPos)
 
     let cwd = getcwd()
@@ -180,9 +220,6 @@ function! yasnippets#SelectSkeleton(ArgLead, CmdLine, CursorPos)
     silent exe 'chdir '.cwd
 
     let smatches = join(matches, "\n")
-    "let matches = split(smatches, "\n")
-    "let matches = sort(matches)
-    "let smatches = join(matches, "\n")
 
     return smatches
 

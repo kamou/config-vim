@@ -257,6 +257,13 @@ function! CleverTab()
   end
   let to_pos=strpart(getline('.'), 0, col('.') - 1 )
   let from_pos=strpart(getline('.'), col('.') - 2, col('$'))
+  if to_pos =~ '<%=\f*$'
+    set completefunc=yasnippets#CompleteSkeleton
+    return "\<C-X>\<C-U>"
+  end
+  if to_pos =~ '<%=\w\+>'
+    return IMAP_LookupCharacter('>')
+  end
   if to_pos =~ '^\s*#\s*include'
     if to_pos =~ '^\s*#\s*include\s*$'
       return " \"\<C-X>\<C-F>\"\<Left>"
@@ -307,7 +314,6 @@ let g:tskelUserEmail=useremail
 if has('ruby')
   ruby $AUTHOR = VIM::evaluate('g:tskelUserName')
   ruby $EMAIL = VIM::evaluate('g:tskelUserEmail')
-  imap <Leader>sl <C-o>:silent LoadSkeleton<space>
 else
   let loaded_yasnippets = 1
 end
