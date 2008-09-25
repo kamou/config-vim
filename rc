@@ -257,9 +257,11 @@ function! CleverTab()
   end
   let to_pos=strpart(getline('.'), 0, col('.') - 1 )
   let from_pos=strpart(getline('.'), col('.') - 2, col('$'))
-  if to_pos =~ '<%=\f*$'
-    set completefunc=yasnippets#CompleteSkeleton
-    return "\<C-X>\<C-U>"
+  if has('ruby')
+    if to_pos =~ '<%=\f*$'
+      set completefunc=yasnippets#CompleteSkeleton
+      return "\<C-X>\<C-U>"
+    end
   end
   if to_pos =~ '<%=\w\+>'
     return IMAP_LookupCharacter('>')
