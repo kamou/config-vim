@@ -251,6 +251,9 @@ vmap <unique> <silent> <Leader>d2 :call BlockDiff_GetBlock2()<CR>
 set complete=.,t,i,k
 
 function! CleverTab()
+  if pumvisible()
+    return "\<C-P>"
+  endif
   let text=IMAP_LookupCharacter("\t")
   if text != "\t"
     return text
