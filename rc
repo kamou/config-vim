@@ -85,7 +85,7 @@ set showcmd
 
 if has('win32')
 
-  if !executable('sh') && strlen($CYGPATH)
+  if !executable('sh') && !empty($CYGPATH)
     let $PATH=$CYGPATH.'/bin;'.$PATH
   end
 
