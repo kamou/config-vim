@@ -269,6 +269,9 @@ function! CleverTab()
   if to_pos =~ '<%=\w\+>'
     return IMAP_LookupCharacter('>')
   end
+  if to_pos =~ '\w\(\.\|->\)$'
+    return "\<C-X>\<C-O>"
+  endif
   if to_pos =~ '^\s*#\s*include'
     if to_pos =~ '^\s*#\s*include\s*$'
       return " \"\<C-X>\<C-F>\"\<Left>"
