@@ -186,7 +186,7 @@ function! yasnippets#CompleteSkeleton(findstart, base)
 
   silent exe 'chdir '.g:yasnippets_skeletons
 
-  for pattern in [&filetype.'/*', 'general/*', 'templates/'.&filetype, 'templates/'.&filetype.'-*']
+  for pattern in [&filetype.'/*', 'general/*']
     call add(matches, glob(pattern))
   endfor
 
