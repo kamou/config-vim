@@ -103,7 +103,7 @@ function! FunctionComplete(fun)
         if has_key(i,'kind') && has_key(i,'name') && has_key(i,'signature')
             if (i.kind=='p' || i.kind=='f') && i.name==a:fun  " p is declare, f is defination
                 if match(i.signature,'(\s*void\s*)')<0 && match(i.signature,'(\s*)')<0
-                    let tmp=substitute(i.signature,',',g:re.','.g:rs,'g')
+                    let tmp=substitute(i.signature,', ',g:re.', '.g:rs,'g')
                     let tmp=substitute(tmp,'(\(.*\))',g:rs.'\1'.g:re.')','g')
                 else
                     let tmp=''
