@@ -240,6 +240,9 @@ vmap <unique> <silent> <Leader>d2 :call BlockDiff_GetBlock2()<CR>
 set complete=.,t,i,k
 
 function! CleverTab()
+  if pumvisible()
+    return "\<C-P>"
+  endif
   let to_pos=strpart(getline('.'), 0, col('.') - 1 )
   let from_pos=strpart(getline('.'), col('.') - 2, col('$'))
   if to_pos =~ '^\s*#\s*include'
