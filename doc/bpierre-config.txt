@@ -147,7 +147,6 @@ The following plugins are provided:
  * renamec: rename C symbol and all references using cscope database
  * scratch: scratch buffer
  * taglist: |taglist.txt|
- * tlib: |tlib.txt|
  * vcscommand: |vcscommand.txt|
 
 ==============================================================================
