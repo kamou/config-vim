@@ -251,6 +251,7 @@ set complete=.,t,i,k
 set completeopt-=preview
 
 function! CleverTab()
+  set completeopt-=longest
   if pumvisible()
     return "\<C-P>"
   endif
@@ -263,6 +264,7 @@ function! CleverTab()
   if has('ruby')
     if to_pos =~ '<%=\f*$'
       set completefunc=yasnippets#CompleteSkeleton
+      set completeopt+=longest
       return "\<C-X>\<C-U>"
     end
   end
