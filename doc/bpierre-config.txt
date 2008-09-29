@@ -148,7 +148,6 @@ The following plugins are provided:
  * scratch: scratch buffer
  * taglist: |taglist.txt|
  * tlib: |tlib.txt|
- * tSkeleton: |tSkeleton.txt|
  * vcscommand: |vcscommand.txt|
 
 ==============================================================================
