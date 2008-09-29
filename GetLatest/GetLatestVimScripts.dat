@@ -11,7 +11,6 @@ ScriptID SourceID Filename
 120 7092 :AutoInstall: Decho.vim
 489 9078 :AutoInstall: ManPageView
 1863 9200 :AutoInstall: tlib.vim
-1160 8126 :AutoInstall: tSkeleton.vim
 2048 7817 :AutoInstall: blockdiff.vim
 389 4652 :AutoInstall: scratch.vim
 1545 6087 :AutoInstall: parenquote.vim
