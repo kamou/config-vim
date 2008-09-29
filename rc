@@ -62,6 +62,9 @@ set wildmode=list:longest,full
 set nohlsearch
 set incsearch
 
+" Do not redraw while running macros (much faster).
+set lazyredraw
+
 " Save info file in the user VIM directory.
 let &viminfo="!,'20,\"50,n".$USERVIM."/info"
 
