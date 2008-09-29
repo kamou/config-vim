@@ -62,6 +62,9 @@ set wildmode=list:longest,full
 set nohlsearch
 set incsearch
 
+" Do not redraw while running macros (much faster).
+set lazyredraw
+
 " Save info file in the user VIM directory.
 let &viminfo="!,'20,\"50,n".$USERVIM."/info"
 
@@ -236,11 +239,16 @@ map <unique> <silent> <Leader>dd       :if &diff <Bar> set nodiff <Bar> set nosc
 vmap <unique> <silent> <Leader>d1 :call BlockDiff_GetBlock1()<CR>
 vmap <unique> <silent> <Leader>d2 :call BlockDiff_GetBlock2()<CR>
 
+" DirDiff options.
+let g:DirDiffExcludes = 'CVS,.svn,.bzr'
+let g:DirDiffAddArgs = '--strip-trailing-cr'
+
 " }}}
 
 " Improved completion. {{{
 
 set complete=.,t,i,k
+set completeopt-=preview
 
 function! CleverTab()
   if pumvisible()
