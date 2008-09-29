@@ -241,6 +241,7 @@ vmap <unique> <silent> <Leader>d2 :call BlockDiff_GetBlock2()<CR>
 " Improved completion. {{{
 
 set complete=.,t,i,k
+set completeopt-=preview
 
 function! CleverTab()
   if pumvisible()
