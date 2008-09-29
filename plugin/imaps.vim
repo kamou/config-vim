@@ -168,6 +168,7 @@ function! IMAP(lhs, rhs, ft, ...)
 	let s:Map_{a:ft}_{hash} = a:rhs
 	let s:phs_{a:ft}_{hash} = phs
 	let s:phe_{a:ft}_{hash} = phe
+	let s:skel_{a:ft}_{hash} = exists('a:3')
 
 	" Add a:lhs to the list of left-hand sides that end with lastLHSChar:
 	let lastLHSChar = a:lhs[strlen(a:lhs)-1]
@@ -277,6 +278,7 @@ function! IMAP_LookupCharacter(char)
 		let rhs = s:Map_{ft}_{hash}
 		let phs = s:phs_{ft}_{hash} 
 		let phe = s:phe_{ft}_{hash}
+		let skel = s:skel_{ft}_{hash}
 	endif
 
 	if strlen(lhs) == 0
@@ -285,7 +287,7 @@ function! IMAP_LookupCharacter(char)
 	" enough back-spaces to erase the left-hand side; -1 for the last
 	" character typed:
 	let bs = substitute(strpart(lhs, 1), ".", "\<bs>", "g")
-	return bs . IMAP_PutTextWithMovement(rhs, phs, phe)
+	return bs . IMAP_PutTextWithMovement(rhs, phs, phe, skel)
 endfunction
 
 " }}}
@@ -300,6 +302,8 @@ endfunction
 "   [bg]:Imap_PlaceHolderEnd.
 function! IMAP_PutTextWithMovement(str, ...)
 
+	let skel = 0
+
 	" The placeholders used in the particular input string. These can be
 	" different from what the user wants to use.
 	if a:0 < 2
@@ -308,20 +312,48 @@ function! IMAP_PutTextWithMovement(str, ...)
 	else
 		let phs = escape(a:1, '\')
 		let phe = escape(a:2, '\')
+		if exists('a:3') && 0 != a:3
+			let skel = 1
+		endif
 	endif
 
 	if has('ruby')
+
 		ruby << EOF
 
 		require 'erb'
 
-		text = VIM::evaluate('a:str')
+		text = nil
 
-		text = ERB.new(text, nil, '-').result
-		text.gsub!(/["]/, '\\\1')
+		if 0 != VIM::evaluate('skel').to_i
 
-		VIM::command("let text = \"#{text}\"")
+			skel_name = VIM::evaluate('a:str')
+			skel_dir = VIM::evaluate('g:yasnippets_skeletons')
+
+			skel = File.join(skel_dir, skel_name)
+
+			text = File.read(skel) if File.readable?(skel)
+
+		else
+
+			text = VIM::evaluate('a:str')
+
+		end
+
+		if text
+
+			text = ERB.new(text, nil, '-').result
+			text.gsub!(/["]/, '\\\1')
+
+			VIM::command("let text = \"#{text}\"")
+
+		end
 EOF
+
+        if !exists('text')
+			return ''
+		end
+
     else
 		let text = a:str
 	endif

@@ -23,9 +23,9 @@ def load_skeleton_snippets(directory, *filetypes)
 
         args = [ "<%=#{skel}>" ]
         args.concat(filetypes)
-        args << File.read(skel)
+        args << skel
 
-        defsnippet(*args)
+        defsksnippet(*args)
       }
 
     ensure

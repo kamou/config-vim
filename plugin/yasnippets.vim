@@ -68,6 +68,7 @@ ruby <<END
 $delimeter      = '___'
 $snippets       = []
 $nlsnippets     = []
+$sksnippets     = []
 $expand_pattern = 'keywordss'
 $snippets_file  = VIM::evaluate("g:yasnippets_file")
 
@@ -97,6 +98,11 @@ def defnlsnippet(*args)
     $nlsnippets << args
 end
 
+def defsksnippet(*args)
+    keyword = $expand_pattern.sub('keyword', args.shift)
+    $sksnippets << [keyword] + args
+end
+
 load $snippets_file
 
 for snippet in $snippets
@@ -121,6 +127,19 @@ for snippet in $nlsnippets
         VIM::command("let g:yasnippets_nl['#{filetype}'] += [['#{left}', '#{right}', \"#{text}\"]]")
     end
 end
+
+for snippet in $sksnippets
+    keyword = snippet.shift
+    text = snippet.pop
+    text.strip!
+    text.gsub!("\n", '\<cr>')
+    text.gsub!(/\^\^\^\\<cr>/, "\\<C-R>=yasnippets#FreezeIndent()\\<CR>\\<CR>\\<C-R>=yasnippets#UnfreezeIndent()\\<CR>")
+    for filetype in snippet
+        filetype = '' if filetype.to_s == 'all'
+        VIM::command("call IMAP('#{keyword}', \"#{text}\", '#{filetype}', '<+', '+>', 1)")
+    end
+end
+
 END
 " >>>
 
