@@ -86,13 +86,6 @@
 "
 " sets up the map for date` to insert the current date.
 "
-"--------------------------------------%<--------------------------------------
-" Bonus: This script also provides a command Snip which puts tearoff strings,
-" '----%<----' above and below the visually selected range of lines. The
-" length of the string is chosen to be equal to the longest line in the range.
-" Recommended Usage:
-"   '<,'>Snip
-"--------------------------------------%<--------------------------------------
 " }}}
 
 " line continuation used here.
@@ -549,151 +542,8 @@ endif
 nmap <silent> <script> <plug><+SelectRegion+> `<v`>
 
 " ============================================================================== 
-" enclosing selected region.
-" ============================================================================== 
-" VEnclose: encloses the visually selected region with given arguments {{{
-" Description: allows for differing action based on visual line wise
-"              selection or visual characterwise selection. preserves the
-"              marks and search history.
-function! VEnclose(vstart, vend, VStart, VEnd)
-
-	" its characterwise if
-	" 1. characterwise selection and valid values for vstart and vend.
-	" OR
-	" 2. linewise selection and invalid values for VStart and VEnd
-	if (visualmode() == 'v' && (a:vstart != '' || a:vend != '')) || (a:VStart == '' && a:VEnd == '')
-
-		let newline = ""
-		let _r = @r
-
-		let normcmd = "normal! \<C-\>\<C-n>`<v`>\"_s"
-
-		exe "normal! \<C-\>\<C-n>`<v`>\"ry"
-		if @r =~ "\n$"
-			let newline = "\n"
-			let @r = substitute(@r, "\n$", '', '')
-		endif
-
-		" In exclusive selection, we need to select an extra character.
-		if &selection == 'exclusive'
-			let movement = 8
-		else
-			let movement = 7
-		endif
-		let normcmd = normcmd.
-			\ a:vstart."!!mark!!".a:vend.newline.
-			\ "\<C-\>\<C-N>?!!mark!!\<CR>v".movement."l\"_s\<C-r>r\<C-\>\<C-n>"
-
-		" this little if statement is because till very recently, vim used to
-		" report col("'>") > length of selected line when `> is $. on some
-		" systems it reports a -ve number.
-		if col("'>") < 0 || col("'>") > strlen(getline("'>"))
-			let lastcol = strlen(getline("'>"))
-		else
-			let lastcol = col("'>")
-		endif
-		if lastcol - col("'<") != 0
-			let len = lastcol - col("'<")
-		else
-			let len = ''
-		endif
-
-		" the next normal! is for restoring the marks.
-		let normcmd = normcmd."`<v".len."l\<C-\>\<C-N>"
-
-		" First remember what the search pattern was. s:RemoveLastHistoryItem
-		" will reset @/ to this pattern so we do not create new highlighting.
-		let g:Tex_LastSearchPattern = @/
-
-		silent! exe normcmd
-		" this is to restore the r register.
-		let @r = _r
-		" and finally, this is to restore the search history.
-		execute s:RemoveLastHistoryItem
-
-	else
-
-		exec 'normal! `<O'.a:VStart."\<C-\>\<C-n>"
-		exec 'normal! `>o'.a:VEnd."\<C-\>\<C-n>"
-		if &indentexpr != ''
-			silent! normal! `<kV`>j=
-		endif
-		silent! normal! `>
-	endif
-endfunction 
-
-" }}}
-" ExecMap: adds the ability to correct an normal/visual mode mapping.  {{{
-" Author: Hari Krishna Dara <hari_vim@yahoo.com>
-" Reads a normal mode mapping at the command line and executes it with the
-" given prefix. Press <BS> to correct and <Esc> to cancel.
-function! ExecMap(prefix, mode)
-	" Temporarily remove the mapping, otherwise it will interfere with the
-	" mapcheck call below:
-	let myMap = maparg(a:prefix, a:mode)
-	exec a:mode."unmap ".a:prefix
-
-	" Generate a line with spaces to clear the previous message.
-	let i = 1
-	let clearLine = "\r"
-	while i < &columns
-		let clearLine = clearLine . ' '
-		let i = i + 1
-	endwhile
-
-	let mapCmd = a:prefix
-	let foundMap = 0
-	let breakLoop = 0
-	echon "\rEnter Map: " . mapCmd
-	while !breakLoop
-		let char = getchar()
-		if char !~ '^\d\+$'
-			if char == "\<BS>"
-				let mapCmd = strpart(mapCmd, 0, strlen(mapCmd) - 1)
-			endif
-		else " It is the ascii code.
-			let char = nr2char(char)
-			if char == "\<Esc>"
-				let breakLoop = 1
-			else
-				let mapCmd = mapCmd . char
-				if maparg(mapCmd, a:mode) != ""
-					let foundMap = 1
-					let breakLoop = 1
-				elseif mapcheck(mapCmd, a:mode) == ""
-					let mapCmd = strpart(mapCmd, 0, strlen(mapCmd) - 1)
-				endif
-			endif
-		endif
-		echon clearLine
-		echon "\rEnter Map: " . mapCmd
-	endwhile
-	if foundMap
-		if a:mode == 'v'
-			" use a plug to select the region instead of using something like
-			" `<v`> to avoid problems caused by some of the characters in
-			" '`<v`>' being mapped.
-			let gotoc = "\<plug><+SelectRegion+>"
-		else
-			let gotoc = ''
-		endif
-		exec "normal ".gotoc.mapCmd
-	endif
-	exec a:mode.'noremap '.a:prefix.' '.myMap
-endfunction
-
-" }}}
-
-" ============================================================================== 
 " helper functions
 " ============================================================================== 
-" Strntok: extract the n^th token from a list {{{
-" example: Strntok('1,23,3', ',', 2) = 23
-fun! <SID>Strntok(s, tok, n)
-	return matchstr( a:s.a:tok[0], '\v(\zs([^'.a:tok.']*)\ze['.a:tok.']){'.a:n.'}')
-endfun
-
-" }}}
 " s:RemoveLastHistoryItem: removes last search item from search history {{{
 " Description: Execute this string to clean up the search history.
 let s:RemoveLastHistoryItem = ':call histdel("/", -1)|let @/=g:Tex_LastSearchPattern'
@@ -837,39 +687,6 @@ function! IMAP_GetVal(name, ...)
 	endif
 endfunction " }}}
 
-" ============================================================================== 
-" A bonus function: Snip()
-" ============================================================================== 
-" Snip: puts a scissor string above and below block of text {{{
-" Desciption:
-"-------------------------------------%<-------------------------------------
-"   this puts a the string "--------%<---------" above and below the visually
-"   selected block of lines. the length of the 'tearoff' string depends on the
-"   maximum string length in the selected range. this is an aesthetically more
-"   pleasing alternative instead of hardcoding a length.
-"-------------------------------------%<-------------------------------------
-function! <SID>Snip() range
-	let i = a:firstline
-	let maxlen = -2
-	" find out the maximum virtual length of each line.
-	while i <= a:lastline
-		exe i
-		let length = virtcol('$')
-		let maxlen = (length > maxlen ? length : maxlen)
-		let i = i + 1
-	endwhile
-	let maxlen = (maxlen > &tw && &tw != 0 ? &tw : maxlen)
-	let half = maxlen/2
-	exe a:lastline
-	" put a string below
-	exe "norm! o\<esc>".(half - 1)."a-\<esc>A%<\<esc>".(half - 1)."a-"
-	" and above. its necessary to put the string below the block of lines
-	" first because that way the first line number doesnt change...
-	exe a:firstline
-	exe "norm! O\<esc>".(half - 1)."a-\<esc>A%<\<esc>".(half - 1)."a-"
-endfunction
-
-com! -nargs=0 -range Snip :<line1>,<line2>call <SID>Snip()
 " }}}
 
 let &cpo = s:save_cpo
