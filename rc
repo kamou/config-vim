@@ -361,7 +361,7 @@ map <silent> <F4> :call DeleteBuffer()<CR>
 
 " }}}
 
-" Trailing spaces/tabs highlighting. {{{
+" Trailing spaces/tabs, excess columns highlighting. {{{
 
 set listchars+=tab:__,trail:_
 
@@ -374,6 +374,24 @@ function! ToggleListBlanks()
 endfunction
 
 map <silent> <F5> :call ToggleListBlanks()<CR>
+
+" Function to toggle highlighting the offending parts of lines that are "too
+" long", where "too long" is defined by &textwidth or an arg passed to the
+" function.
+
+function! ToggleHighlightExcessColumns(width)
+  if exists('b:highlight_excess_columns')
+    call matchdelete(b:highlight_excess_columns)
+    unlet b:highlight_excess_columns
+    return
+  endif
+  let width = a:width != '' ? a:width : &textwidth
+  if width > 0
+    let b:highlight_excess_columns = matchadd('TODO', '\%>' . (width+1) . 'v')
+  endif
+endfunction
+
+map <silent> <C-F5> :call ToggleHighlightExcessColumns('')<CR>
 
 " }}}
 
