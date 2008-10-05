@@ -450,10 +450,10 @@ map <silent> <F6> :call ToggleSearchHighlighting()<CR>
 
 " Launch various commands. {{{
 
-let cmd_1="make"
-let cmd_2="make clean"
-let cmd_3="make -C %:p:h"
-let cmd_4="make -C %:p:h clean"
+let cmd_1 = "make"
+let cmd_2 = "make clean"
+let cmd_3 = "make -C %:p:h"
+let cmd_4 = "make -C %:p:h clean"
 
 function! Launch_Command(name)
   if exists("b:".a:name)
