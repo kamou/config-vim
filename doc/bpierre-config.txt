@@ -121,6 +121,7 @@ Goals:
  <C-BS>  i/c  Backward delete word.
 
  <F5>    n   Toggle 'list' option.
+ <C-F5>  n   Toggle highlighting of excess columns (> 'textwidth')
  <F6>    n   Toggle 'hlsearch' option.
  <F8>    n
  <F9>    n   Launch custom command 1.
