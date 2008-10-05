@@ -332,8 +332,9 @@ else
   let loaded_yasnippets = 1
 end
 
-" Silence NERD commenter plugin.
-let NERDShutUp=1
+" Configure NERD_commenter plugin.
+let g:NERDShutUp = 1
+let g:NERDSpaceDelims = 1
 
 " Do not switch tab/window when selecting an already opened buffer with
 " bufexplorer.
