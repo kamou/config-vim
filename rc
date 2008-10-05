@@ -299,8 +299,9 @@ let g:vimball_home=$USERVIM
 let g:tskelUserName=username
 let g:tskelUserEmail=useremail
 
-" Silence NERD commenter plugin.
-let NERDShutUp=1
+" Configure NERD_commenter plugin.
+let g:NERDShutUp = 1
+let g:NERDSpaceDelims = 1
 
 " Do not switch tab/window when selecting an already opened buffer with
 " bufexplorer.
