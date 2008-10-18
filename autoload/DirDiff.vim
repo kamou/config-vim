@@ -444,7 +444,7 @@ function! DirDiff#DirDiffOpen()
         endif
         split
         wincmd k
-        silent exec "edit ".fileToOpen
+        silent exec "edit ".fnameescape(fileToOpen)
         " Fool the window saying that this is diff
         diffthis
         wincmd j
@@ -455,8 +455,8 @@ function! DirDiff#DirDiffOpen()
         "Open the diff windows
         split
         wincmd k
-        silent exec "edit ".fileB
-        silent exec "vert diffsplit ".fileA
+        silent exec "edit ".fnameescape(fileB)
+        silent exec "vert diffsplit ".fnameescape(fileA)
         " Go back to the diff window
         wincmd j
         " Resize the window
