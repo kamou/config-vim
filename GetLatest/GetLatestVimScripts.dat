@@ -8,7 +8,7 @@ ScriptID SourceID Filename
 90 9279 :AutoInstall: vcscommand.vim
 2241 8691 :AutoInstall: vcsbzr.vim
 42 9220 :AutoInstall: bufexplorer.vim
-120 7092 :AutoInstall: Decho.vim
+120 9388 :AutoInstall: Decho.vim
 489 9078 :AutoInstall: ManPageView
 2048 7817 :AutoInstall: blockdiff.vim
 389 4652 :AutoInstall: scratch.vim

@@ -86,17 +86,20 @@
 :VCSUpdate	vcscommand.txt	/*:VCSUpdate*
 :VCSVimDiff	vcscommand.txt	/*:VCSVimDiff*
 :VimballList	pi_vimball.txt	/*:VimballList*
+Decho.vim	Decho.txt	/*Decho.vim*
 DechoMsgOff	Decho.txt	/*DechoMsgOff*
 DechoMsgOn	Decho.txt	/*DechoMsgOn*
 DechoOff	Decho.txt	/*DechoOff*
 DechoOn	Decho.txt	/*DechoOn*
 DechoRemOff	Decho.txt	/*DechoRemOff*
 DechoRemOn	Decho.txt	/*DechoRemOn*
+DechoSep	Decho.txt	/*DechoSep*
 DechoTabOff	Decho.txt	/*DechoTabOff*
 DechoTabOn	Decho.txt	/*DechoTabOn*
 DechoVarOff	Decho.txt	/*DechoVarOff*
 DechoVarOn	Decho.txt	/*DechoVarOn*
 Dredir	Decho.txt	/*Dredir*
+Dsep	Decho.txt	/*Dsep*
 GetLatestVimScripts	pi_getscript.txt	/*GetLatestVimScripts*
 GetLatestVimScripts-copyright	pi_getscript.txt	/*GetLatestVimScripts-copyright*
 GetLatestVimScripts_dat	pi_getscript.txt	/*GetLatestVimScripts_dat*
@@ -210,7 +213,6 @@ decho-redir	Decho.txt	/*decho-redir*
 decho-var	Decho.txt	/*decho-var*
 decho-variables	Decho.txt	/*decho-variables*
 decho.txt	Decho.txt	/*decho.txt*
-decho_hide	Decho.txt	/*decho_hide*
 decho_options	Decho.txt	/*decho_options*
 decho_settings	Decho.txt	/*decho_settings*
 decho_winheight	Decho.txt	/*decho_winheight*
@@ -233,6 +235,8 @@ g:bufExplorerSplitOutPathName	bufexplorer.txt	/*g:bufExplorerSplitOutPathName*
 g:bufExplorerSplitRight	bufexplorer.txt	/*g:bufExplorerSplitRight*
 g:decho_bufenter	Decho.txt	/*g:decho_bufenter*
 g:decho_bufname	Decho.txt	/*g:decho_bufname*
+g:decho_hide	Decho.txt	/*g:decho_hide*
+g:decho_winheight	Decho.txt	/*g:decho_winheight*
 g:dechomode	Decho.txt	/*g:dechomode*
 g:dechovar	Decho.txt	/*g:dechovar*
 g:dechovarname	Decho.txt	/*g:dechovarname*
