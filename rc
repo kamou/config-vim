@@ -26,12 +26,12 @@ if 0 != len(newrl)
   endif
 endif
 
-let &runtimepath=join(newrl, ',')
+let &runtimepath = join(newrl, ',')
 
 " }}}
 
 " Load user config (username, email, ...).
-let user=$USERVIM."/user"
+let user = $USERVIM."/user"
 if filereadable(user)
   execute "source " . user
 endif
@@ -66,7 +66,7 @@ set incsearch
 set lazyredraw
 
 " Save info file in the user VIM directory.
-let &viminfo="!,'20,\"50,n".$USERVIM."/info"
+let &viminfo = "!,'20,\"50,n".$USERVIM."/info"
 
 " Change the select/visual mode behavior.
 behave xterm
@@ -89,7 +89,7 @@ set showcmd
 if has('win32')
 
   if !executable('sh') && !empty($CYGPATH)
-    let $PATH=$CYGPATH.'/bin;'.$PATH
+    let $PATH = $CYGPATH.'/bin;'.$PATH
   end
 
   " Look for a real shell.
@@ -124,11 +124,11 @@ set makeprg=make\ -w
 
 " Put swap files in $USERVIM/swap or ~/tmp
 " (fallback to current dir if not possible).
-let swap=$USERVIM."/swap"
+let swap = $USERVIM."/swap"
 if !isdirectory(swap)
   call mkdir(swap)
 endif
-let &directory=swap.'//,~/tmp//,.'
+let &directory = swap.'//,~/tmp//,.'
 
 " Terminal only settings. {{{
 
@@ -136,7 +136,7 @@ if !has("gui_running")
 
   " Load specific term keys setting.
   " Needed for some mappings to work properly.
-  let keys=$USERVIM."/keys/".$TERM
+  let keys = $USERVIM."/keys/".$TERM
   if filereadable(keys)
     execute "source " . keys
   endif
@@ -145,7 +145,7 @@ if !has("gui_running")
   set timeout timeoutlen=3000 ttimeoutlen=100
 
   " Colorscheme.
-  let g:moria_style='black'
+  let g:moria_style = 'black'
   set background=dark
   colorscheme moria_256
 
@@ -255,12 +255,12 @@ function! CleverTab()
   if pumvisible()
     return "\<C-P>"
   endif
-  let text=IMAP_LookupCharacter("\t")
+  let text = IMAP_LookupCharacter("\t")
   if text != "\t"
     return text
   end
-  let to_pos=strpart(getline('.'), 0, col('.') - 1 )
-  let from_pos=strpart(getline('.'), col('.') - 2, col('$'))
+  let to_pos = strpart(getline('.'), 0, col('.') - 1 )
+  let from_pos = strpart(getline('.'), col('.') - 2, col('$'))
   if has('ruby')
     if to_pos =~ '<%=\f*$'
       set completefunc=yasnippets#CompleteSkeleton
@@ -291,8 +291,8 @@ endfunction
 inoremap <silent> <Tab> <C-R>=CleverTab()<CR>
 
 function! SCleverTab()
-  let to_pos=strpart(getline('.'), 0, col('.') - 1 )
-  let from_pos=strpart(getline('.'), col('.') - 2, col('$'))
+  let to_pos = strpart(getline('.'), 0, col('.') - 1 )
+  let from_pos = strpart(getline('.'), col('.') - 2, col('$'))
   if from_pos =~ '^\k'
     return "\<C-N>"
   endif
@@ -318,11 +318,11 @@ vmap <unique> <silent> <leader>mr <Plug>MarkRegex
 nmap <unique> <silent> <leader>mn <Plug>MarkClear
 
 " Have vimball put file in $USERVIM.
-let g:vimball_home=$USERVIM
+let g:vimball_home = $USERVIM
 
 " Configure tSkeleton plugin.
-let g:tskelUserName=username
-let g:tskelUserEmail=useremail
+let g:tskelUserName = username
+let g:tskelUserEmail = useremail
 
 " Configure yasnippets.
 if has('ruby')
@@ -338,11 +338,11 @@ let g:NERDSpaceDelims = 1
 
 " Do not switch tab/window when selecting an already opened buffer with
 " bufexplorer.
-let g:bufExplorerFindActive=0
+let g:bufExplorerFindActive = 0
 
 " Don't load rb_align plugin if ruby feature is not available.
 if !has('ruby')
-  let loaded_rb_align=1
+  let loaded_rb_align = 1
 end
 
 " }}}
