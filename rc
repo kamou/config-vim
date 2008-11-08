@@ -33,7 +33,7 @@ let &runtimepath = join(newrl, ',')
 " Load user config (username, email, ...).
 let user = $USERVIM."/user"
 if filereadable(user)
-  execute "source " . user
+  execute "source ".user
 endif
 
 language C
@@ -51,7 +51,7 @@ set numberwidth=5
 
 " To keep hidden buffers
 " (so we can change buffer without
-" the need to write changes ...).
+" the need to write changes...).
 set hidden
 
 " Use status line to display possible completions.
