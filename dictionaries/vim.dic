@@ -1,0 +1,933 @@
+Boolean
+BufAdd
+BufCreate
+BufDelete
+BufEnter
+BufFilePost
+BufFilePre
+BufHidden
+BufLeave
+BufNew
+BufNewFile
+BufRead
+BufReadCmd
+BufReadPost
+BufReadPre
+BufUnload
+BufWinEnter
+BufWinLeave
+BufWipeout
+BufWrite
+BufWriteCmd
+BufWritePost
+BufWritePre
+Character
+Cmd-event
+CmdwinEnter
+CmdwinLeave
+ColorScheme
+Comment
+Conditional
+Constant
+CursorHold
+CursorHoldI
+CursorMoved
+CursorMovedI
+Debug
+Define
+Delimiter
+EncodingChanged
+Error
+Exception
+FileAppendCmd
+FileAppendPost
+FileAppendPre
+FileChangedRO
+FileChangedShell
+FileChangedShellPost
+FileEncoding
+FileReadCmd
+FileReadPost
+FileReadPre
+FileType
+FileWriteCmd
+FileWritePost
+FileWritePre
+FilterReadPost
+FilterReadPre
+FilterWritePost
+FilterWritePre
+Float
+FocusGained
+FocusLost
+FuncUndefined
+Function
+GUIEnter
+GUIFailed
+Identifier
+Ignore
+Include
+InsertChange
+InsertEnter
+InsertLeave
+Keyword
+Label
+Macro
+MenuPopup
+Next
+Number
+Operator
+PreCondit
+PreProc
+Print
+QuickFixCmdPost
+QuickFixCmdPre
+RemoteReply
+Repeat
+SessionLoadPost
+ShellCmdPost
+ShellFilterPost
+SourceCmd
+SourcePre
+Special
+SpecialChar
+SpecialComment
+SpellFileMissing
+Statement
+StdinReadPost
+StdinReadPre
+StorageClass
+String
+Structure
+SwapExists
+Syntax
+TabEnter
+TabLeave
+Tag
+TermChanged
+TermResponse
+Todo
+Type
+Typedef
+Underlined
+User
+UserGettingBored
+VimEnter
+VimLeave
+VimLeavePre
+VimResized
+WinEnter
+WinLeave
+X
+XMLent
+XMLns
+abclear
+aboveleft
+abs
+add
+all
+append
+argadd
+argc
+argdelete
+argdo
+argedit
+argglobal
+argidx
+arglocal
+args
+argument
+argv
+ascii
+atan
+augroup
+bNext
+badd
+ball
+bdelete
+belowright
+bfirst
+blast
+bmodified
+bnext
+botright
+bprevious
+break
+breakadd
+breakdel
+breaklist
+brewind
+browse
+browsedir
+bufdo
+bufexists
+buffer
+buffers
+buflisted
+bufloaded
+bufname
+bufnr
+bufwinnr
+bunload
+bwipeout
+byte2line
+byteidx
+cNext
+cNfile
+cabclear
+caddbuffer
+caddexpr
+caddfile
+call
+catch
+cbuffer
+cc
+cclose
+cd
+ceil
+center
+cexpr
+cfile
+cfirst
+cgetbuffer
+cgetexpr
+cgetfile
+change
+changenr
+changes
+char2nr
+chdir
+checkpath
+checktime
+cindent
+clast
+clearmatches
+clist
+close
+cmapclear
+cnewer
+cnext
+cnfile
+col
+colder
+colorscheme
+comclear
+command
+compiler
+complete
+complete_add
+complete_check
+confirm
+continue
+copen
+copy
+cos
+count
+cpfile
+cprevious
+cquit
+crewind
+cscope_connection
+cunabbrev
+cursor
+cwindow
+debuggreedy
+deepcopy
+delcommand
+delete
+delfunction
+delmarks
+did_filetype
+diff_filler
+diff_hlID
+diffget
+diffoff
+diffpatch
+diffput
+diffsplit
+diffthis
+diffupdate
+digraphs
+display
+djump
+dlist
+drop
+dsearch
+dsplit
+earlier
+echoerr
+echomsg
+echon
+edit
+else
+elseif
+emenu
+emenu*
+empty
+endfor
+endfunction
+endif
+endtry
+endwhile
+enew
+escape
+eval
+eventhandler
+ex
+executable
+exists
+exit
+expand
+expr8
+extend
+exusage
+feedkeys
+file
+filereadable
+files
+filetype
+filewritable
+filter
+finally
+find
+finddir
+findfile
+finish
+first
+fixdel
+float2nr
+floor
+fnameescape
+fnamemodify
+fold
+foldclose
+foldclosed
+foldclosedend
+folddoclosed
+folddoopen
+foldlevel
+foldopen
+foldtext
+foldtextresult
+for
+foreground
+function
+garbagecollect
+get
+getbufline
+getbufvar
+getchar
+getcharmod
+getcmdline
+getcmdpos
+getcmdtype
+getcwd
+getfontname
+getfperm
+getfsize
+getftime
+getftype
+getline
+getloclist
+getmatches
+getpid
+getpos
+getqflist
+getreg
+getregtype
+gettabwinvar
+getwinposx
+getwinposy
+getwinvar
+glob
+globpath
+goto
+grep
+grepadd
+hardcopy
+has
+has_key
+haslocaldir
+hasmapto
+help
+helpfind
+helpgrep
+helptags
+hide
+histadd
+histdel
+histget
+histnr
+history
+hlID
+hlexists
+hostname
+iabclear
+iconv
+if
+if !exists("g:vimsyn_noerror")
+if has("conceal")
+ijump
+ilist
+imapclear
+in
+indent
+index
+input
+inputdialog
+inputlist
+inputrestore
+inputsave
+inputsecret
+insert
+isdirectory
+isearch
+islocked
+isplit
+items
+iunabbrev
+join
+jumps
+k
+keepalt
+keepjumps
+keepmarks
+keys
+lNext
+lNfile
+laddbuffer
+laddexpr
+laddfile
+language
+last
+later
+lbuffer
+lcd
+lchdir
+lclose
+left
+leftabove
+len
+lexpr
+lfile
+lfirst
+lgetbuffer
+lgetexpr
+lgetfile
+lgrep
+lgrepadd
+lhelpgrep
+libcall
+libcallnr
+line
+line2byte
+lispindent
+list
+ll
+llast
+llist
+lmake
+lmap
+lmapclear
+lnewer
+lnext
+lnfile
+lnoremap
+loadview
+localtime
+lockmarks
+lockvar
+log10
+lolder
+lopen
+lpfile
+lprevious
+lrewind
+ls
+ltag
+lvimgrep
+lvimgrepadd
+lwindow
+make
+map
+maparg
+mapcheck
+mark
+marks
+match
+matchadd
+matcharg
+matchdelete
+matchend
+matchlist
+matchstr
+max
+menutranslate
+min
+mkdir
+mkexrc
+mksession
+mkspell
+mkview
+mkvimrc
+mode
+move
+mzfile
+mzscheme
+nbkey
+new
+next
+nextnonblank
+nmapclear
+nohlsearch
+nr2char
+number
+omapclear
+only
+open
+options
+pathshorten
+pclose
+pedit
+perl
+perldo
+pop
+popu
+popup
+pow
+ppop
+preserve
+previous
+prevnonblank
+print
+printf
+profdel
+profile
+promptfind
+promptrepl
+psearch
+ptNext
+ptag
+ptfirst
+ptjump
+ptlast
+ptnext
+ptprevious
+ptrewind
+ptselect
+pumvisible
+put
+pwd
+pyfile
+python
+qall
+quit
+quitall
+range
+read
+readfile
+recover
+redir
+redo
+redraw
+redrawstatus
+registers
+reltime
+reltimestr
+remote_expr
+remote_foreground
+remote_peek
+remote_read
+remote_send
+remove
+rename
+repeat
+resize
+resolve
+retab
+return
+reverse
+rewind
+right
+rightbelow
+round
+ruby
+rubydo
+rubyfile
+runtime
+rviminfo
+sNext
+sall
+sandbox
+sargument
+saveas
+sbNext
+sball
+sbfirst
+sblast
+sbmodified
+sbnext
+sbprevious
+sbrewind
+sbuffer
+scriptencoding
+scriptnames
+search
+searchdecl
+searchpair
+searchpairpos
+searchpos
+server2client
+serverlist
+set
+setbufvar
+setcmdpos
+setfiletype
+setglobal
+setline
+setlocal
+setloclist
+setmatches
+setpos
+setqflist
+setreg
+settabwinvar
+setwinvar
+sfind
+sfirst
+shell
+shellescape
+sign
+silent
+simalt
+simplify
+sin
+slast
+sleep
+smagic
+smap
+smapclear
+sme
+smenu
+snext
+sniff
+snomagic
+snoremap
+snoreme
+snoremenu
+sort
+soundfold
+source
+spellbadword
+spelldump
+spellgood
+spellinfo
+spellrepall
+spellsuggest
+spellundo
+spellwrong
+split
+sprevious
+sqrt
+srewind
+stag
+startgreplace
+startinsert
+startreplace
+stjump
+stop
+stopinsert
+str2float
+str2nr
+strftime
+stridx
+string
+strlen
+strpart
+strridx
+strtrans
+stselect
+submatch
+substitute
+sunhide
+sunme
+sunmenu
+suspend
+sview
+syn case ignore
+syn case match
+syn cluster vimHighlightCluster	contains=vimHiLink,vimHiClear,vimHiKeyList,vimComment
+syn cluster vimMenuList contains=vimMenuBang,vimMenuPriority,vimMenuName,vimMenuMod
+syn cluster vimStringGroup	contains=vimEscapeBrace,vimPatSep,vimNotPatSep,vimPatSepErr,vimPatSepZone,@Spell
+syn cluster vimSubstList	add=vimCollection
+syn cluster vimSubstList	contains=vimPatSep,vimPatRegion,vimPatSepErr,vimSubstTwoBS,vimSubstRange,vimNotation
+syn cluster vimSubstRepList	contains=vimSubstSubstr,vimSubstTwoBS,vimNotation
+syn cluster vimSynKeyGroup	contains=vimSynNextgroup,vimSynKeyOpt,vimSynKeyContainedin
+syn cluster vimSynMtchGroup	contains=vimMtchComment,vimSynContains,vimSynError,vimSynMtchOpt,vimSynNextgroup,vimSynRegPat,vimNotation
+syn cluster vimSynRegGroup	contains=vimSynContains,vimSynNextgroup,vimSynRegOpt,vimSynReg,vimSynMtchGrp
+syn cluster vimSynRegPatGroup	contains=vimPatSep,vimNotPatSep,vimSynPatRange,vimSynNotPatRange,vimSubstSubstr,vimPatRegion,vimPatSepErr,vimNotation
+syn keyword vimAbb	ab[breviate] ca[bbrev] inorea[bbrev] cnorea[bbrev] norea[bbrev] ia[bbrev] skipwhite nextgroup=vimMapMod,vimMapLhs
+syn keyword vimAutoCmd	au[tocmd] do[autocmd] doautoa[ll]	skipwhite nextgroup=vimAutoEventList
+syn keyword vimCommand	am[enu] an[oremenu] aun[menu] cme[nu] cnoreme[nu] cunme[nu] ime[nu] inoreme[nu] iunme[nu] me[nu] nme[nu] nnoreme[nu] noreme[nu] nunme[nu] ome[nu] onoreme[nu] ounme[nu] unme[nu] vme[nu] vnoreme[nu] vunme[nu] skipwhite nextgroup=@vimMenuList
+syn keyword vimEchoHLNone	none
+syn keyword vimFgBgAttrib	contained	none bg background fg foreground
+syn keyword vimGroupSpecial	contained	ALL	ALLBUT
+syn keyword vimHiAttrib	contained	none bold inverse italic reverse standout underline undercurl
+syn keyword vimHiCtermColor	contained	black blue brown cyan darkBlue darkcyan darkgray darkgreen darkgrey darkmagenta darkred darkyellow gray green grey lightblue lightcyan lightgray lightgreen lightgrey lightmagenta lightred magenta red white yellow
+syn keyword vimLet	let	unl[et]	skipwhite nextgroup=vimVar
+syn keyword vimMap	cm[ap] cno[remap] im[ap] ino[remap] ln[oremap] nm[ap] nn[oremap] no[remap] om[ap] ono[remap] snor[emap] vm[ap] vn[oremap] xn[oremap] skipwhite nextgroup=vimMapBang,vimMapMod,vimMapLhs
+syn keyword vimMap	mapc[lear]
+syn keyword vimMapModKey contained	buffer	expr	leader	localleader	plug	script	sid	silent	unique
+syn keyword vimSynCase	contained	ignore	match
+syn keyword vimSynType	contained	case	skipwhite nextgroup=vimSynCase,vimSynCaseError
+syn keyword vimSynType	contained	clear	skipwhite nextgroup=vimGroupList
+syn keyword vimSynType	contained	cluster	skipwhite nextgroup=vimClusterName
+syn keyword vimSynType	contained	enable	list	manual	off	on	reset
+syn keyword vimSynType	contained	include	skipwhite nextgroup=vimGroupList
+syn keyword vimSynType	contained	keyword	skipwhite nextgroup=vimSynKeyRegion
+syn keyword vimSynType	contained	match	skipwhite nextgroup=vimSynMatchRegion
+syn keyword vimSynType	contained	region	skipwhite nextgroup=vimSynRegion
+syn keyword vimSynType	contained	sync	skipwhite	nextgroup=vimSyncC,vimSyncLines,vimSyncMatch,vimSyncError,vimSyncLinebreak,vimSyncLinecont,vimSyncRegion
+syn keyword vimSyncC	contained	ccomment	clear	fromstart
+syn keyword vimSyncLinecont	contained	linecont	skipwhite	nextgroup=vimSynRegPat
+syn keyword vimSyncMatch	contained	match	skipwhite	nextgroup=vimSyncGroupName
+syn keyword vimSyncNone	contained	NONE
+syn keyword vimSyncRegion	contained	region	skipwhite	nextgroup=vimSynReg
+syn keyword vimUserAttrbCmplt contained	augroup buffer command dir environment event expression file function help highlight mapping menu option something tag tag_listfiles var
+syn keyword vimUserAttrbCmplt contained	custom customlist nextgroup=vimUserAttrbCmpltFunc,vimUserCmdError
+syn keyword vimUserAttrbKey   contained	bar	ban[g]	cou[nt]	ra[nge] com[plete]	n[args]	re[gister]
+syn match   vimAuSyntax	contained	"\s+sy\%[ntax]"	contains=vimCommand skipwhite nextgroup=vimSynType,vimComment
+syn match   vimAutoCmdSfxList	contained	"\S*"
+syn match   vimAutoCmdSpace	contained	"\s\+"	nextgroup=vimAutoCmdSfxList
+syn match   vimAutoEventList	contained	"\(!\s\+\)\=\(\a\+,\)*\a\+"	contains=vimAutoEvent nextgroup=vimAutoCmdSpace
+syn match   vimCollClass    contained transparent	"\[:\(alnum\|alpha\|blank\|cntrl\|digit\|graph\|lower\|print\|punct\|space\|upper\|xdigit\|return\|tab\|escape\|backspace\):\]"
+syn match   vimCollClassErr contained	"\[:.\{-\}:\]"
+syn match   vimEchoHL	"echohl\="	skipwhite nextgroup=vimGroup,vimHLGroup,vimEchoHLNone
+syn match   vimGroupAdd	contained	"add="	nextgroup=vimGroupList
+syn match   vimGroupList	contained	"@\=[^ \t,]*"	contains=vimGroupSpecial,vimPatSep
+syn match   vimGroupList	contained	"@\=[^ \t,]*,"	nextgroup=vimGroupList contains=vimGroupSpecial,vimPatSep
+syn match   vimGroupRem	contained	"remove="	nextgroup=vimGroupList
+syn match   vimHiAttribList	contained	"\i\+"	contains=vimHiAttrib
+syn match   vimHiAttribList	contained	"\i\+,"he=e-1	contains=vimHiAttrib nextgroup=vimHiAttribList
+syn match   vimHiBang	contained	"!"	  skipwhite nextgroup=@vimHighlightCluster
+syn match   vimHiGroup	contained	"\i\+"
+syn match   vimHighlight	"\<hi\%[ghlight]\>" skipwhite nextgroup=vimHiBang,@vimHighlightCluster
+syn match   vimMap	"\<map\>!\=\ze\s*[^(]" skipwhite nextgroup=vimMapMod,vimMapLhs
+syn match   vimMapBang   contained	"!"	skipwhite nextgroup=vimMapMod,vimMapLhs
+syn match   vimMapLhs    contained	"\S\+"	contains=vimNotation,vimCtrlChar skipwhite nextgroup=vimMapRhs
+syn match   vimMapMod    contained	"\c<\(buffer\|expr\|\(local\)\=leader\|plug\|script\|sid\|unique\|silent\)\+>" contains=vimMapModKey,vimMapModErr skipwhite nextgroup=vimMapMod,vimMapLhs
+syn match   vimMapRhs    contained  ".*" contains=vimNotation,vimCtrlChar skipnl nextgroup=vimMapRhsExtend
+syn match   vimMapRhsExtend contained "^\s*\\.*$" contains=vimContinue
+syn match   vimMenuBang	"!"	contained skipwhite nextgroup=@vimMenuList
+syn match   vimMenuMap	"\s"	contained skipwhite nextgroup=vimMenuRhs
+syn match   vimMenuMod    contained	"\c<\(script\|silent\)\+>"  skipwhite contains=vimMapModKey,vimMapModErr nextgroup=@vimMenuList
+syn match   vimMenuName	"[^ \t\\<]\+"	contained nextgroup=vimMenuNameMore,vimMenuMap
+syn match   vimMenuNameMore	"\c\\\s\|<tab>\|\\\."	contained nextgroup=vimMenuName,vimMenuNameMore contains=vimNotation
+syn match   vimMenuPriority	"\d\+\(\.\d\+\)*"	contained skipwhite nextgroup=vimMenuName
+syn match   vimMenuRhs	".*$"	contained contains=vimString,vimComment,vimIsCommand
+syn match   vimMtchComment	contained	'"[^"]\+$'
+syn match   vimSubst	"/\zss\%[ubstitute]\ze/"	nextgroup=vimSubstPat
+syn match   vimSubst	"\(:\+\s*\|^\s*\||\s*\)\<s\%[ubstitute][:[:alpha:]]\@!" nextgroup=vimSubstPat
+syn match   vimSubst	"s\%[ubstitute][:[:alpha:]]\@!"	nextgroup=vimSubstPat contained
+syn match   vimSubst1       contained	"s\%[ubstitute]\>"	nextgroup=vimSubstPat
+syn match   vimSubstFlagErr contained	"[^< \t\r|]\+" contains=vimSubstFlags
+syn match   vimSubstFlags   contained	"[&cegiIpr]\+"
+syn match   vimSubstSubstr  contained	"\\z\=\d"
+syn match   vimSubstTwoBS   contained	"\\\\"
+syn match   vimSynContains	contained	"\<contain\(s\|edin\)="	nextgroup=vimGroupList
+syn match   vimSynKeyContainedin	contained	"\<containedin="	nextgroup=vimGroupList
+syn match   vimSynKeyOpt	contained	"\<\(conceal\|contained\|transparent\|skipempty\|skipwhite\|skipnl\)\>"
+syn match   vimSynMtchGrp	contained	"matchgroup="	nextgroup=vimGroup,vimHLGroup
+syn match   vimSynMtchOpt	contained	"\<\(conceal\|transparent\|contained\|excludenl\|skipempty\|skipwhite\|display\|extend\|skipnl\|fold\)\>"
+syn match   vimSynNextgroup	contained	"nextgroup="	nextgroup=vimGroupList
+syn match   vimSynNotPatRange	contained	"\\\\\|\\\["
+syn match   vimSynPatMod	contained	"\(hs\|ms\|me\|hs\|he\|rs\|re\)=[se]\([-+]\d\+\)\="
+syn match   vimSynPatMod	contained	"\(hs\|ms\|me\|hs\|he\|rs\|re\)=[se]\([-+]\d\+\)\=," nextgroup=vimSynPatMod
+syn match   vimSynPatMod	contained	"lc=\d\+"
+syn match   vimSynPatMod	contained	"lc=\d\+," nextgroup=vimSynPatMod
+syn match   vimSynReg	contained	"\(start\|skip\|end\)="he=e-1	nextgroup=vimSynRegPat
+syn match   vimSynRegOpt	contained	"\<\(conceal\(ends\)\=\|transparent\|contained\|excludenl\|skipempty\|skipwhite\|display\|keepend\|oneline\|extend\|skipnl\|fold\)\>"
+syn match   vimSyncGroup	contained	"\k\+"	skipwhite	nextgroup=vimSynRegPat,vimSyncNone
+syn match   vimSyncGroupName	contained	"\k\+"	skipwhite	nextgroup=vimSyncKey
+syn match   vimSyncKey	contained	"\<groupthere\|grouphere\>"	skipwhite nextgroup=vimSyncGroup
+syn match   vimSyncLinebreak	contained	"\<linebreaks="	skipwhite	nextgroup=vimNumber
+syn match   vimSyncLines	contained	"\(min\|max\)\=lines="	nextgroup=vimNumber
+syn match   vimSyntax	"\<sy\%[ntax]\>"	contains=vimCommand skipwhite nextgroup=vimSynType,vimComment
+syn match   vimUserAttrbCmplt contained	"custom,\u\w*"
+syn match   vimUserAttrbCmpltFunc contained	",\%([sS]:\|<[sS][iI][dD]>\)\=\%(\h\w*\%(#\u\w*\)\+\|\u\w*\)"hs=s+1 nextgroup=vimUserCmdError
+syn match  vimAddress	"%\ze\a"	skipwhite nextgroup=vimString,vimSubst1
+syn match  vimAddress	",\zs[.$]"	skipwhite nextgroup=vimSubst1
+syn match  vimComment	+\<else\s\+".*$+lc=4	contains=@vimCommentGroup,vimCommentString
+syn match  vimComment	+\<endif\s\+".*$+lc=5	contains=@vimCommentGroup,vimCommentString
+syn match  vimComment	excludenl +\s"[^\-:.%#=*].*$+lc=1	contains=@vimCommentGroup,vimCommentString
+syn match  vimFilter contained	"\A!.\{-}\(|\|$\)"ms=s+1	contains=vimSpecFile
+syn match  vimFilter contained	"^!.\{-}\(|\|$\)"		contains=vimSpecFile
+syn match  vimMark	"'[<>]\ze[-+,!]"		nextgroup=vimOper,vimMarkNumber,vimSubst
+syn match  vimMark	"'[a-zA-Z0-9]\ze[-+,!]"	nextgroup=vimOper,vimMarkNumber,vimSubst
+syn match  vimMark	",\zs'[<>]\ze"		nextgroup=vimOper,vimMarkNumber,vimSubst
+syn match  vimMark	"[!,:]\zs'[a-zA-Z0-9]"	nextgroup=vimOper,vimMarkNumber,vimSubst
+syn match  vimMark	"\<norm\%[al]\s\zs'[a-zA-Z0-9]"	nextgroup=vimOper,vimMarkNumber,vimSubst
+syn match  vimMarkNumber	"[-+]\d\+"		nextgroup=vimSubst contained contains=vimOper
+syn match  vimNotPatSep	contained	"\\\\"
+syn match  vimPatSep	contained	"\\|"
+syn match  vimPatSepErr	contained	"\\)"
+syn match  vimPlainMark contained	"'[a-zA-Z0-9]"
+syn match  vimPlainRegister contained	'"[a-zA-Z0-9\-:.%#*+=]'
+syn match  vimRegister	'@"'
+syn match  vimRegister	'[^,;]\zs"[a-zA-Z0-9.%#:_\-/]\ze[^a-zA-Z_":]'
+syn match  vimRegister	'\<norm\s\+\zs"[a-zA-Z0-9]'
+syn match  vimRegister	'\<normal\s\+\zs"[a-zA-Z0-9]'
+syn match  vimSetMod	contained	"&vim\|[!&]\|all&"
+syn match  vimSetSep    contained	"[,:]"
+syn match  vimString	"[^(,]'[^']\{-}\zs'"
+syn match  vimString	contained	+"[^"]*\\$+	skipnl nextgroup=vimStringCont
+syn match  vimStringCont	contained	+\(\\\\\|.\)\{-}[^\\]"+
+syn match vimBracket contained	"[\\<>]"
+syn match vimEnvvar	"\$\I\i*"
+syn match vimEnvvar	"\${\I\i*}"
+syn match vimFunc		"\%(\%([gGsS]:\|<[sS][iI][dD]>\)\=\%([a-zA-Z0-9_.]\+\.\)*\I[a-zA-Z0-9_.]*\)\ze\s*("		contains=vimFuncName,vimUserFunc,vimExecute
+syn match vimIsCommand	"<Bar>\s*\a\+"	transparent contains=vimCommand,vimNotation
+syn match vimNorm		"\<norm\%[al]!\=" skipwhite nextgroup=vimNormCmds
+syn match vimNormCmds contained	".*$"
+syn match vimNotFunc	"\<if\>\|\<el\%[seif]\>"
+syn match vimNotation	"\(\\\|<lt>\)\=<\([cas]file\|abuf\|amatch\|cword\|cWORD\|client\)>"		contains=vimBracket
+syn match vimNotation	"\(\\\|<lt>\)\=<\([scam2-4]-\)\{0,4}\(right\|left\|middle\)\(mouse\)\=\(drag\|release\)\=>"	contains=vimBracket
+syn match vimNotation	"\(\\\|<lt>\)\=<\([scamd]-\)\{0,4}x\=\(f\d\{1,2}\|[^ \t:]\|cr\|lf\|linefeed\|return\|k\=del\%[ete]\|bs\|backspace\|tab\|esc\|right\|left\|help\|undo\|insert\|ins\|k\=home\|k\=end\|kplus\|kminus\|kdivide\|kmultiply\|kenter\|space\|k\=\(page\)\=\(\|down\|up\)\)>" contains=vimBracket
+syn match vimNotation	"\(\\\|<lt>\)\=<\(bslash\|plug\|sid\|space\|bar\|nop\|nul\|lt\)>"		contains=vimBracket
+syn match vimNotation	'\(\\\|<lt>\)\=<C-R>[0-9a-z"%#:.\-=]'he=e-1			contains=vimBracket
+syn match vimNotation	'\(\\\|<lt>\)\=<\%(q-\)\=\(line[12]\|count\|bang\|reg\|args\|f-args\|lt\)>'	contains=vimBracket
+syn match vimUserFunc contained	"\%(\%([gGsS]:\|<[sS][iI][dD]>\)\=\%([a-zA-Z0-9_.]\+\.\)*\I[a-zA-Z0-9_.]*\)\|\<\u[a-zA-Z0-9.]*\>\|\<if\>"	contains=vimNotation
+syn region  vimClusterName	contained	matchgroup=vimGroupName start="\k\+" skip="\\\\\|\\|" matchgroup=vimSep end="$\||" contains=vimGroupAdd,vimGroupRem,vimSynContains,vimSynError
+syn region  vimCollection   contained transparent	start="\\\@<!\[" skip="\\\[" end="\]"	contains=vimCollClass
+syn region  vimEcho	oneline excludenl matchgroup=vimCommand start="\<ec\%[ho]\>" skip="\(\\\\\)*\\|" end="$\||" contains=vimFunc,vimString,varVar
+syn region  vimExecute	oneline excludenl matchgroup=vimCommand start="\<exe\%[cute]\>" skip="\(\\\\\)*\\|" end="$\||\|<[cC][rR]>" contains=vimIsCommand,vimString,vimOper,vimVar,vimNotation,vimOperParen
+syn region  vimSubstPat     contained	matchgroup=vimSubstDelim start="\z([^a-zA-Z( \t[\]&]\)"rs=s+1 skip="\\\\\|\\\z1" end="\z1"re=e-1,me=e-1	 contains=@vimSubstList	nextgroup=vimSubstRep4	oneline
+syn region  vimSubstRep4    contained	matchgroup=vimSubstDelim start="\z(.\)" skip="\\\\\|\\\z1" end="\z1" matchgroup=vimNotation end="<[cC][rR]>" contains=@vimSubstRepList	nextgroup=vimSubstFlagErr	oneline
+syn region  vimSynKeyRegion	contained oneline keepend	matchgroup=vimGroupName start="\k\+" skip="\\\\\|\\|" matchgroup=vimSep end="|\|$" contains=@vimSynKeyGroup
+syn region  vimSynMatchRegion	contained keepend	matchgroup=vimGroupName start="\k\+" matchgroup=vimSep end="|\|$" contains=@vimSynMtchGroup
+syn region  vimSynPatRange	contained	start="\["	skip="\\\\\|\\]"   end="]"
+syn region  vimSynRegPat	contained extend	start="\z([-`~!@#$%^&*_=+;:'",./?]\)"  skip="\\\\\|\\\z1"  end="\z1"  contains=@vimSynRegPatGroup skipwhite nextgroup=vimSynPatMod,vimSynReg
+syn region  vimSynRegion	contained keepend	matchgroup=vimGroupName start="\k\+" skip="\\\\\|\\|" end="|\|$" contains=@vimSynRegGroup
+syn region vimCommentString	contained oneline start='\S\s\+"'ms=e	end='"'
+syn region vimEscapeBrace	oneline   contained transparent start="[^\\]\(\\\\\)*\[\zs\^\=\]\=" skip="\\\\\|\\\]" end="]"me=e-1
+syn region vimPatRegion	contained transparent matchgroup=vimPatSepR start="\\[z%]\=(" end="\\)"	contains=@vimSubstList oneline
+syn region vimPatSepZone	oneline   contained   matchgroup=vimPatSepZ start="\\%\=\ze(" skip="\\\\" end="\\)\|[^\]['"]"	contains=@vimStringGroup
+syn region vimSet		matchgroup=vimCommand start="\<\%(setl\%[ocal]\|setg\%[lobal]\|set\)\>" skip="\%(\\\\\)*\\." end="$" matchgroup=vimNotation end="<[cC][rR]>" keepend oneline contains=vimSetEqual,vimOption,vimErrSetting,vimComment,vimSetString,vimSetMod
+syn region vimSetEqual  contained	start="="	skip="\\\\\|\\\s" end="[| \t]\|$"me=e-1 contains=vimCtrlChar,vimSetSep,vimNotation oneline
+syn region vimSetString contained	start=+="+hs=s+1	skip=+\\\\\|\\"+  end=+"+	contains=vimCtrlChar
+syn region vimString	oneline	start="=+"lc=1	skip="\\\\\|\\+" end="+"	contains=@vimStringGroup
+syn region vimString	oneline	start="\s/\s*\A"lc=1 skip="\\\\\|\\+" end="/"	contains=@vimStringGroup
+syn region vimString	oneline	start=+=!+lc=1	skip=+\\\\\|\\!+ end=+!+	contains=@vimStringGroup
+syn region vimString	oneline keepend	start=+[^:a-zA-Z>!\\@]"+lc=1 skip=+\\\\\|\\"+ end=+"+	contains=@vimStringGroup
+syn region vimString	oneline keepend	start=+[^:a-zA-Z>!\\@]'+lc=1 end=+'+
+synID
+synIDattr
+synIDtrans
+syncbind
+synstack
+system
+t
+tNext
+tab
+tabNext
+tabclose
+tabdo
+tabedit
+tabfind
+tabfirst
+tablast
+tabmove
+tabnew
+tabnext
+tabonly
+tabpagebuflist
+tabpagenr
+tabpagewinnr
+tabprevious
+tabrewind
+tabs
+tag
+tagfiles
+taglist
+tags
+tcl
+tcldo
+tclfile
+tearoff
+tempname
+tfirst
+throw
+tjump
+tlast
+tm
+tmenu
+tnext
+tolower
+topleft
+toupper
+tprevious
+tr
+trewind
+trunc
+try
+tselect
+tu
+tunmenu
+type
+unabbreviate
+undo
+undojoin
+undolist
+unhide
+unlockvar
+update
+values
+verbose
+version
+vertical
+view
+vimgrep
+vimgrepadd
+virtcol
+visual
+visualmode
+viusage
+vmapclear
+vnew
+vsplit
+wNext
+wall
+while
+winbufnr
+wincmd
+wincol
+windo
+winheight
+winline
+winnr
+winpos
+winrestcmd
+winrestview
+winsaveview
+winsize
+winwidth
+wnext
+wprevious
+wq
+wqall
+write
+writefile
+wsverb
+wviminfo
+xall
+xit
+xmap
+xmapclear
+xme
+xmenu
+xnoremap
+xnoreme
+xnoremenu
+xunme
+xunmenu
+yank
