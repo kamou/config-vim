@@ -65,6 +65,9 @@ set incsearch
 " Do not redraw while running macros (much faster).
 set lazyredraw
 
+" Always show tabline.
+set showtabline=2
+
 " Save info file in the user VIM directory.
 let &viminfo = "!,'20,\"50,n".$USERVIM."/info"
 
