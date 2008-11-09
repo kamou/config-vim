@@ -8,10 +8,11 @@ let g:loaded_cscope_findfile = 1
 " Find a file, first using findfile(), and if no results is found and a cscope
 " connection is available, using 'cscope find file'. If goto_line is not 0,
 " then jump to line if its present (:xxx after the filename). If file_expr is
-" not empty and goto_line is 2, then the :xxx directive must be present.
+" not empty and goto_line is >1, then the :xxx directive must be present. If
+" goto_line is >2, delete old buffer.
 function! s:CscopeFindFile(file_expr, goto_line)
 
-  let goto_line = a:goto_line
+  let line = 0
 
   let bufname = bufname('%')
 
@@ -22,13 +23,13 @@ function! s:CscopeFindFile(file_expr, goto_line)
 
     let fname = expand('<cfile>')
 
-    if goto_line
+    if a:goto_line
 
       let line = getline('.')[col('.') - 1 : ]
       let match = matchlist(line, '^\f\+:\(\d\+\)')
 
       if !empty(match)
-        let goto_line = str2nr(match[1])
+        let line = str2nr(match[1])
       end
 
     endif
@@ -39,17 +40,17 @@ function! s:CscopeFindFile(file_expr, goto_line)
 
     let fname = a:file_expr
 
-    if goto_line
+    if a:goto_line
 
       let match = matchlist(fname, '^\(\f\+\):\(\d\+\)$')
 
       if empty(match)
-        if 2 == goto_line
+        if a:goto_line > 1
           return
         end
       else
         let fname = match[1]
-        let goto_line = str2nr(match[2])
+        let line = str2nr(match[2])
       endif
 
     endif
@@ -62,15 +63,19 @@ function! s:CscopeFindFile(file_expr, goto_line)
     if !cscope_connection()
       return
     endif
-    silent! exe 'csc f f '.fname
+    silent! exe ':csc f f '.fname
   else
-    silent! exe 'e '.file
+    silent! exe ':e '.file
   endif
 
   " Did it work, i.e. the buffer changed?
   if bufname !=# bufname('%')
-    if goto_line
-      call cursor(goto_line, 1)
+    if a:goto_line > 2 && !empty(bufname)
+      exec ":bdelete ".bufnr(bufname)
+    endif
+    file
+    if line
+      call cursor(line, 1)
     endif
   endif
 
@@ -81,5 +86,5 @@ nmap <silent> gF :call s:CscopeFindFile('', 1)<CR>
 
 command! -nargs=1 GF call s:CscopeFindFile(<f-args>, 1)
 
-autocmd! BufNewFile *:* nested call s:CscopeFindFile(bufname('%'), 2)
+autocmd! BufNewFile *:* nested call s:CscopeFindFile(bufname('%'), 3)
 
