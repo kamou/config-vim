@@ -10,7 +10,7 @@ let g:loaded_cscope_findfile = 1
 " then jump to line if its present (:xxx after the filename). If file_expr is
 " not empty and goto_line is >1, then the :xxx directive must be present. If
 " goto_line is >2, delete old buffer.
-function! s:CscopeFindFile(file_expr, goto_line)
+function! CscopeFindFile(file_expr, goto_line)
 
   let line = 0
 
@@ -81,10 +81,10 @@ function! s:CscopeFindFile(file_expr, goto_line)
 
 endfunction
 
-nmap <silent> gf :call s:CscopeFindFile('', 0)<CR>
-nmap <silent> gF :call s:CscopeFindFile('', 1)<CR>
+nmap <silent> gf :call CscopeFindFile('', 0)<CR>
+nmap <silent> gF :call CscopeFindFile('', 1)<CR>
 
-command! -nargs=1 GF call s:CscopeFindFile(<f-args>, 1)
+command! -nargs=1 GF call CscopeFindFile(<f-args>, 1)
 
-autocmd! BufNewFile *:* nested call s:CscopeFindFile(bufname('%'), 3)
+autocmd! BufNewFile *:* nested call CscopeFindFile(bufname('%'), 3)
 
