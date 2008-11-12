@@ -35,6 +35,18 @@ case <+value+>:
 break;
   ]
 
+  defsnippet 'FIXME.', :c, :cpp, %q[
+/*
+FIXME
+/<++>
+  ]
+
+  defsnippet 'FIXME ', :c, :cpp, %q[
+/*
+FIXME: <+ugly+>
+/<++>
+  ]
+
 end
 
 load_skeleton_snippets('c', :c, :cpp)
