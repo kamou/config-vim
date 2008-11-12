@@ -243,7 +243,7 @@ vmap <unique> <silent> <Leader>d1 :call BlockDiff_GetBlock1()<CR>
 vmap <unique> <silent> <Leader>d2 :call BlockDiff_GetBlock2()<CR>
 
 " DirDiff options.
-let g:DirDiffExcludes = 'CVS,.svn,.bzr'
+let g:DirDiffExcludes = 'CVS,.svn,.bzr,cscope*out,tags'
 let g:DirDiffAddArgs = '--strip-trailing-cr'
 
 " }}}
