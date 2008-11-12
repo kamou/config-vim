@@ -248,6 +248,12 @@ let g:DirDiffAddArgs = '--strip-trailing-cr'
 
 " }}}
 
+" ManPageView plugin. {{{
+
+let g:manpageview_multimanpage = 0
+
+" }}}
+
 " Improved completion. {{{
 
 set complete=.,t,i,k
