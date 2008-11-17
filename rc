@@ -118,7 +118,11 @@ endif
 set laststatus=2
 
 " Better status line.
-set statusline=%<%f\ %h%y\ %{&ff}\ %{&fenc}%(\ %{&diff?'[d]':''}%)%(\ %m%)%(\ %r%)%=%-24.(\ %l,%c%V\ [%b,0x%B]\ %)\ %P
+set statusline=
+      \%<%f\ %h%y\ %{&ff}\ %{&fenc}   " file name/type/format/encoding
+      \%(\ %{&diff?'[d]':''}%)\       " diff mode
+      \%(\ %m%)%(\ %r%)%=%-24.        " buffer modified/readonly
+      \(\ %l,%c%V\ [%b,0x%B]\ %)\ %P  " position
 
 " }}}
 
@@ -209,7 +213,10 @@ if has("cscope")
   nmap <unique> <silent> <Leader>ta :exe 'cscope find t <cword>'<CR>
   nmap <unique> <silent> <Leader>tf :exe 'cscope find f <cfile>'<CR>
   nmap <unique> <silent> <Leader>ti :exe 'cscope find i ^%:t$'<CR>
-  nmap <unique> <silent> <Leader>tu :exe 'silent! cscope k 0' \| exe '!'.&cscopeprg.' -q -R -b -s .' \| exe 'silent cscope add cscope.out'<CR>
+  nmap <unique> <silent> <Leader>tu :
+        \ exe 'silent! cscope k 0' <Bar>
+        \ exe '!'.&cscopeprg.' -q -R -b -s .' <Bar>
+        \ exe 'silent cscope add cscope.out' <CR>
 
 endif
 
@@ -218,7 +225,9 @@ endif
 " Ctags support. {{{
 
 " To update a ctags database.
-nmap <unique> <Leader>tU :exe "silent! !ctags --c-kinds=+cdefgmnpstuvx --fields=+S -R -o tags ."<CR>
+let g:ctags_flags = '--c-kinds=+cdefgmnpstuvx --fields=+S'
+nmap <unique> <Leader>tU :
+      \ exe 'silent! !ctags '.g:ctags_flags.' -R -o tags .' <CR>
 
 " Ctags list plugin config.
 let Tlist_Enable_Fold_Column = 0
@@ -235,8 +244,18 @@ nmap <silent> <unique> <Leader>tl :exe "Tlist"\|wincmd p<CR>
 map <unique> <silent> <Leader>dg :diffget<CR>
 map <unique> <silent> <Leader>dp :diffput<CR>
 map <unique> <silent> <Leader>du :diffupdate<CR>
-map <unique> <silent> <Leader>d<space> :if &diffopt =~ ',\?iwhite\>' <Bar> set diffopt-=iwhite <Bar> else <Bar> set diffopt+=iwhite <Bar> endif <CR>
-map <unique> <silent> <Leader>dd       :if &diff <Bar> set nodiff <Bar> set noscrollbind <Bar> else <Bar> diffthis <Bar> endif <CR>
+map <unique> <silent> <Leader>d<space> :
+      \ if &diffopt =~ ',\?iwhite\>' <Bar>
+      \   set diffopt-=iwhite <Bar>
+      \ else <Bar>
+      \   set diffopt+=iwhite <Bar>
+      \ endif <CR>
+map <unique> <silent> <Leader>dd :
+      \ if &diff <Bar>
+      \   set nodiff noscrollbind <Bar>
+      \ else <Bar>
+      \   diffthis <Bar>
+      \ endif <CR>
 
 " Mappings for blockdiff plugin.
 vmap <unique> <silent> <Leader>d1 :call BlockDiff_GetBlock1()<CR>
@@ -384,10 +403,20 @@ map <silent> <F2> :w<CR>
 
 " A buffer with a filetype in this dictionary will have its window closed when
 " calling DeleteBuffer.
-let g:DeleteBufferFileTypes = { 'Decho':1, 'man':1 }
+let g:DeleteBufferFileTypes =
+      \ {
+      \ 'Decho':1,
+      \ 'man':1
+      \ }
 
 " Same as above for buffer type.
-let g:DeleteBufferBufferTypes = { 'help':1, 'nofile':1, 'nowrite':1, 'quickfix':1 }
+let g:DeleteBufferBufferTypes =
+      \ {
+      \ 'help':1,
+      \ 'nofile':1,
+      \ 'nowrite':1,
+      \ 'quickfix':1
+      \ }
 
 " Delete the current buffer, issuing bnext in all windows
 " where displayed before that.
@@ -400,11 +429,9 @@ function! DeleteBuffer()
   if &previewwindow
     let dodel = 0
     silent! close
-  elseif !empty(&buftype) && has_key(g:DeleteBufferBufferTypes, &buftype)
-    if 1 != nbw
-      silent! close
-    endif
-  elseif !empty(&filetype) && has_key(g:DeleteBufferFileTypes, &filetype)
+  elseif
+\ (!empty(&buftype) && has_key(g:DeleteBufferBufferTypes, &buftype)) ||
+\ (!empty(&filetype) && has_key(g:DeleteBufferFileTypes, &filetype))
     if 1 != nbw
       silent! close
     endif
@@ -453,7 +480,7 @@ function! ToggleHighlightExcessColumns(width)
   endif
   let width = a:width != '' ? a:width : &textwidth
   if width > 0
-    let b:highlight_excess_columns = matchadd('TODO', '\%>' . (width+1) . 'v')
+    let b:highlight_excess_columns = matchadd('TODO', '\%>'.(width+1).'v')
   endif
 endfunction
 
