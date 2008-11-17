@@ -1,16 +1,16 @@
 
-if exists('g:loaded_tags_utils') || &cp
+if exists('g:loaded_tags_utils_autoload') || &cp
  finish
 endif
 
-let g:loaded_tags_utils = 1
+let g:loaded_tags_utils_autoload = 1
 
 " Find a file, first using findfile(), and if no results is found and a cscope
 " connection is available, using 'cscope find file'. If goto_line is not 0,
 " then jump to line if its present (:xxx after the filename). If file_expr is
 " not empty and goto_line is >1, then the :xxx directive must be present. If
 " goto_line is >2, delete old buffer.
-function! TagsFindFile(file_expr, goto_line)
+function! tags_utils#TagsFindFile(file_expr, goto_line)
 
   let line = 0
 
@@ -81,14 +81,7 @@ function! TagsFindFile(file_expr, goto_line)
 
 endfunction
 
-nmap <silent> gf :call TagsFindFile('', 0)<CR>
-nmap <silent> gF :call TagsFindFile('', 1)<CR>
-
-command! -nargs=1 GF call TagsFindFile(<f-args>, 1)
-
-autocmd! BufNewFile *:* nested call TagsFindFile(bufname('%'), 3)
-
-function! TagsFindInclude(reg, tag_pattern)
+function! tags_utils#TagsFindInclude(reg, tag_pattern)
 
   let tags = taglist(a:tag_pattern)
 
@@ -113,8 +106,4 @@ function! TagsFindInclude(reg, tag_pattern)
   endfor
 
 endfunction
-
-command! -nargs=1 TagsFindInclude call TagsFindInclude('', <args>)
-
-nmap <silent> \li :call TagsFindInclude(v:register, '^'.expand('<cword>').'$')<CR>
 
