@@ -2,7 +2,6 @@
 if exists('g:loaded_tags_utils_autoload') || &cp
  finish
 endif
-
 let g:loaded_tags_utils_autoload = 1
 
 " Find a file, first using findfile(), and if no results is found and a cscope
