@@ -1,7 +1,8 @@
-if exists("loaded_rb_align")
+
+if exists("g:loaded_rb_align")
   finish
 endif
-let loaded_rb_align=1
+let g:loaded_rb_align=1
 
 if !has('ruby')
   echomsg 'ruby support not available, rb_align plugin will not be loaded!'

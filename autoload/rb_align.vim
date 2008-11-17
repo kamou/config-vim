@@ -1,4 +1,9 @@
 
+if exists("g:loaded_rb_align_autolad")
+  finish
+endif
+let g:loaded_rb_align_autolad=1
+
 rubyfile $USERVIM/autoload/rb_align.rb
 
 ruby << EOF
