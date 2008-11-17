@@ -28,4 +28,9 @@ endif
 
 " }}}
 
+" Make <S-Insert> behave like in terminal mode.
+cmap <S-Insert> <MiddleMouse>
+imap <S-Insert> <MiddleMouse>
+nmap <S-Insert> <MiddleMouse>
+
 " vim: ft=vim sw=2 foldmethod=marker
