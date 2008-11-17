@@ -1,16 +1,16 @@
 
-if exists('g:loaded_cscope_findfile') || &cp || !has('cscope')
+if exists('g:loaded_tags_utils') || &cp
  finish
 endif
 
-let g:loaded_cscope_findfile = 1
+let g:loaded_tags_utils = 1
 
 " Find a file, first using findfile(), and if no results is found and a cscope
 " connection is available, using 'cscope find file'. If goto_line is not 0,
 " then jump to line if its present (:xxx after the filename). If file_expr is
 " not empty and goto_line is >1, then the :xxx directive must be present. If
 " goto_line is >2, delete old buffer.
-function! CscopeFindFile(file_expr, goto_line)
+function! TagsFindFile(file_expr, goto_line)
 
   let line = 0
 
@@ -81,10 +81,40 @@ function! CscopeFindFile(file_expr, goto_line)
 
 endfunction
 
-nmap <silent> gf :call CscopeFindFile('', 0)<CR>
-nmap <silent> gF :call CscopeFindFile('', 1)<CR>
+nmap <silent> gf :call TagsFindFile('', 0)<CR>
+nmap <silent> gF :call TagsFindFile('', 1)<CR>
 
-command! -nargs=1 GF call CscopeFindFile(<f-args>, 1)
+command! -nargs=1 GF call TagsFindFile(<f-args>, 1)
 
-autocmd! BufNewFile *:* nested call CscopeFindFile(bufname('%'), 3)
+autocmd! BufNewFile *:* nested call TagsFindFile(bufname('%'), 3)
+
+function! TagsFindInclude(reg, tag_pattern)
+
+  let tags = taglist(a:tag_pattern)
+
+  if empty(tags)
+    return
+  end
+
+  let includes = []
+
+  for tag in tags
+    let include = tag['filename']
+    if include !~ '\.hh\?$'
+      continue
+    endif
+    if empty(a:reg)
+      echo include
+      continue
+    endif
+    let include = substitute(include, '.*[\\\/]', '', '')
+    call setreg(a:reg, '#include "'.include."\"\n")
+    return
+  endfor
+
+endfunction
+
+command! -nargs=1 TagsFindInclude call TagsFindInclude('', <args>)
+
+nmap <silent> \li :call TagsFindInclude(v:register, '^'.expand('<cword>').'$')<CR>
 
