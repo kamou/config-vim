@@ -13,3 +13,4 @@ ScriptID SourceID Filename
 389 4652 :AutoInstall: scratch.vim
 1545 6087 :AutoInstall: parenquote.vim
 2164 8341 :AutoInstall: renamec.vim
+974 4316 :AutoInstall: python.vim
