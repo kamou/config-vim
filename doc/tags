@@ -109,7 +109,6 @@ NERDComAppendComment	NERD_commenter.txt	/*NERDComAppendComment*
 NERDComAuthor	NERD_commenter.txt	/*NERDComAuthor*
 NERDComChangelog	NERD_commenter.txt	/*NERDComChangelog*
 NERDComComment	NERD_commenter.txt	/*NERDComComment*
-NERDComComment	NERD_commenter.txt	/*NERDComComment*
 NERDComCredits	NERD_commenter.txt	/*NERDComCredits*
 NERDComDefaultDelims	NERD_commenter.txt	/*NERDComDefaultDelims*
 NERDComEOLComment	NERD_commenter.txt	/*NERDComEOLComment*
