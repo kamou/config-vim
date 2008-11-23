@@ -2,42 +2,42 @@
 
 expand "keyword\t" do
 
-  defsnippet 'while ', :sh, %q[
+  defsnippet 'while ', :sh, :zsh, %q[
 while <+test+>
 do
 <+code+>
 done
   ]
 
-  defsnippet 'while[ ', :sh, %q[
+  defsnippet 'while[', :sh, :zsh, %q[
 while [ <+test+> ]
 do
 <+code+>
 done
   ]
 
-  defsnippet 'if ', :sh, %q[
+  defsnippet 'if ', :sh, :zsh, %q[
 if <+test+>
 then
 <+code+>
 fi
   ]
 
-  defsnippet 'if[ ', :sh, %q[
+  defsnippet 'if[', :sh, :zsh, %q[
 if [ <+test+> ]
 then
 <+code+>
 fi
   ]
 
-  defsnippet 'for ', :sh, %q[
+  defsnippet 'for ', :sh, :zsh, %q[
 for <+var+> in <+values+>
 do
 <+code+>
 done
   ]
 
-  defsnippet 'case ', :sh, %q[
+  defsnippet 'case ', :sh, :zsh, %q[
 case <+value+> in
 <+values+>
 esac
