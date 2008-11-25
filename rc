@@ -227,7 +227,7 @@ endif
 " To update a ctags database.
 let g:ctags_flags = '--c-kinds=+cdefgmnpstuvx --fields=+S'
 nmap <unique> <Leader>tU :
-      \ exe 'silent! !ctags '.g:ctags_flags.' -R -o tags .' <CR>
+      \ exe '!ctags '.g:ctags_flags.' -R -o tags .' <CR>
 
 " Ctags list plugin config.
 let Tlist_Enable_Fold_Column = 0
