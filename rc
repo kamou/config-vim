@@ -212,7 +212,7 @@ if has("cscope")
   nmap <unique> <silent> <Leader>tc :exe 'cscope find c <cword>'<CR>
   nmap <unique> <silent> <Leader>ta :exe 'cscope find t <cword>'<CR>
   nmap <unique> <silent> <Leader>tf :exe 'cscope find f <cfile>'<CR>
-  nmap <unique> <silent> <Leader>ti :exe 'cscope find i ^%:t$'<CR>
+  nmap <unique> <silent> <Leader>ti :exe 'cscope find i %:t'<CR>
   nmap <unique> <silent> <Leader>tu :
         \ exe 'silent! cscope k 0' <Bar>
         \ exe '!'.&cscopeprg.' -q -R -b -s .' <Bar>
