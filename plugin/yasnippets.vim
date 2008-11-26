@@ -107,6 +107,7 @@ load $snippets_file
 
 for snippet in $snippets
     keyword = snippet.shift
+    keyword.gsub!("'", "''")
     text = snippet.pop
     text.strip!
     text.gsub!("\n", '\<cr>')
@@ -130,6 +131,7 @@ end
 
 for snippet in $sksnippets
     keyword = snippet.shift
+    keyword.gsub!("'", "''")
     text = snippet.pop
     text.strip!
     text.gsub!("\n", '\<cr>')

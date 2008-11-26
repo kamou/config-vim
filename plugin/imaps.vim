@@ -336,9 +336,9 @@ function! IMAP_PutTextWithMovement(str, ...)
 		if text
 
 			text = ERB.new(text, nil, '-').result
-			text.gsub!(/["]/, '\\\1')
+			text.gsub!("'", "''")
 
-			VIM::command("let text = \"#{text}\"")
+			VIM::command("let text = '#{text}'")
 
 		end
 EOF
