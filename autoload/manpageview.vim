@@ -492,7 +492,7 @@ fun! manpageview#ManPageView(viamap,bknum,...) range
   if exists("g:manpageview_init_{ext}")
    if !exists("b:manpageview_init_{ext}")
 "    call Decho("exe manpageview_init_".ext."<".g:manpageview_init_{ext}.">")
-	exe fnameescape(g:manpageview_init_{ext})
+	exe g:manpageview_init_{ext}
 	let b:manpageview_init_{ext}= 1
    endif
   elseif ext == ""
