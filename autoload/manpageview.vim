@@ -474,7 +474,7 @@ fun! manpageview#ManPageView(viamap,bknum,...) range
 
   " special manpageview buffer maps {{{3
   nnoremap <buffer> <space>     <c-f>
-  nnoremap <buffer> <c-]>       :call manpageview#ManPageView(1,expand("<cWORD>"))<cr>
+  nnoremap <buffer> <c-]>       :call manpageview#ManPageView(1,0,expand("<cWORD>"))<cr>
 
   " -----------------------------------------
   " Invoke the man command to get the manpage {{{3
