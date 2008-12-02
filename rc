@@ -117,12 +117,18 @@ endif
 " Show statusline even if only one window is visible.
 set laststatus=2
 
-" Better status line.
+" Better status line:
+"
+" - file name/type/format/encoding
+" - diff mode
+" - buffer modified/readonly
+" - position
+"
 set statusline=
-      \%<%f\ %h%y\ %{&ff}\ %{&fenc}   " file name/type/format/encoding
-      \%(\ %{&diff?'[d]':''}%)\       " diff mode
-      \%(\ %m%)%(\ %r%)%=%-24.        " buffer modified/readonly
-      \(\ %l,%c%V\ [%b,0x%B]\ %)\ %P  " position
+      \%<%f\ %h%y\ %{&ff}\ %{&fenc}
+      \%(\ %{&diff?'[d]':''}%)\ 
+      \%(\ %m%)%(\ %r%)%=%-24.
+      \(\ %l,%c%V\ [%b,0x%B]\ %)\ %P
 
 " }}}
 
