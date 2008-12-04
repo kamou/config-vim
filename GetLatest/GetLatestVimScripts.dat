@@ -15,3 +15,4 @@ ScriptID SourceID Filename
 2164 8341 :AutoInstall: renamec.vim
 974 4316 :AutoInstall: python.vim
 489 9573 :AutoInstall: manpageviewPlugin
+39 8196 :AutoInstall: matchit.vim
