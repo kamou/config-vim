@@ -17,9 +17,14 @@ set guicursor=a:blinkon0
 
 " GUI options. {{{
 
-" No toolbar, use console dialogs instead of popup dialogs for simple choices.
+" No toolbar
 set guioptions-=T
+
+" Use console dialogs instead of popup dialogs for simple choices.
 set guioptions+=c
+
+" Always show left/right-hand scrollbars.
+set guioptions+=lr
 
 if has('win32')
   " Auto-yank of visual/modeless selection.
