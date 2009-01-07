@@ -1,6 +1,6 @@
 
-imap  <C-BS>
-cmap  <C-BS>
+imap  <C-BS>
+cmap  <C-BS>
 
 nmap 0 <M-0>
 nmap 1 <M-1>
