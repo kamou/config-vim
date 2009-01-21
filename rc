@@ -178,6 +178,9 @@ set backspace=2
 imap <C-BS> <C-w>
 cmap <C-BS> <C-w>
 
+" Make backspace backward delete a char even in normal mode.
+map <BS> X
+
 " }}}
 
 " Cscope support. {{{
