@@ -69,8 +69,6 @@ function! bzrstatus#diff_open()
     return
   endif
 
-  echo l[0]
-
   if l[1] == 'N' || l[0] == '?'
     wincmd k
     exe 'edit '.fnameescape(f)
