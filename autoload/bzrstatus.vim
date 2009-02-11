@@ -1,24 +1,24 @@
 
-function! bzrstatus#BzrStatusCleanState()
+function! bzrstatus#clean_state()
 
-  if g:BzrStatus_diffbuf
-    call setbufvar(g:BzrStatus_diffbuf, '&diff', 0)
-    let g:BzrStatus_diffbuf = 0
+  if g:bzrstatus_diffbuf
+    call setbufvar(g:bzrstatus_diffbuf, '&diff', 0)
+    let g:bzrstatus_diffbuf = 0
   endif
 
-  if g:BzrStatus_tmpbuf
-    exe 'silent bd '.g:BzrStatus_tmpbuf
-    let g:BzrStatus_tmpbuf = 0
+  if g:bzrstatus_tmpbuf
+    exe 'silent bd '.g:bzrstatus_tmpbuf
+    let g:bzrstatus_tmpbuf = 0
   endif
 
   exe ':sign unplace 42 buffer='.bufnr('')
 
 endfunction
 
-function! bzrstatus#BzrStatusDiffOpen()
+function! bzrstatus#diff_open()
 
   let l = getline('.')
-  let m = matchlist(l, g:BzrStatus_matchline)
+  let m = matchlist(l, g:bzrstatus_matchline)
 
   if [] == m
     return
@@ -26,9 +26,9 @@ function! bzrstatus#BzrStatusDiffOpen()
 
   let f = m[2]
 
-  call bzrstatus#BzrStatusCleanState()
+  call bzrstatus#clean_state()
 
-  exe ':sign place 42 line='.line('.').' name=BzrStatusSelection buffer='.bufnr('')
+  exe ':sign place 42 line='.line('.').' name=bzrstatusSelection buffer='.bufnr('')
 
   if 1 == winnr()
     new
@@ -38,11 +38,11 @@ function! bzrstatus#BzrStatusDiffOpen()
   if l[1] == 'M'
     wincmd k
     exe 'edit '.f
-    let g:BzrStatus_diffbuf = bufnr('')
+    let g:bzrstatus_diffbuf = bufnr('')
     let ft = &ft
     diffthis
     rightb vertical new
-    let g:BzrStatus_tmpbuf = bufnr('')
+    let g:bzrstatus_tmpbuf = bufnr('')
     redraw
     exe 'silent read !bzr cat '.f
     exe 'normal 1Gdd'
@@ -56,7 +56,7 @@ function! bzrstatus#BzrStatusDiffOpen()
   if l[1] == 'D'
     wincmd k
     enew
-    let g:BzrStatus_tmpbuf = bufnr('')
+    let g:bzrstatus_tmpbuf = bufnr('')
     redraw
     exe 'silent read !bzr cat '.f
     exe 'normal 1Gdd'
@@ -76,50 +76,50 @@ function! bzrstatus#BzrStatusDiffOpen()
 
 endfunction
 
-function! bzrstatus#BzrStatusQuit()
+function! bzrstatus#quit()
 
-  call bzrstatus#BzrStatusCleanState()
+  call bzrstatus#clean_state()
 
   bwipeout
 
 endfunction
 
-function! bzrstatus#BzrStatusUpdate()
+function! bzrstatus#update()
 
-  call bzrstatus#BzrStatusCleanState()
+  call bzrstatus#clean_state()
 
   setlocal modifiable
   exe 'normal ggdG'
-  call append(0, g:BzrStatus_bzrcmd)
+  call append(0, g:bzrstatus_bzrcmd)
   redraw
-  exe 'silent read !'.g:BzrStatus_bzrcmd
-  call search(g:BzrStatus_nextline)
+  exe 'silent read !'.g:bzrstatus_bzrcmd
+  call search(g:bzrstatus_nextline)
   setlocal nomodifiable
 
 endfunction
 
-function! bzrstatus#BzrStatus()
+function! bzrstatus#start()
 
   silent botright split new
   setlocal buftype=nofile
-  file BzrStatus
+  file bzrstatus
 
   if has("syntax") && exists("g:syntax_on")
-    syn match BzrStatusAdded    /^[-+R ]N[* ]/
-    syn match BzrStatusRemoved  /^[-+R ]D[* ]/
-    syn match BzrStatusModified /^[-+R ]M[* ]/
-    hi def link BzrStatusAdded DiffAdd
-    hi def link BzrStatusRemoved DiffDelete
-    hi def link BzrStatusModified DiffChange
-    sign define BzrStatusSelection text=>> texthl=Search linehl=Search
+    syn match bzrstatusAdded    /^[-+R ]N[* ]/
+    syn match bzrstatusRemoved  /^[-+R ]D[* ]/
+    syn match bzrstatusModified /^[-+R ]M[* ]/
+    hi def link bzrstatusAdded DiffAdd
+    hi def link bzrstatusRemoved DiffDelete
+    hi def link bzrstatusModified DiffChange
+    sign define bzrstatusSelection text=>> texthl=Search linehl=Search
   end
 
-  call bzrstatus#BzrStatusUpdate()
+  call bzrstatus#update()
 
-  nnoremap <silent> <buffer> <2-Leftmouse> :call bzrstatus#BzrStatusDiffOpen()<CR>
-  nnoremap <silent> <buffer> <CR> :call bzrstatus#BzrStatusDiffOpen()<CR>
-  nnoremap <silent> <buffer> q :call bzrstatus#BzrStatusQuit()<CR>
-  nnoremap <silent> <buffer> u :call bzrstatus#BzrStatusUpdate()<CR>
+  nnoremap <silent> <buffer> <2-Leftmouse> :call bzrstatus#diff_open()<CR>
+  nnoremap <silent> <buffer> <CR> :call bzrstatus#diff_open()<CR>
+  nnoremap <silent> <buffer> q :call bzrstatus#quit()<CR>
+  nnoremap <silent> <buffer> u :call bzrstatus#update()<CR>
 
 endfunction
 
