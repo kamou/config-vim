@@ -44,7 +44,7 @@ function! bzrstatus#diff_open()
     rightb vertical new
     let t:bzrstatus_tmpbuf = bufnr('')
     redraw
-    exe 'silent read !bzr cat '.shellescape(f)
+    exe 'silent read !'.g:bzrstatus_bzr.' cat '.shellescape(f)
     exe 'normal 1Gdd'
     setlocal buftype=nofile
     let &ft = ft
@@ -58,7 +58,7 @@ function! bzrstatus#diff_open()
     enew
     let t:bzrstatus_tmpbuf = bufnr('')
     redraw
-    exe 'silent read !bzr cat '.shellescape(f)
+    exe 'silent read !'.g:bzrstatus_bzr.' cat '.shellescape(f)
     exe 'normal 1Gdd'
     setlocal buftype=nofile
     wincmd j
@@ -90,7 +90,7 @@ function! bzrstatus#update()
 
   setlocal modifiable fenc=utf-8
   exe 'normal ggdG'
-  let cmd = 'bzr status -S '.shellescape(t:bzrstatus_path)
+  let cmd = g:bzrstatus_bzr.' status -S '.shellescape(t:bzrstatus_path)
   call append(0, cmd)
   redraw
   exe 'silent read !'.cmd
@@ -108,7 +108,7 @@ function! bzrstatus#start(...)
   end
 
   let t:bzrstatus_path = fnamemodify(path, ':p')
-  let t:bzrstatus_tree = system('bzr root '.shellescape(t:bzrstatus_path))[0:-2]
+  let t:bzrstatus_tree = system(g:bzrstatus_bzr.' root '.shellescape(t:bzrstatus_path))[0:-2]
   let t:bzrstatus_nextline = '^[-+R ][NDM][* ]\s\+\(.*\)$'
   let t:bzrstatus_matchline = '^\([-+R ][NDM][* ]\|?  \|  \*\)\s\+\(.*\)$'
 
