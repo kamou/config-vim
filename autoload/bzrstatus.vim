@@ -1,14 +1,14 @@
 
 function! bzrstatus#clean_state()
 
-  if t:bzrstatus_diffbuf
+  if exists('t:bzrstatus_diffbuf')
     call setbufvar(t:bzrstatus_diffbuf, '&diff', 0)
-    let t:bzrstatus_diffbuf = 0
+    unlet t:bzrstatus_diffbuf
   endif
 
-  if t:bzrstatus_tmpbuf
+  if exists('t:bzrstatus_tmpbuf')
     exe 'silent bd '.t:bzrstatus_tmpbuf
-    let t:bzrstatus_tmpbuf = 0
+    unlet t:bzrstatus_tmpbuf
   endif
 
   exe ':sign unplace 42 buffer='.bufnr('')
@@ -111,8 +111,6 @@ function! bzrstatus#start(...)
   let t:bzrstatus_tree = system('bzr root '.shellescape(t:bzrstatus_path))[0:-2]
   let t:bzrstatus_nextline = '^[-+R ][NDM][* ]\s\+\(.*\)$'
   let t:bzrstatus_matchline = '^\([-+R ][NDM][* ]\|?  \|  \*\)\s\+\(.*\)$'
-  let t:bzrstatus_tmpbuf = 0
-  let t:bzrstatus_diffbuf = 0
 
   silent botright split new
   setlocal buftype=nofile ft=bzrstatus
