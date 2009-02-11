@@ -43,6 +43,7 @@ function! bzrstatus#BzrStatusDiffOpen()
     diffthis
     rightb vertical new
     let g:BzrStatus_tmpbuf = bufnr('')
+    redraw
     exe 'silent read !bzr cat '.f
     exe 'normal 1Gdd'
     setlocal buftype=nofile
@@ -56,6 +57,7 @@ function! bzrstatus#BzrStatusDiffOpen()
     wincmd k
     enew
     let g:BzrStatus_tmpbuf = bufnr('')
+    redraw
     exe 'silent read !bzr cat '.f
     exe 'normal 1Gdd'
     setlocal buftype=nofile
