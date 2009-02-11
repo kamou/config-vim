@@ -11,7 +11,9 @@ function! bzrstatus#clean_state()
     unlet t:bzrstatus_tmpbuf
   endif
 
-  exe ':sign unplace 42 buffer='.bufnr('')
+  if has('signs')
+    exe ':sign unplace 42 buffer='.bufnr('')
+  end
 
 endfunction
 
@@ -28,7 +30,9 @@ function! bzrstatus#diff_open()
 
   call bzrstatus#clean_state()
 
-  exe ':sign place 42 line='.line('.').' name=bzrstatusSelection buffer='.bufnr('')
+  if has('signs')
+    exe ':sign place 42 line='.line('.').' name=bzrstatusSelection buffer='.bufnr('')
+  end
 
   if 1 == winnr()
     new
@@ -116,15 +120,9 @@ function! bzrstatus#start(...)
   setlocal buftype=nofile ft=bzrstatus
   exe 'file '.fnameescape(t:bzrstatus_tree)
 
-  if has("syntax") && exists("g:syntax_on")
-    syn match bzrstatusAdded    /^[-+R ]N[* ]/
-    syn match bzrstatusRemoved  /^[-+R ]D[* ]/
-    syn match bzrstatusModified /^[-+R ]M[* ]/
-    hi def link bzrstatusAdded DiffAdd
-    hi def link bzrstatusRemoved DiffDelete
-    hi def link bzrstatusModified DiffChange
+  if has('signs')
     sign define bzrstatusSelection text=>> texthl=Search linehl=Search
-  end
+  endif
 
   call bzrstatus#update()
 
