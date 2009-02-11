@@ -88,7 +88,7 @@ function! bzrstatus#update()
 
   call bzrstatus#clean_state()
 
-  setlocal modifiable
+  setlocal modifiable fenc=utf-8
   exe 'normal ggdG'
   let cmd = 'bzr status -S --no-pending --versioned '.shellescape(t:bzrstatus_path)
   call append(0, cmd)
