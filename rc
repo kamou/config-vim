@@ -36,8 +36,6 @@ if filereadable(user)
   execute "source ".user
 endif
 
-language C
-
 " Not VI compatible.
 set nocompatible
 
