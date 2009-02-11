@@ -90,7 +90,7 @@ function! bzrstatus#update()
 
   setlocal modifiable fenc=utf-8
   exe 'normal ggdG'
-  let cmd = 'bzr status -S --no-pending --versioned '.shellescape(t:bzrstatus_path)
+  let cmd = 'bzr status -S '.shellescape(t:bzrstatus_path)
   call append(0, cmd)
   redraw
   exe 'silent read !'.cmd
