@@ -1,14 +1,14 @@
 
 function! bzrstatus#clean_state()
 
-  if g:bzrstatus_diffbuf
-    call setbufvar(g:bzrstatus_diffbuf, '&diff', 0)
-    let g:bzrstatus_diffbuf = 0
+  if t:bzrstatus_diffbuf
+    call setbufvar(t:bzrstatus_diffbuf, '&diff', 0)
+    let t:bzrstatus_diffbuf = 0
   endif
 
-  if g:bzrstatus_tmpbuf
-    exe 'silent bd '.g:bzrstatus_tmpbuf
-    let g:bzrstatus_tmpbuf = 0
+  if t:bzrstatus_tmpbuf
+    exe 'silent bd '.t:bzrstatus_tmpbuf
+    let t:bzrstatus_tmpbuf = 0
   endif
 
   exe ':sign unplace 42 buffer='.bufnr('')
@@ -18,13 +18,13 @@ endfunction
 function! bzrstatus#diff_open()
 
   let l = getline('.')
-  let m = matchlist(l, g:bzrstatus_matchline)
+  let m = matchlist(l, t:bzrstatus_matchline)
 
   if [] == m
     return
   endif
 
-  let f = m[2]
+  let f = t:bzrstatus_tree.'/'.m[2]
 
   call bzrstatus#clean_state()
 
@@ -37,14 +37,14 @@ function! bzrstatus#diff_open()
 
   if l[1] == 'M'
     wincmd k
-    exe 'edit '.f
-    let g:bzrstatus_diffbuf = bufnr('')
+    exe 'edit '.fnameescape(f)
+    let t:bzrstatus_diffbuf = bufnr('')
     let ft = &ft
     diffthis
     rightb vertical new
-    let g:bzrstatus_tmpbuf = bufnr('')
+    let t:bzrstatus_tmpbuf = bufnr('')
     redraw
-    exe 'silent read !bzr cat '.f
+    exe 'silent read !bzr cat '.shellescape(f)
     exe 'normal 1Gdd'
     setlocal buftype=nofile
     let &ft = ft
@@ -56,9 +56,9 @@ function! bzrstatus#diff_open()
   if l[1] == 'D'
     wincmd k
     enew
-    let g:bzrstatus_tmpbuf = bufnr('')
+    let t:bzrstatus_tmpbuf = bufnr('')
     redraw
-    exe 'silent read !bzr cat '.f
+    exe 'silent read !bzr cat '.shellescape(f)
     exe 'normal 1Gdd'
     setlocal buftype=nofile
     wincmd j
@@ -69,7 +69,7 @@ function! bzrstatus#diff_open()
 
   if l[1] == 'N' || l[0] == '?'
     wincmd k
-    exe 'edit '.f
+    exe 'edit '.fnameescape(f)
     wincmd j
     return
   endif
@@ -90,19 +90,33 @@ function! bzrstatus#update()
 
   setlocal modifiable
   exe 'normal ggdG'
-  call append(0, g:bzrstatus_bzrcmd)
+  let cmd = 'bzr status -S --no-pending --versioned '.shellescape(t:bzrstatus_path)
+  call append(0, cmd)
   redraw
-  exe 'silent read !'.g:bzrstatus_bzrcmd
-  call search(g:bzrstatus_nextline)
+  exe 'silent read !'.cmd
+  call search(t:bzrstatus_nextline)
   setlocal nomodifiable
 
 endfunction
 
-function! bzrstatus#start()
+function! bzrstatus#start(...)
+
+  if a:0
+    let path = a:1
+  else
+    let path = '.'
+  end
+
+  let t:bzrstatus_path = fnamemodify(path, ':p')
+  let t:bzrstatus_tree = system('bzr root '.shellescape(t:bzrstatus_path))[0:-2]
+  let t:bzrstatus_nextline = '^[-+R ][NDM][* ]\s\+\(.*\)$'
+  let t:bzrstatus_matchline = '^\([-+R ][NDM][* ]\|?  \|  \*\)\s\+\(.*\)$'
+  let t:bzrstatus_tmpbuf = 0
+  let t:bzrstatus_diffbuf = 0
 
   silent botright split new
-  setlocal buftype=nofile
-  file bzrstatus
+  setlocal buftype=nofile ft=bzrstatus
+  exe 'file '.fnameescape(t:bzrstatus_tree)
 
   if has("syntax") && exists("g:syntax_on")
     syn match bzrstatusAdded    /^[-+R ]N[* ]/
