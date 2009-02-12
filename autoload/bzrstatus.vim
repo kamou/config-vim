@@ -1,4 +1,7 @@
 
+let s:bzrstatus_nextline = '^[-+R ][NDM][* ]\s'
+let s:bzrstatus_matchline = '^\([-+R ][NDM][* ]\|?  \|  \*\)\s\+\(.*\)$'
+
 function! bzrstatus#clean_state()
 
   if exists('t:bzrstatus_diffbuf')
@@ -20,7 +23,7 @@ endfunction
 function! bzrstatus#diff_open()
 
   let l = getline('.')
-  let m = matchlist(l, t:bzrstatus_matchline)
+  let m = matchlist(l, s:bzrstatus_matchline)
 
   if [] == m
     return
@@ -103,7 +106,7 @@ function! bzrstatus#update()
   call append(0, cmd)
   redraw
   exe 'silent read !'.cmd
-  call search(t:bzrstatus_nextline)
+  call search(s:bzrstatus_nextline)
   setlocal nomodifiable
 
 endfunction
@@ -118,8 +121,6 @@ function! bzrstatus#start(...)
 
   let t:bzrstatus_path = fnamemodify(path, ':p')
   let t:bzrstatus_tree = system(g:bzrstatus_bzr.' root '.shellescape(t:bzrstatus_path))[0:-2]
-  let t:bzrstatus_nextline = '^[-+R ][NDM][* ]\s\+\(.*\)$'
-  let t:bzrstatus_matchline = '^\([-+R ][NDM][* ]\|?  \|  \*\)\s\+\(.*\)$'
 
   silent botright split new
   setlocal buftype=nofile ft=bzrstatus
