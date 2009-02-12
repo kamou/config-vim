@@ -26,6 +26,11 @@ function! bzrstatus#diff_open()
     return
   endif
 
+  let unknown = (l[0] == '?')
+  let modified = (l[1] == 'M')
+  let deleted = (l[1] == 'D')
+  let added = (l[1] == 'N')
+
   let e = m[2]
   let f = t:bzrstatus_tree.'/'.e
 
@@ -41,33 +46,39 @@ function! bzrstatus#diff_open()
     wincmd k
   endif
 
-  if l[1] == 'M' || l[1] == 'N' || l[0] == '?'
+  if modified || added || unknown
+    " Open current tree version.
     exe 'edit '.fnameescape(f)
   endif
 
-  if l[1] == 'M'
+  if modified
+    " Prepare for diff...
     let t:bzrstatus_diffbuf = bufnr('')
     let ft = &ft
     diffthis
     rightb vertical new
-    let t:bzrstatus_tmpbuf = bufnr('')
-    exe 'file [BZR] '.fnameescape(e)
-    redraw
-    exe 'silent read !'.g:bzrstatus_bzr.' cat '.shellescape(f)
-    exe 'normal 1Gdd'
-    setlocal buftype=nofile
-    let &ft = ft
-    diffthis
+  elseif l[1] == 'D'
+    " ...or original version display.
+    enew
   endif
 
-  if l[1] == 'D'
-    enew
+  if modified || deleted
+    " Get original version from Bazaar.
     let t:bzrstatus_tmpbuf = bufnr('')
     exe 'file [BZR] '.fnameescape(e)
     redraw
     exe 'silent read !'.g:bzrstatus_bzr.' cat '.shellescape(f)
     exe 'normal 1Gdd'
     setlocal buftype=nofile
+  end
+
+  if modified
+    " Set filetype from original for correct syntax highlighting...
+    let &ft = ft
+    diffthis
+  elseif deleted
+    " ...or try to detect it
+    filetype detect
   endif
 
   exe bufwinnr(t:bzrstatus_buffer).' wincmd w'
