@@ -12,7 +12,7 @@ function! bzrstatus#clean_state()
   endif
 
   if has('signs')
-    exe ':sign unplace 42 buffer='.bufnr('')
+    exe ':sign unplace 2 buffer='.t:bzrstatus_buffer
   end
 
 endfunction
@@ -31,17 +31,20 @@ function! bzrstatus#diff_open()
   call bzrstatus#clean_state()
 
   if has('signs')
-    exe ':sign place 42 line='.line('.').' name=bzrstatusSelection buffer='.bufnr('')
+    exe ':sign place 2 line='.line('.').' name=bzrstatusSelection buffer='.t:bzrstatus_buffer
   end
 
-  if 1 == winnr()
+  if 1 == winnr('$')
     new
-    wincmd j
+  else
+    wincmd k
+  endif
+
+  if l[1] == 'M' || l[1] == 'N' || l[0] == '?'
+    exe 'edit '.fnameescape(f)
   endif
 
   if l[1] == 'M'
-    wincmd k
-    exe 'edit '.fnameescape(f)
     let t:bzrstatus_diffbuf = bufnr('')
     let ft = &ft
     diffthis
@@ -53,28 +56,18 @@ function! bzrstatus#diff_open()
     setlocal buftype=nofile
     let &ft = ft
     diffthis
-    wincmd j
-    return
   endif
 
   if l[1] == 'D'
-    wincmd k
     enew
     let t:bzrstatus_tmpbuf = bufnr('')
     redraw
     exe 'silent read !'.g:bzrstatus_bzr.' cat '.shellescape(f)
     exe 'normal 1Gdd'
     setlocal buftype=nofile
-    wincmd j
-    return
   endif
 
-  if l[1] == 'N' || l[0] == '?'
-    wincmd k
-    exe 'edit '.fnameescape(f)
-    wincmd j
-    return
-  endif
+  exe bufwinnr(t:bzrstatus_buffer).' wincmd w'
 
 endfunction
 
@@ -117,6 +110,8 @@ function! bzrstatus#start(...)
   silent botright split new
   setlocal buftype=nofile ft=bzrstatus
   exe 'file '.fnameescape(t:bzrstatus_tree)
+
+  let t:bzrstatus_buffer = bufnr('')
 
   if has('signs')
     sign define bzrstatusSelection text=>> texthl=Search linehl=Search
