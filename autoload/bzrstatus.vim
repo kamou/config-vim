@@ -31,7 +31,7 @@ function! bzrstatus#diff_open()
   call bzrstatus#clean_state()
 
   if has('signs')
-    exe ':sign place 2 line='.line('.').' name=bzrstatusSelection buffer='.t:bzrstatus_buffer
+    exe ':sign place 2 line='.line('.').' name=bzrstatus_sign_selection buffer='.t:bzrstatus_buffer
   end
 
   if 1 == winnr('$')
@@ -114,7 +114,9 @@ function! bzrstatus#start(...)
   let t:bzrstatus_buffer = bufnr('')
 
   if has('signs')
-    sign define bzrstatusSelection text=>> texthl=Search linehl=Search
+    sign define bzrstatus_sign_selection text=>> texthl=Search linehl=Search
+    sign define bzrstatus_sign_start
+    exe ':sign place 1 line=1 name=bzrstatus_sign_start buffer='.t:bzrstatus_buffer
   endif
 
   call bzrstatus#update()
