@@ -106,7 +106,8 @@ function! bzrstatus#update()
   call append(0, cmd)
   redraw
   exe 'silent read !'.cmd
-  call search(s:bzrstatus_nextline)
+  exe 'normal gg'
+  call search(s:bzrstatus_nextline, 'eW')
   setlocal nomodifiable
 
 endfunction
