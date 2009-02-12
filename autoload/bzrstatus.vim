@@ -26,7 +26,8 @@ function! bzrstatus#diff_open()
     return
   endif
 
-  let f = t:bzrstatus_tree.'/'.m[2]
+  let e = m[2]
+  let f = t:bzrstatus_tree.'/'.e
 
   call bzrstatus#clean_state()
 
@@ -50,6 +51,7 @@ function! bzrstatus#diff_open()
     diffthis
     rightb vertical new
     let t:bzrstatus_tmpbuf = bufnr('')
+    exe 'file [BZR] '.fnameescape(e)
     redraw
     exe 'silent read !'.g:bzrstatus_bzr.' cat '.shellescape(f)
     exe 'normal 1Gdd'
@@ -61,6 +63,7 @@ function! bzrstatus#diff_open()
   if l[1] == 'D'
     enew
     let t:bzrstatus_tmpbuf = bufnr('')
+    exe 'file [BZR] '.fnameescape(e)
     redraw
     exe 'silent read !'.g:bzrstatus_bzr.' cat '.shellescape(f)
     exe 'normal 1Gdd'
