@@ -60,7 +60,7 @@ function! bzrstatus#diff_open()
     let ft = &ft
     diffthis
     rightb vertical new
-  elseif l[1] == 'D'
+  elseif deleted
     " ...or original version display.
     enew
   endif
