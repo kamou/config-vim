@@ -29,13 +29,34 @@ function! bzrstatus#diff_open()
     return
   endif
 
+  let renamed = (l[0] == 'R')
   let unknown = (l[0] == '?')
   let modified = (l[1] == 'M')
   let deleted = (l[1] == 'D')
   let added = (l[1] == 'N')
 
-  let e = m[2]
-  let f = t:bzrstatus_tree.'/'.e
+  let old_entry = m[2]
+
+  if renamed
+
+    let m = matchlist(old_entry, '^\(.*\) => \(.*$\)')
+
+    if [] == m
+      echoerr 'error parsing line: '.l
+      return
+    endif
+
+    let old_entry = m[1]
+    let new_entry = m[2]
+
+  else
+
+    let new_entry = old_entry
+
+  endif
+
+  let old_entry_fullpath = t:bzrstatus_tree.'/'.old_entry
+  let new_entry_fullpath = t:bzrstatus_tree.'/'.new_entry
 
   call bzrstatus#clean_state()
 
@@ -51,7 +72,7 @@ function! bzrstatus#diff_open()
 
   if modified || added || unknown
     " Open current tree version.
-    exe 'edit '.fnameescape(f)
+    exe 'edit '.fnameescape(new_entry_fullpath)
   endif
 
   if modified
@@ -68,9 +89,9 @@ function! bzrstatus#diff_open()
   if modified || deleted
     " Get original version from Bazaar.
     let t:bzrstatus_tmpbuf = bufnr('')
-    exe 'file [BZR] '.fnameescape(e)
+    exe 'file [BZR] '.fnameescape(old_entry)
     redraw
-    exe 'silent read !'.g:bzrstatus_bzr.' cat '.shellescape(f)
+    exe 'silent read !'.g:bzrstatus_bzr.' cat '.shellescape(old_entry_fullpath)
     exe 'normal 1Gdd'
     setlocal buftype=nofile
   end
