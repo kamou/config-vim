@@ -20,13 +20,13 @@ function! bzrstatus#clean_state()
 
 endfunction
 
-function! bzrstatus#parse_entry_state()
+function! bzrstatus#parse_entry_state(ln)
 
-  if line('.') > t:bzrstatus_msgline
+  if a:ln > t:bzrstatus_msgline
     return []
   endif
 
-  let l = getline('.')
+  let l = getline(a:ln)
   let m = matchlist(l, s:bzrstatus_matchline)
 
   if [] == m
@@ -66,9 +66,33 @@ function! bzrstatus#parse_entry_state()
 
 endfunction
 
+function! bzrstatus#filter_entries(firstl, lastl, criterion)
+
+  let files = []
+
+  for ln in range(a:firstl, a:lastl)
+
+    let s = bzrstatus#parse_entry_state(ln)
+    if [] == s
+      continue
+    endif
+
+    let [renamed, unknown, modified, deleted, added, old_entry, old_entry_fullpath, new_entry, new_entry_fullpath] = s
+    if !eval(a:criterion)
+      continue
+    endif
+
+    let files += [new_entry_fullpath]
+
+  endfor
+
+  return files
+
+endfunction
+
 function! bzrstatus#diff_open()
 
-  let s = bzrstatus#parse_entry_state()
+  let s = bzrstatus#parse_entry_state(line('.'))
   if [] == s
     return
   endif
@@ -160,88 +184,58 @@ function! bzrstatus#exec_bzr(cmd, files, confirm)
 
 endfunction
 
-function! bzrstatus#add()
+function! bzrstatus#add() range
 
-  let s = bzrstatus#parse_entry_state()
-  if [] == s
+  let files = bzrstatus#filter_entries(a:firstline, a:lastline, 'unknown')
+  if [] == files
     return
   endif
 
-  let [renamed, unknown, modified, deleted, added, old_entry, old_entry_fullpath, new_entry, new_entry_fullpath] = s
-
-  if !unknown
-    return
-  endif
-
-  call bzrstatus#exec_bzr('add', [new_entry_fullpath], 1)
+  call bzrstatus#exec_bzr('add', files, 1)
 
 endfunction
 
-function! bzrstatus#commit()
+function! bzrstatus#commit() range
 
-  let s = bzrstatus#parse_entry_state()
-  if [] == s
+  let files = bzrstatus#filter_entries(a:firstline, a:lastline, '!unknown')
+  if [] == files
     return
   endif
 
-  let [renamed, unknown, modified, deleted, added, old_entry, old_entry_fullpath, new_entry, new_entry_fullpath] = s
-
-  if unknown
-    return
-  endif
-
-  call bzrstatus#exec_bzr('ci', [new_entry_fullpath], 1)
+  call bzrstatus#exec_bzr('ci', files, 1)
 
 endfunction
 
-function! bzrstatus#delete()
+function! bzrstatus#delete() range
 
-  let s = bzrstatus#parse_entry_state()
-  if [] == s
+  let files = bzrstatus#filter_entries(a:firstline, a:lastline, '!unknown && !deleted')
+  if [] == files
     return
   endif
 
-  let [renamed, unknown, modified, deleted, added, old_entry, old_entry_fullpath, new_entry, new_entry_fullpath] = s
-
-  if unknown
-    return
-  endif
-
-  call bzrstatus#exec_bzr('del', [new_entry_fullpath], 1)
+  call bzrstatus#exec_bzr('del', files, 1)
 
 endfunction
 
-function! bzrstatus#revert()
+function! bzrstatus#revert() range
 
-  let s = bzrstatus#parse_entry_state()
-  if [] == s
+  let files = bzrstatus#filter_entries(a:firstline, a:lastline, 'modified || deleted || renamed')
+  if [] == files
     return
   endif
 
-  let [renamed, unknown, modified, deleted, added, old_entry, old_entry_fullpath, new_entry, new_entry_fullpath] = s
-
-  if !modified && !deleted && !renamed
-    return
-  endif
-
-  call bzrstatus#exec_bzr('revert', [new_entry_fullpath], 1)
+  call bzrstatus#exec_bzr('revert', files, 1)
 
 endfunction
 
-function! bzrstatus#shelve()
+function! bzrstatus#shelve() range
 
-  let s = bzrstatus#parse_entry_state()
-  if [] == s
+  let files = bzrstatus#filter_entries(a:firstline, a:lastline, '!unknown')
+  if [] == files
     return
   endif
 
-  let [renamed, unknown, modified, deleted, added, old_entry, old_entry_fullpath, new_entry, new_entry_fullpath] = s
-
-  if unknown
-    return
-  endif
-
-  call bzrstatus#exec_bzr('shelve', [new_entry_fullpath], 1)
+  call bzrstatus#exec_bzr('shelve', files, 1)
 
 endfunction
 
@@ -317,10 +311,15 @@ function! bzrstatus#start(...)
   nnoremap <silent> <buffer> <2-Leftmouse> :call bzrstatus#diff_open()<CR>
   nnoremap <silent> <buffer> <CR> :call bzrstatus#diff_open()<CR>
   nnoremap <silent> <buffer> A :call bzrstatus#add()<CR>
+  vnoremap <silent> <buffer> A :call bzrstatus#add()<CR>
   nnoremap <silent> <buffer> C :call bzrstatus#commit()<CR>
+  vnoremap <silent> <buffer> C :call bzrstatus#commit()<CR>
   nnoremap <silent> <buffer> D :call bzrstatus#delete()<CR>
+  vnoremap <silent> <buffer> D :call bzrstatus#delete()<CR>
   nnoremap <silent> <buffer> R :call bzrstatus#revert()<CR>
+  vnoremap <silent> <buffer> R :call bzrstatus#revert()<CR>
   nnoremap <silent> <buffer> S :call bzrstatus#shelve()<CR>
+  vnoremap <silent> <buffer> S :call bzrstatus#shelve()<CR>
   nnoremap <silent> <buffer> U :call bzrstatus#unshelve()<CR>
   nnoremap <silent> <buffer> q :call bzrstatus#quit()<CR>
   nnoremap <silent> <buffer> u :call bzrstatus#update(1)<CR>
