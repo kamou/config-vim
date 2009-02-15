@@ -126,7 +126,7 @@ function! bzrstatus#diff_open()
 
 endfunction
 
-function! bzrstatus#exec_bzr(cmd, files)
+function! bzrstatus#exec_bzr(cmd, files, confirm)
 
   setlocal modifiable
 
@@ -134,12 +134,18 @@ function! bzrstatus#exec_bzr(cmd, files)
     exe 'silent '.(t:bzrstatus_msgline + 1).',$delete'
   endif
 
-  let cmd = g:bzrstatus_bzr.' '.a:cmd
+  let cmd = a:cmd
 
   if [] != a:files
     let files = map(a:files, 'shellescape(v:val)')
     let cmd = cmd.' '.join(files, ' ')
   endif
+
+  if a:confirm && 2 == confirm(cmd, "&Yes\n&No", 2)
+    return
+  endif
+
+  let cmd = g:bzrstatus_bzr.' '.cmd
 
   call append(t:bzrstatus_msgline, [cmd, ''])
   redraw
@@ -167,7 +173,7 @@ function! bzrstatus#add()
     return
   endif
 
-  call bzrstatus#exec_bzr('add', [new_entry_fullpath])
+  call bzrstatus#exec_bzr('add', [new_entry_fullpath], 1)
 
 endfunction
 
@@ -184,7 +190,7 @@ function! bzrstatus#commit()
     return
   endif
 
-  call bzrstatus#exec_bzr('ci', [new_entry_fullpath])
+  call bzrstatus#exec_bzr('ci', [new_entry_fullpath], 1)
 
 endfunction
 
@@ -201,7 +207,7 @@ function! bzrstatus#delete()
     return
   endif
 
-  call bzrstatus#exec_bzr('del', [new_entry_fullpath])
+  call bzrstatus#exec_bzr('del', [new_entry_fullpath], 1)
 
 endfunction
 
@@ -218,7 +224,7 @@ function! bzrstatus#revert()
     return
   endif
 
-  call bzrstatus#exec_bzr('revert', [new_entry_fullpath])
+  call bzrstatus#exec_bzr('revert', [new_entry_fullpath], 1)
 
 endfunction
 
@@ -235,13 +241,13 @@ function! bzrstatus#shelve()
     return
   endif
 
-  call bzrstatus#exec_bzr('shelve', [new_entry_fullpath])
+  call bzrstatus#exec_bzr('shelve', [new_entry_fullpath], 1)
 
 endfunction
 
 function! bzrstatus#unshelve()
 
-  call bzrstatus#exec_bzr('unshelve', [])
+  call bzrstatus#exec_bzr('unshelve', [], 1)
 
 endfunction
 
