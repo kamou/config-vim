@@ -176,7 +176,7 @@ function! bzrstatus#exec_bzr(cmd, files, confirm)
 
   exe ':'.(t:bzrstatus_msgline + 2)
   let tf = tempname()
-  exe 'silent !2>'.tf.' '.cmd
+  exe '!2>'.tf.' '.cmd
   exe 'read '.tf
   exe 'silent! '.t:bzrstatus_msgline.',$s/\s*\r//g'
 
