@@ -193,6 +193,7 @@ function! bzrstatus#diff_open()
     " Prepare for diff...
     let t:bzrstatus_diffbuf = bufnr('')
     let ft = &ft
+    let fenc = &fenc
     diffthis
     rightb vertical new
   elseif deleted
@@ -212,7 +213,8 @@ function! bzrstatus#diff_open()
 
   if modified
     " Set filetype from original for correct syntax highlighting...
-    let &ft = ft
+    let ft = ft
+    let fenc = fenc
     diffthis
   elseif deleted
     " ...or try to detect it
