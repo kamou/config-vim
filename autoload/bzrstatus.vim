@@ -2,6 +2,41 @@
 let s:bzrstatus_nextline = '^\([-+R ][NDM][* ]\|[R?]  \|  \*\)'
 let s:bzrstatus_matchline = s:bzrstatus_nextline.'\s\+\(.*\)$'
 
+let s:bzrstatus_op_criterion =
+      \ {
+      \ 'add'   : 'unknown',
+      \ 'commit': '!unknown',
+      \ 'del'   : '!unknown && !deleted',
+      \ 'revert': 'modified || deleted || renamed',
+      \ 'shelve': '!unknown',
+      \ }
+
+let s:bzrstatus_op_options =
+      \ {
+      \ 'add'   : '',
+      \ 'commit': '--show-diff',
+      \ 'del'   : '',
+      \ 'revert': '',
+      \ 'shelve': '',
+      \ }
+
+if exists('g:bzrstatus_op_options')
+  call extend(s:bzrstatus_op_options, g:bzrstatus_op_options)
+endif
+
+let s:bzrstatus_op_confirm =
+      \ {
+      \ 'add'   : 1,
+      \ 'commit': 1,
+      \ 'del'   : 1,
+      \ 'revert': 1,
+      \ 'shelve': 1,
+      \ }
+
+if exists('g:bzrstatus_op_confirm')
+  call extend(s:bzrstatus_op_confirm, g:bzrstatus_op_confirm)
+endif
+
 function! bzrstatus#tag(ln)
 
     let t:bzrstatus_tagged[a:ln] = 1
@@ -225,7 +260,7 @@ function! bzrstatus#diff_open()
 
 endfunction
 
-function! bzrstatus#exec_bzr(cmd, files, confirm)
+function! bzrstatus#exec_bzr(cmd, options, files, confirm)
 
   setlocal modifiable
 
@@ -236,8 +271,7 @@ function! bzrstatus#exec_bzr(cmd, files, confirm)
   let cmd = a:cmd
 
   if [] != a:files
-    let files = map(a:files, 'shellescape(v:val)')
-    let cmd = cmd.' '.join(files, ' ')
+    let cmd .= ' '.join(a:files, ' ')
   endif
 
   if a:confirm && 2 == confirm(cmd, "&Yes\n&No", 2)
@@ -245,7 +279,15 @@ function! bzrstatus#exec_bzr(cmd, files, confirm)
     return
   endif
 
-  let cmd = g:bzrstatus_bzr.' '.cmd
+  let cmd = g:bzrstatus_bzr.' '.a:cmd
+
+  if '' != a:options
+    let cmd .= ' '.a:options
+  endif
+
+  if [] != a:files
+    let cmd .= ' '.join(map(a:files, 'shellescape(v:val)'), ' ')
+  endif
 
   call append(t:bzrstatus_msgline, [cmd, ''])
   redraw
@@ -276,7 +318,7 @@ function! bzrstatus#toggle_tag()
 
 endfunction
 
-function! bzrstatus#bzr_op(tagged, firstl, lastl, criterion, cmd, confirm)
+function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
 
   if a:tagged
     let r = keys(t:bzrstatus_tagged)
@@ -288,48 +330,53 @@ function! bzrstatus#bzr_op(tagged, firstl, lastl, criterion, cmd, confirm)
     return
   endif
 
-  let files = bzrstatus#filter_entries(r, a:criterion)
+  let criterion = s:bzrstatus_op_criterion[a:op]
+
+  let files = bzrstatus#filter_entries(r, criterion)
   if [] == files
     return
   endif
 
-  call bzrstatus#exec_bzr(a:cmd, files, a:confirm)
+  let options = s:bzrstatus_op_options[a:op]
+  let confirm = s:bzrstatus_op_confirm[a:op]
+
+  call bzrstatus#exec_bzr(a:op, options, files, confirm)
 
 endfunction
 
 function! bzrstatus#add(tagged) range
 
-  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'unknown', 'add', 1)
+  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'add')
 
 endfunction
 
 function! bzrstatus#commit(tagged) range
 
-  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, '!unknown', 'commit', 1)
+  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'commit')
 
 endfunction
 
 function! bzrstatus#del(tagged) range
 
-  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, '!unknown && !deleted', 'del', 1)
+  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'del')
 
 endfunction
 
 function! bzrstatus#revert(tagged) range
 
-  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'modified || deleted || renamed', 'revert', 1)
+  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'revert')
 
 endfunction
 
 function! bzrstatus#shelve(tagged) range
 
-  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, '!unknown', 'shelve', 1)
+  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'shelve')
 
 endfunction
 
 function! bzrstatus#unshelve()
 
-  call bzrstatus#exec_bzr('unshelve', [], 1)
+  call bzrstatus#exec_bzr('unshelve', '', [], 1)
 
 endfunction
 
