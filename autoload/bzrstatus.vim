@@ -95,7 +95,7 @@ endfunction
 
 function! bzrstatus#parse_entry_state(ln)
 
-  if a:ln > t:bzrstatus_msgline
+  if a:ln <= 2 || a:ln >= t:bzrstatus_msgline
     return []
   endif
 
@@ -263,6 +263,10 @@ endfunction
 function! bzrstatus#toggle_tag()
 
   let ln = line('.')
+
+  if ln <= 2 || ln >= t:bzrstatus_msgline
+    return
+  endif
 
   if has_key(t:bzrstatus_tagged, ln)
     call bzrstatus#untag(ln)
