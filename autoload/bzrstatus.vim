@@ -2,7 +2,77 @@
 let s:bzrstatus_nextline = '^[-+R ][NDM][* ]\s'
 let s:bzrstatus_matchline = '^\([-+R ][NDM][* ]\|[R?]  \|  \*\)\s\+\(.*\)$'
 
-function! bzrstatus#clean_state()
+function! bzrstatus#tag(ln)
+
+    let t:bzrstatus_tagged[a:ln] = 1
+
+    if has('signs')
+      if a:ln == t:bzrstatus_selection
+        let sign = 'bzrstatus_sign_selection_tag'
+      else
+        let sign = 'bzrstatus_sign_tag'
+      endif
+      exe ':sign place '.a:ln.' line='.a:ln.' name='.sign.' buffer='.t:bzrstatus_buffer
+    endif
+
+endfunction
+
+function! bzrstatus#untag(ln)
+
+    call remove(t:bzrstatus_tagged, a:ln)
+
+    if has('signs')
+      if a:ln == t:bzrstatus_selection
+        exe ':sign place '.a:ln.' line='.a:ln.' name=bzrstatus_sign_selection buffer='.t:bzrstatus_buffer
+      else
+        exe ':sign unplace '.a:ln.' buffer='.t:bzrstatus_buffer
+      endif
+    endif
+
+endfunction
+
+function! bzrstatus#clear_tagged()
+
+  if has('signs')
+    for ln in keys(t:bzrstatus_tagged)
+      call bzrstatus#untag(ln)
+    endfor
+  endif
+
+  let t:bzrstatus_tagged = {}
+
+endfunction
+
+function! bzrstatus:select(ln)
+
+  if has('signs')
+    if has_key(t:bzrstatus_tagged, a:ln)
+      let sign = 'bzrstatus_sign_selection_tag'
+    else
+      let sign = 'bzrstatus_sign_selection'
+    endif
+    exe ':sign place '.a:ln.' line='.a:ln.' name='.sign.' buffer='.t:bzrstatus_buffer
+  end
+
+  let t:bzrstatus_selection = a:ln
+
+endfunction
+
+function! bzrstatus#unselect()
+
+  if has('signs')
+    if has_key(t:bzrstatus_tagged, t:bzrstatus_selection)
+      exe ':sign place '.t:bzrstatus_selection.' line='.t:bzrstatus_selection.' name=bzrstatus_sign_tag buffer='.t:bzrstatus_buffer
+    else
+      exe ':sign unplace '.t:bzrstatus_selection.' buffer='.t:bzrstatus_buffer
+    endif
+  endif
+
+  let t:bzrstatus_selection = 0
+
+endfunction
+
+function! bzrstatus#clean_state(clear_tagged)
 
   if exists('t:bzrstatus_diffbuf')
     call setbufvar(t:bzrstatus_diffbuf, '&diff', 0)
@@ -14,8 +84,10 @@ function! bzrstatus#clean_state()
     unlet t:bzrstatus_tmpbuf
   endif
 
-  if has('signs')
-    exe ':sign unplace 2 buffer='.t:bzrstatus_buffer
+  call bzrstatus#unselect()
+
+  if a:clear_tagged
+    call bzrstatus#clear_tagged()
   end
 
 endfunction
@@ -66,11 +138,11 @@ function! bzrstatus#parse_entry_state(ln)
 
 endfunction
 
-function! bzrstatus#filter_entries(firstl, lastl, criterion)
+function! bzrstatus#filter_entries(range, criterion)
 
   let files = []
 
-  for ln in range(a:firstl, a:lastl)
+  for ln in a:range
 
     let s = bzrstatus#parse_entry_state(ln)
     if [] == s
@@ -92,18 +164,18 @@ endfunction
 
 function! bzrstatus#diff_open()
 
-  let s = bzrstatus#parse_entry_state(line('.'))
+  let ln = line('.')
+
+  let s = bzrstatus#parse_entry_state(ln)
   if [] == s
     return
   endif
 
   let [renamed, unknown, modified, deleted, added, old_entry, old_entry_fullpath, new_entry, new_entry_fullpath] = s
 
-  call bzrstatus#clean_state()
+  call bzrstatus#clean_state(0)
 
-  if has('signs')
-    exe ':sign place 2 line='.line('.').' name=bzrstatus_sign_selection buffer='.t:bzrstatus_buffer
-  end
+  call bzrstatus:select(ln)
 
   if 1 == winnr('$')
     new
@@ -166,6 +238,7 @@ function! bzrstatus#exec_bzr(cmd, files, confirm)
   endif
 
   if a:confirm && 2 == confirm(cmd, "&Yes\n&No", 2)
+    setlocal nomodifiable
     return
   endif
 
@@ -184,58 +257,66 @@ function! bzrstatus#exec_bzr(cmd, files, confirm)
 
 endfunction
 
-function! bzrstatus#add() range
+function! bzrstatus#toggle_tag()
 
-  let files = bzrstatus#filter_entries(a:firstline, a:lastline, 'unknown')
-  if [] == files
-    return
+  let ln = line('.')
+
+  if has_key(t:bzrstatus_tagged, ln)
+    call bzrstatus#untag(ln)
+  else
+    call bzrstatus#tag(ln)
   endif
-
-  call bzrstatus#exec_bzr('add', files, 1)
 
 endfunction
 
-function! bzrstatus#commit() range
+function! bzrstatus#bzr_op(tagged, firstl, lastl, criterion, cmd, confirm)
 
-  let files = bzrstatus#filter_entries(a:firstline, a:lastline, '!unknown')
+  if a:tagged
+    let r = keys(t:bzrstatus_tagged)
+  else
+    let r = range(a:firstl, a:lastl)
+  endif
+
+  if [] == r
+    return
+  endif
+
+  let files = bzrstatus#filter_entries(r, a:criterion)
   if [] == files
     return
   endif
 
-  call bzrstatus#exec_bzr('ci', files, 1)
+  call bzrstatus#exec_bzr(a:cmd, files, a:confirm)
 
 endfunction
 
-function! bzrstatus#delete() range
+function! bzrstatus#add(tagged) range
 
-  let files = bzrstatus#filter_entries(a:firstline, a:lastline, '!unknown && !deleted')
-  if [] == files
-    return
-  endif
-
-  call bzrstatus#exec_bzr('del', files, 1)
+  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'unknown', 'add', 1)
 
 endfunction
 
-function! bzrstatus#revert() range
+function! bzrstatus#commit(tagged) range
 
-  let files = bzrstatus#filter_entries(a:firstline, a:lastline, 'modified || deleted || renamed')
-  if [] == files
-    return
-  endif
-
-  call bzrstatus#exec_bzr('revert', files, 1)
+  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, '!unknown', 'commit', 1)
 
 endfunction
 
-function! bzrstatus#shelve() range
+function! bzrstatus#del(tagged) range
 
-  let files = bzrstatus#filter_entries(a:firstline, a:lastline, '!unknown')
-  if [] == files
-    return
-  endif
+  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, '!unknown && !deleted', 'del', 1)
 
-  call bzrstatus#exec_bzr('shelve', files, 1)
+endfunction
+
+function! bzrstatus#revert(tagged) range
+
+  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'modified || deleted || renamed', 'revert', 1)
+
+endfunction
+
+function! bzrstatus#shelve(tagged) range
+
+  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, '!unknown', 'shelve', 1)
 
 endfunction
 
@@ -247,7 +328,7 @@ endfunction
 
 function! bzrstatus#quit()
 
-  call bzrstatus#clean_state()
+  call bzrstatus#clean_state(1)
 
   bwipeout
 
@@ -255,7 +336,9 @@ endfunction
 
 function! bzrstatus#update(all)
 
-  call bzrstatus#clean_state()
+  call bzrstatus#clean_state(1)
+
+  let t:bzrstatus_tagged = {}
 
   setlocal modifiable
 
@@ -293,6 +376,8 @@ function! bzrstatus#start(...)
 
   let t:bzrstatus_path = fnamemodify(path, ':p')
   let t:bzrstatus_tree = system(g:bzrstatus_bzr.' root '.shellescape(t:bzrstatus_path))[0:-2]
+  let t:bzrstatus_selection = 0
+  let t:bzrstatus_tagged = {}
 
   silent botright split new
   setlocal buftype=nofile ft=bzrstatus fenc=utf-8
@@ -302,6 +387,8 @@ function! bzrstatus#start(...)
 
   if has('signs')
     sign define bzrstatus_sign_selection text=>> texthl=Search linehl=Search
+    sign define bzrstatus_sign_selection_tag text=!> texthl=Search
+    sign define bzrstatus_sign_tag text=!
     sign define bzrstatus_sign_start
     exe ':sign place 1 line=1 name=bzrstatus_sign_start buffer='.t:bzrstatus_buffer
   endif
@@ -310,19 +397,31 @@ function! bzrstatus#start(...)
 
   nnoremap <silent> <buffer> <2-Leftmouse> :call bzrstatus#diff_open()<CR>
   nnoremap <silent> <buffer> <CR> :call bzrstatus#diff_open()<CR>
-  nnoremap <silent> <buffer> A :call bzrstatus#add()<CR>
-  vnoremap <silent> <buffer> A :call bzrstatus#add()<CR>
-  nnoremap <silent> <buffer> C :call bzrstatus#commit()<CR>
-  vnoremap <silent> <buffer> C :call bzrstatus#commit()<CR>
-  nnoremap <silent> <buffer> D :call bzrstatus#delete()<CR>
-  vnoremap <silent> <buffer> D :call bzrstatus#delete()<CR>
-  nnoremap <silent> <buffer> R :call bzrstatus#revert()<CR>
-  vnoremap <silent> <buffer> R :call bzrstatus#revert()<CR>
-  nnoremap <silent> <buffer> S :call bzrstatus#shelve()<CR>
-  vnoremap <silent> <buffer> S :call bzrstatus#shelve()<CR>
-  nnoremap <silent> <buffer> U :call bzrstatus#unshelve()<CR>
+  nnoremap <silent> <buffer> <Space> :call bzrstatus#toggle_tag()<CR>
   nnoremap <silent> <buffer> q :call bzrstatus#quit()<CR>
   nnoremap <silent> <buffer> u :call bzrstatus#update(1)<CR>
+
+  " Operations on current line entry.
+  nnoremap <silent> <buffer> A :call bzrstatus#add(0)<CR>
+  nnoremap <silent> <buffer> C :call bzrstatus#commit(0)<CR>
+  nnoremap <silent> <buffer> D :call bzrstatus#del(0)<CR>
+  nnoremap <silent> <buffer> R :call bzrstatus#revert(0)<CR>
+  nnoremap <silent> <buffer> S :call bzrstatus#shelve(0)<CR>
+  nnoremap <silent> <buffer> U :call bzrstatus#unshelve()<CR>
+
+  " Operations on visual selection entries.
+  vnoremap <silent> <buffer> A :call bzrstatus#add(0)<CR>
+  vnoremap <silent> <buffer> C :call bzrstatus#commit(0)<CR>
+  vnoremap <silent> <buffer> D :call bzrstatus#del(0)<CR>
+  vnoremap <silent> <buffer> R :call bzrstatus#revert(0)<CR>
+  vnoremap <silent> <buffer> S :call bzrstatus#shelve(0)<CR>
+
+  " Operation on tagged entries.
+  nnoremap <silent> <buffer> ,A :call bzrstatus#add(1)<CR>
+  nnoremap <silent> <buffer> ,C :call bzrstatus#commit(1)<CR>
+  nnoremap <silent> <buffer> ,D :call bzrstatus#del(1)<CR>
+  nnoremap <silent> <buffer> ,R :call bzrstatus#revert(1)<CR>
+  nnoremap <silent> <buffer> ,S :call bzrstatus#shelve(1)<CR>
 
 endfunction
 
