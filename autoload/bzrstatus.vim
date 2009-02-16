@@ -76,6 +76,7 @@ function! bzrstatus#clean_state(clear_tagged)
 
   if exists('t:bzrstatus_diffbuf')
     call setbufvar(t:bzrstatus_diffbuf, '&diff', 0)
+    set nodiff noscrollbind
     unlet t:bzrstatus_diffbuf
   endif
 
