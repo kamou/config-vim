@@ -1,6 +1,6 @@
 
-let s:bzrstatus_nextline = '^[-+R ][NDM][* ]\s'
-let s:bzrstatus_matchline = '^\([-+R ][NDM][* ]\|[R?]  \|  \*\)\s\+\(.*\)$'
+let s:bzrstatus_nextline = '^\([-+R ][NDM][* ]\|[R?]  \|  \*\)'
+let s:bzrstatus_matchline = s:bzrstatus_nextline.'\s\+\(.*\)$'
 
 function! bzrstatus#tag(ln)
 
@@ -341,6 +341,25 @@ function! bzrstatus#quit()
 
 endfunction
 
+function! bzrstatus#next_entry(from_top, wrap)
+
+  if a:from_top
+    :2
+  else
+    exe 'normal $'
+  endif
+
+  if search(s:bzrstatus_nextline, 'eW', t:bzrstatus_msgline)
+    return
+  endif
+
+  if a:wrap
+    :2
+    call search(s:bzrstatus_nextline, 'eW', t:bzrstatus_msgline)
+  endif
+
+endfunction
+
 function! bzrstatus#update(all)
 
   call bzrstatus#clean_state(1)
@@ -367,7 +386,7 @@ function! bzrstatus#update(all)
   let t:bzrstatus_msgline = l + 1
 
   :2
-  call search(s:bzrstatus_nextline, 'eW')
+  call bzrstatus#next_entry(1, 0)
 
   setlocal nomodifiable
 
@@ -404,7 +423,7 @@ function! bzrstatus#start(...)
 
   nnoremap <silent> <buffer> <2-Leftmouse> :call bzrstatus#diff_open()<CR>
   nnoremap <silent> <buffer> <CR> :call bzrstatus#diff_open()<CR>
-  nnoremap <silent> <buffer> <Space> :call bzrstatus#toggle_tag()<CR>
+  nnoremap <silent> <buffer> <Space> :call bzrstatus#toggle_tag()\|call bzrstatus#next_entry(0, 1)<CR>
   nnoremap <silent> <buffer> q :call bzrstatus#quit()<CR>
   nnoremap <silent> <buffer> u :call bzrstatus#update(1)<CR>
 
