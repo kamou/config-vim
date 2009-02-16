@@ -241,13 +241,13 @@ function! bzrstatus#diff_open()
   endif
 
   if modified || deleted
+    setlocal buftype=nofile noswapfile
     " Get original version from Bazaar.
     let t:bzrstatus_tmpbuf = bufnr('')
     exe 'file [BZR] '.fnameescape(old_entry)
     redraw
     exe 'silent read !'.g:bzrstatus_bzr.' cat '.shellescape(old_entry_fullpath)
     exe 'normal 1Gdd'
-    setlocal buftype=nofile
   end
 
   if modified
@@ -457,8 +457,8 @@ function! bzrstatus#start(...)
   let t:bzrstatus_tagged = {}
 
   silent botright split new
-  setlocal buftype=nofile ft=bzrstatus fenc=utf-8
-  exe 'silent! file '.fnameescape(t:bzrstatus_tree)
+  setlocal buftype=nofile noswapfile ft=bzrstatus fenc=utf-8
+  exe 'silent file '.fnameescape(t:bzrstatus_tree)
 
   let t:bzrstatus_buffer = bufnr('')
 
