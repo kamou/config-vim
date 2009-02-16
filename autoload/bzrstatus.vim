@@ -95,6 +95,10 @@ endfunction
 
 function! bzrstatus#unselect()
 
+  if 0 == t:bzrstatus_selection
+    return
+  endif
+
   if has('signs')
     if has_key(t:bzrstatus_tagged, t:bzrstatus_selection)
       exe ':sign place '.t:bzrstatus_selection.' line='.t:bzrstatus_selection.' name=bzrstatus_sign_tag buffer='.t:bzrstatus_buffer
