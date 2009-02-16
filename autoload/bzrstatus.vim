@@ -4,20 +4,22 @@ let s:bzrstatus_matchline = s:bzrstatus_nextline.'\s\+\(.*\)$'
 
 let s:bzrstatus_op_criterion =
       \ {
-      \ 'add'   : 'unknown',
-      \ 'commit': '!unknown',
-      \ 'del'   : '!unknown && !deleted',
-      \ 'revert': 'modified || deleted || renamed',
-      \ 'shelve': '!unknown',
+      \ 'add'     : 'unknown',
+      \ 'commit'  : '!unknown',
+      \ 'del'     : '!unknown && !deleted',
+      \ 'revert'  : 'modified || deleted || renamed',
+      \ 'shelve'  : '!unknown',
+      \ 'unshelve': '',
       \ }
 
 let s:bzrstatus_op_options =
       \ {
-      \ 'add'   : '',
-      \ 'commit': '--show-diff',
-      \ 'del'   : '',
-      \ 'revert': '',
-      \ 'shelve': '',
+      \ 'add'     : '',
+      \ 'commit'  : '--show-diff',
+      \ 'del'     : '',
+      \ 'revert'  : '',
+      \ 'shelve'  : '',
+      \ 'unshelve': '',
       \ }
 
 if exists('g:bzrstatus_op_options')
@@ -26,11 +28,12 @@ endif
 
 let s:bzrstatus_op_confirm =
       \ {
-      \ 'add'   : 1,
-      \ 'commit': 1,
-      \ 'del'   : 1,
-      \ 'revert': 1,
-      \ 'shelve': 1,
+      \ 'add'     : 1,
+      \ 'commit'  : 1,
+      \ 'del'     : 1,
+      \ 'revert'  : 1,
+      \ 'shelve'  : 1,
+      \ 'unshelve': 1,
       \ }
 
 if exists('g:bzrstatus_op_confirm')
@@ -324,21 +327,29 @@ endfunction
 
 function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
 
-  if a:tagged
-    let r = keys(t:bzrstatus_tagged)
-  else
-    let r = range(a:firstl, a:lastl)
-  endif
-
-  if [] == r
-    return
-  endif
-
   let criterion = s:bzrstatus_op_criterion[a:op]
 
-  let files = bzrstatus#filter_entries(r, criterion)
-  if [] == files
-    return
+  if '' != criterion
+
+    if a:tagged
+      let r = keys(t:bzrstatus_tagged)
+    else
+      let r = range(a:firstl, a:lastl)
+    endif
+
+    if [] == r
+      return
+    endif
+
+    let files = bzrstatus#filter_entries(r, criterion)
+    if [] == files
+      return
+    endif
+
+  else
+
+    let files = []
+
   endif
 
   let options = s:bzrstatus_op_options[a:op]
@@ -380,7 +391,7 @@ endfunction
 
 function! bzrstatus#unshelve()
 
-  call bzrstatus#exec_bzr('unshelve', '', [], 1)
+  call bzrstatus#bzr_op(0, 0, 0, 'unshelve')
 
 endfunction
 
