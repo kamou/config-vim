@@ -384,7 +384,7 @@ function! bzrstatus#start(...)
 
   silent botright split new
   setlocal buftype=nofile ft=bzrstatus fenc=utf-8
-  exe 'file '.fnameescape(t:bzrstatus_tree)
+  exe 'silent! file '.fnameescape(t:bzrstatus_tree)
 
   let t:bzrstatus_buffer = bufnr('')
 
