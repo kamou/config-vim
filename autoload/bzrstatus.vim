@@ -11,6 +11,7 @@ let s:bzrstatus_mappings =
       \ 'del'     : [ 'D' ],
       \ 'revert'  : [ 'R' ],
       \ 'shelve'  : [ 'S' ],
+      \ 'uncommit': [ 'B' ],
       \ 'unshelve': [ 'U' ],
       \
       \ 'toggle_tag'  : [ '<Space>' ],
@@ -35,6 +36,7 @@ let s:bzrstatus_op_criterion =
       \ 'del'     : '!unknown && !deleted && !added',
       \ 'revert'  : 'modified || deleted || renamed || added',
       \ 'shelve'  : '!unknown',
+      \ 'uncommit': '',
       \ 'unshelve': '',
       \ }
 
@@ -45,6 +47,7 @@ let s:bzrstatus_op_options =
       \ 'del'     : '',
       \ 'revert'  : '',
       \ 'shelve'  : '',
+      \ 'uncommit': '',
       \ 'unshelve': '',
       \ }
 
@@ -59,6 +62,7 @@ let s:bzrstatus_op_confirm =
       \ 'del'     : 1,
       \ 'revert'  : 1,
       \ 'shelve'  : 1,
+      \ 'uncommit': 1,
       \ 'unshelve': 1,
       \ }
 
@@ -69,6 +73,7 @@ let s:bzrstatus_op_needtty =
       \ 'del'     : 0,
       \ 'revert'  : 0,
       \ 'shelve'  : 1,
+      \ 'uncommit': 1,
       \ 'unshelve': 0,
       \ }
 
@@ -433,6 +438,10 @@ function! bzrstatus#shelve(tagged) range
   call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'shelve')
 endfunction
 
+function! bzrstatus#uncommit()
+  call bzrstatus#bzr_op(0, 0, 0, 'uncommit')
+endfunction
+
 function! bzrstatus#unshelve()
   call bzrstatus#bzr_op(0, 0, 0, 'unshelve')
 endfunction
@@ -565,7 +574,7 @@ function! bzrstatus#start(...)
 
   call bzrstatus#update_buffer(1)
 
-  for name in [ 'quit', 'update', 'diff_open', 'info', 'unshelve', 'toggle_tag' ]
+  for name in [ 'quit', 'update', 'diff_open', 'info', 'uncommit', 'unshelve', 'toggle_tag' ]
     for map in s:bzrstatus_mappings[name]
       exe 'nnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'()<CR>'
     endfor
