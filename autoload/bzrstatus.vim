@@ -40,32 +40,40 @@ if exists('g:bzrstatus_op_confirm')
   call extend(s:bzrstatus_op_confirm, g:bzrstatus_op_confirm)
 endif
 
-function! bzrstatus#tag(ln)
+function! bzrstatus#tag_line(ln)
 
-    let t:bzrstatus_tagged[a:ln] = 1
+  if has_key(t:bzrstatus_tagged, a:ln)
+    return
+  endif
 
-    if has('signs')
-      if a:ln == t:bzrstatus_selection
-        let sign = 'bzrstatus_sign_selection_tag'
-      else
-        let sign = 'bzrstatus_sign_tag'
-      endif
-      exe ':sign place '.a:ln.' line='.a:ln.' name='.sign.' buffer='.t:bzrstatus_buffer
+  let t:bzrstatus_tagged[a:ln] = 1
+
+  if has('signs')
+    if a:ln == t:bzrstatus_selection
+      let sign = 'bzrstatus_sign_selection_tag'
+    else
+      let sign = 'bzrstatus_sign_tag'
     endif
+    exe ':sign place '.a:ln.' line='.a:ln.' name='.sign.' buffer='.t:bzrstatus_buffer
+  endif
 
 endfunction
 
-function! bzrstatus#untag(ln)
+function! bzrstatus#untag_line(ln)
 
-    call remove(t:bzrstatus_tagged, a:ln)
+  if !has_key(t:bzrstatus_tagged, a:ln)
+    return
+  endif
 
-    if has('signs')
-      if a:ln == t:bzrstatus_selection
-        exe ':sign place '.a:ln.' line='.a:ln.' name=bzrstatus_sign_selection buffer='.t:bzrstatus_buffer
-      else
-        exe ':sign unplace '.a:ln.' buffer='.t:bzrstatus_buffer
-      endif
+  call remove(t:bzrstatus_tagged, a:ln)
+
+  if has('signs')
+    if a:ln == t:bzrstatus_selection
+      exe ':sign place '.a:ln.' line='.a:ln.' name=bzrstatus_sign_selection buffer='.t:bzrstatus_buffer
+    else
+      exe ':sign unplace '.a:ln.' buffer='.t:bzrstatus_buffer
     endif
+  endif
 
 endfunction
 
@@ -73,7 +81,7 @@ function! bzrstatus#clear_tagged()
 
   if has('signs')
     for ln in keys(t:bzrstatus_tagged)
-      call bzrstatus#untag(ln)
+      call bzrstatus#untag_line(ln)
     endfor
   endif
 
@@ -81,7 +89,7 @@ function! bzrstatus#clear_tagged()
 
 endfunction
 
-function! bzrstatus:select(ln)
+function! bzrstatus:select_line(ln)
 
   if has('signs')
     if has_key(t:bzrstatus_tagged, a:ln)
@@ -96,7 +104,7 @@ function! bzrstatus:select(ln)
 
 endfunction
 
-function! bzrstatus#unselect()
+function! bzrstatus#unselect_line()
 
   if 0 == t:bzrstatus_selection
     return
@@ -127,7 +135,7 @@ function! bzrstatus#clean_state(clear_tagged)
     unlet t:bzrstatus_tmpbuf
   endif
 
-  call bzrstatus#unselect()
+  call bzrstatus#unselect_line()
 
   if a:clear_tagged
     call bzrstatus#clear_tagged()
@@ -218,7 +226,7 @@ function! bzrstatus#diff_open()
 
   call bzrstatus#clean_state(0)
 
-  call bzrstatus:select(ln)
+  call bzrstatus:select_line(ln)
 
   if 1 == winnr('$')
     new
@@ -309,18 +317,16 @@ function! bzrstatus#exec_bzr(cmd, options, files, confirm)
 
 endfunction
 
-function! bzrstatus#toggle_tag()
+function! bzrstatus#toggle_tag(ln)
 
-  let ln = line('.')
-
-  if ln <= 2 || ln >= t:bzrstatus_msgline
+  if a:ln <= 2 || a:ln >= t:bzrstatus_msgline
     return
   endif
 
-  if has_key(t:bzrstatus_tagged, ln)
-    call bzrstatus#untag(ln)
+  if has_key(t:bzrstatus_tagged, a:ln)
+    call bzrstatus#untag_line(a:ln)
   else
-    call bzrstatus#tag(ln)
+    call bzrstatus#tag_line(a:ln)
   endif
 
 endfunction
@@ -403,6 +409,36 @@ function! bzrstatus#quit()
 
 endfunction
 
+function! bzrstatus#tag(criterion, set)
+
+  let cursor_save = getpos('.')[1:3]
+
+  :2
+
+  while bzrstatus#next_entry(0, 0)
+
+    let ln = line('.')
+
+    let s = bzrstatus#parse_entry_state(ln)
+    if [] == s
+      continue
+    endif
+
+    let [renamed, unknown, modified, deleted, added, old_entry, old_entry_fullpath, new_entry, new_entry_fullpath] = s
+    if eval(a:criterion)
+      if a:set
+        call bzrstatus#tag_line(ln)
+      else
+        call bzrstatus#untag_line(ln)
+      endif
+    endif
+
+  endwhile
+
+  call cursor(cursor_save)
+
+endfunction
+
 function! bzrstatus#next_entry(from_top, wrap)
 
   if a:from_top
@@ -412,13 +448,15 @@ function! bzrstatus#next_entry(from_top, wrap)
   endif
 
   if search(s:bzrstatus_nextline, 'eW', t:bzrstatus_msgline)
-    return
+    return 1
   endif
 
   if a:wrap
     :2
-    call search(s:bzrstatus_nextline, 'eW', t:bzrstatus_msgline)
+    return search(s:bzrstatus_nextline, 'eW', t:bzrstatus_msgline)
   endif
+
+  return 0
 
 endfunction
 
@@ -485,9 +523,21 @@ function! bzrstatus#start(...)
 
   nnoremap <silent> <buffer> <2-Leftmouse> :call bzrstatus#diff_open()<CR>
   nnoremap <silent> <buffer> <CR> :call bzrstatus#diff_open()<CR>
-  nnoremap <silent> <buffer> <Space> :call bzrstatus#toggle_tag()\|call bzrstatus#next_entry(0, 1)<CR>
   nnoremap <silent> <buffer> q :call bzrstatus#quit()<CR>
   nnoremap <silent> <buffer> u :call bzrstatus#update(1)<CR>
+
+  " Tagging.
+  nnoremap <silent> <buffer> <Space> :call bzrstatus#toggle_tag(line('.'))\|call bzrstatus#next_entry(0, 1)<CR>
+  nnoremap <silent> <buffer> ,<Space>D :call bzrstatus#tag('deleted', 1)<CR>
+  nnoremap <silent> <buffer> ,<Space>d :call bzrstatus#tag('deleted', 0)<CR>
+  nnoremap <silent> <buffer> ,<Space>N :call bzrstatus#tag('added', 1)<CR>
+  nnoremap <silent> <buffer> ,<Space>n :call bzrstatus#tag('added', 0)<CR>
+  nnoremap <silent> <buffer> ,<Space>M :call bzrstatus#tag('modified', 1)<CR>
+  nnoremap <silent> <buffer> ,<Space>m :call bzrstatus#tag('modified', 0)<CR>
+  nnoremap <silent> <buffer> ,<Space>R :call bzrstatus#tag('renamed', 1)<CR>
+  nnoremap <silent> <buffer> ,<Space>r :call bzrstatus#tag('renamed', 0)<CR>
+  nnoremap <silent> <buffer> ,<Space>? :call bzrstatus#tag('unknown', 1)<CR>
+  nnoremap <silent> <buffer> ,<Space>! :call bzrstatus#tag('unknown', 0)<CR>
 
   " Operations on current line entry.
   nnoremap <silent> <buffer> A :call bzrstatus#add(0)<CR>
