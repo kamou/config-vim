@@ -359,6 +359,10 @@ let g:vimball_home = $USERVIM
 let g:tskelUserName = username
 let g:tskelUserEmail = useremail
 
+" Configure netrw plugin to use wget rather than elinks; this fix the case
+" where VIM will ask and fetch missing dictionaries.
+let g:netrw_http_cmd = 'wget -O'
+
 " Configure yasnippets.
 if has('ruby')
   ruby $AUTHOR = VIM::evaluate('g:tskelUserName')
