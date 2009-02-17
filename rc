@@ -36,8 +36,6 @@ if filereadable(user)
   execute "source ".user
 endif
 
-language C
-
 " Not VI compatible.
 set nocompatible
 
@@ -360,6 +358,10 @@ let g:vimball_home = $USERVIM
 " Configure tSkeleton plugin.
 let g:tskelUserName = username
 let g:tskelUserEmail = useremail
+
+" Configure netrw plugin to use wget rather than elinks; this fix the case
+" where VIM will ask and fetch missing dictionaries.
+let g:netrw_http_cmd = 'wget -O'
 
 " Configure yasnippets.
 if has('ruby')

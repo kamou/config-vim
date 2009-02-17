@@ -75,11 +75,14 @@ fun! BlockDiff_GetBlock2() range
   let s:regd = @@
   exe a:firstline . "," . a:lastline . "y"
 
+  let ft = &ft
+
   " Open new tab, paste second selected block
   tabnew
   normal P
   " to prevent 'No write since last change' message:
   se buftype=nowrite
+  let &ft = ft
   diffthis
 
   " vsplit left for first selected block
@@ -88,6 +91,7 @@ fun! BlockDiff_GetBlock2() range
   let @@ = s:block1
   normal P
   se buftype=nowrite
+  let &ft = ft
 
   " start diff
   diffthis
