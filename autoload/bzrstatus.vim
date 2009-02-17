@@ -370,12 +370,15 @@ function! bzrstatus#exec_bzr(cmd, options, files, confirm, needtty, update)
   endif
 
   if [] != a:files
-    let files = map(a:files, 'shellescape(t:bzrstatus_tree."/".v:val)')
+    let files = map(a:files, 'shellescape(v:val)')
     let cmd .= ' '.join(files, ' ')
   endif
 
   call append(t:bzrstatus_msgline, [cmd, ''])
   redraw
+
+  let oldpwd = getcwd()
+  exe 'lcd '.fnameescape(t:bzrstatus_tree)
 
   exe ':'.(t:bzrstatus_msgline + 2)
   let tf = tempname()
@@ -388,6 +391,8 @@ function! bzrstatus#exec_bzr(cmd, options, files, confirm, needtty, update)
   exe 'read '.tf
   exe 'silent! '.t:bzrstatus_msgline.',$s/\s*\r/\r/g'
   redraw!
+
+  exe 'lcd '.fnameescape(oldpwd)
 
   if a:update
     call bzrstatus#update_buffer(0)
