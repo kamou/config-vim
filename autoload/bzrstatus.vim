@@ -4,6 +4,7 @@ let s:bzrstatus_mappings =
       \ 'quit'     : [ 'q', ],
       \ 'update'   : [ 'u', ],
       \ 'diff_open': [ '<2-Leftmouse>', '<CR>' ],
+      \ 'exec'     : [ 'e' ],
       \ 'info'     : [ 'i' ],
       \ 'log'      : [ 'l' ],
       \ 'missing'  : [ 'm' ],
@@ -492,6 +493,34 @@ function! bzrstatus#missing()
   call bzrstatus#bzr_op(0, 0, 0, 'missing')
 endfunction
 
+function! bzrstatus#exec()
+
+  let cmd = input('bzr ', '', 'file')
+
+  let args = split(cmd)
+  if [] == args
+    return
+  endif
+
+  let [cmd; args] = args
+  let options = ''
+  let files = []
+
+  for arg in args
+    if arg =~ '^-'
+      let options .= arg
+    else
+      let files += [arg]
+    endif
+  endfor
+
+  let needtty = get(s:bzrstatus_op_needtty, cmd, 0)
+  let update = get(s:bzrstatus_op_update, cmd, 0)
+
+  call bzrstatus#exec_bzr(cmd, options, files, 0, needtty, update)
+
+endfunction
+
 function! bzrstatus#quit()
 
   call bzrstatus#clean_state(1)
@@ -616,7 +645,7 @@ function! bzrstatus#start(...)
 
   call bzrstatus#update_buffer(1)
 
-  for name in [ 'quit', 'update', 'diff_open', 'info', 'log', 'missing', 'uncommit', 'unshelve', 'toggle_tag' ]
+  for name in [ 'quit', 'update', 'diff_open', 'exec', 'info', 'log', 'missing', 'uncommit', 'unshelve', 'toggle_tag' ]
     for map in s:bzrstatus_mappings[name]
       exe 'nnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'()<CR>'
     endfor
