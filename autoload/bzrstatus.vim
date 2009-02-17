@@ -550,7 +550,7 @@ function! bzrstatus#start(...)
     for map in s:bzrstatus_mappings[name]
       exe 'nnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'(0)<CR>'
       exe 'vnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'(0)<CR>'
-      exe 'vnoremap <silent> <buffer> ,'.map.' :call bzrstatus#'.name.'(1)<CR>'
+      exe 'noremap <silent> <buffer> ,'.map.' :call bzrstatus#'.name.'(1)<CR>'
     endfor
   endfor
 
