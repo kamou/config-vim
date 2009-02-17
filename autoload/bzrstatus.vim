@@ -5,6 +5,7 @@ let s:bzrstatus_mappings =
       \ 'update'   : [ 'u', ],
       \ 'diff_open': [ '<2-Leftmouse>', '<CR>' ],
       \ 'info'     : [ 'i' ],
+      \ 'log'      : [ 'l' ],
       \ 'missing'  : [ 'm' ],
       \
       \ 'add'     : [ 'A' ],
@@ -36,6 +37,7 @@ let s:bzrstatus_op_criterion =
       \ 'commit'  : '!unknown',
       \ 'del'     : '!unknown && !deleted && !added',
       \ 'info'    : '',
+      \ 'log'     : '',
       \ 'missing' : '',
       \ 'revert'  : 'modified || deleted || renamed || added',
       \ 'shelve'  : '!unknown',
@@ -49,6 +51,7 @@ let s:bzrstatus_op_options =
       \ 'commit'  : '--show-diff',
       \ 'del'     : '',
       \ 'info'    : '',
+      \ 'log'     : '',
       \ 'missing' : '',
       \ 'revert'  : '',
       \ 'shelve'  : '',
@@ -66,6 +69,7 @@ let s:bzrstatus_op_confirm =
       \ 'commit'  : 1,
       \ 'del'     : 1,
       \ 'info'    : 0,
+      \ 'log'     : 0,
       \ 'missing' : 0,
       \ 'revert'  : 1,
       \ 'shelve'  : 1,
@@ -79,6 +83,7 @@ let s:bzrstatus_op_needtty =
       \ 'commit'  : 1,
       \ 'del'     : 0,
       \ 'info'    : 0,
+      \ 'log'     : 0,
       \ 'missing' : 0,
       \ 'revert'  : 0,
       \ 'shelve'  : 1,
@@ -92,6 +97,7 @@ let s:bzrstatus_op_update =
       \ 'commit'  : 1,
       \ 'del'     : 1,
       \ 'info'    : 0,
+      \ 'log'     : 0,
       \ 'missing' : 0,
       \ 'revert'  : 1,
       \ 'shelve'  : 1,
@@ -568,6 +574,10 @@ function! bzrstatus#info()
   call bzrstatus#bzr_op(0, 0, 0, 'info')
 endfunction
 
+function! bzrstatus#log()
+  call bzrstatus#bzr_op(0, 0, 0, 'log')
+endfunction
+
 function! bzrstatus#missing()
   call bzrstatus#bzr_op(0, 0, 0, 'missing')
 endfunction
@@ -601,7 +611,7 @@ function! bzrstatus#start(...)
 
   call bzrstatus#update_buffer(1)
 
-  for name in [ 'quit', 'update', 'diff_open', 'info', 'missing', 'uncommit', 'unshelve', 'toggle_tag' ]
+  for name in [ 'quit', 'update', 'diff_open', 'info', 'log', 'missing', 'uncommit', 'unshelve', 'toggle_tag' ]
     for map in s:bzrstatus_mappings[name]
       exe 'nnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'()<CR>'
     endfor
