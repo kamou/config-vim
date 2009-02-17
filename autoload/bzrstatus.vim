@@ -354,7 +354,7 @@ function! bzrstatus#exec_bzr(cmd, options, files, confirm, needtty, update)
   exe 'silent !'.pre_cmd.cmd
   exe 'read '.tf
   exe 'silent! '.t:bzrstatus_msgline.',$s/\s*\r/\r/g'
-  redraw
+  redraw!
 
   if a:update
     call bzrstatus#update_buffer(0)
