@@ -5,6 +5,7 @@ let s:bzrstatus_mappings =
       \ 'update'   : [ 'u', ],
       \ 'diff_open': [ '<2-Leftmouse>', '<CR>' ],
       \ 'info'     : [ 'i' ],
+      \ 'missing'  : [ 'm' ],
       \
       \ 'add'     : [ 'A' ],
       \ 'commit'  : [ 'C' ],
@@ -35,6 +36,7 @@ let s:bzrstatus_op_criterion =
       \ 'commit'  : '!unknown',
       \ 'del'     : '!unknown && !deleted && !added',
       \ 'info'    : '',
+      \ 'missing' : '',
       \ 'revert'  : 'modified || deleted || renamed || added',
       \ 'shelve'  : '!unknown',
       \ 'uncommit': '',
@@ -47,6 +49,7 @@ let s:bzrstatus_op_options =
       \ 'commit'  : '--show-diff',
       \ 'del'     : '',
       \ 'info'    : '',
+      \ 'missing' : '',
       \ 'revert'  : '',
       \ 'shelve'  : '',
       \ 'uncommit': '',
@@ -63,6 +66,7 @@ let s:bzrstatus_op_confirm =
       \ 'commit'  : 1,
       \ 'del'     : 1,
       \ 'info'    : 0,
+      \ 'missing' : 0,
       \ 'revert'  : 1,
       \ 'shelve'  : 1,
       \ 'uncommit': 1,
@@ -75,6 +79,7 @@ let s:bzrstatus_op_needtty =
       \ 'commit'  : 1,
       \ 'del'     : 0,
       \ 'info'    : 0,
+      \ 'missing' : 0,
       \ 'revert'  : 0,
       \ 'shelve'  : 1,
       \ 'uncommit': 1,
@@ -549,6 +554,10 @@ function! bzrstatus#info()
   call bzrstatus#bzr_op(0, 0, 0, 'info')
 endfunction
 
+function! bzrstatus#missing()
+  call bzrstatus#bzr_op(0, 0, 0, 'missing')
+endfunction
+
 function! bzrstatus#start(...)
 
   if a:0
@@ -578,7 +587,7 @@ function! bzrstatus#start(...)
 
   call bzrstatus#update_buffer(1)
 
-  for name in [ 'quit', 'update', 'diff_open', 'info', 'uncommit', 'unshelve', 'toggle_tag' ]
+  for name in [ 'quit', 'update', 'diff_open', 'info', 'missing', 'uncommit', 'unshelve', 'toggle_tag' ]
     for map in s:bzrstatus_mappings[name]
       exe 'nnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'()<CR>'
     endfor
