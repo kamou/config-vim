@@ -34,6 +34,7 @@ let s:bzrstatus_op_criterion =
       \ 'add'     : 'unknown',
       \ 'commit'  : '!unknown',
       \ 'del'     : '!unknown && !deleted && !added',
+      \ 'info'    : '',
       \ 'revert'  : 'modified || deleted || renamed || added',
       \ 'shelve'  : '!unknown',
       \ 'uncommit': '',
@@ -45,6 +46,7 @@ let s:bzrstatus_op_options =
       \ 'add'     : '',
       \ 'commit'  : '--show-diff',
       \ 'del'     : '',
+      \ 'info'    : '',
       \ 'revert'  : '',
       \ 'shelve'  : '',
       \ 'uncommit': '',
@@ -60,6 +62,7 @@ let s:bzrstatus_op_confirm =
       \ 'add'     : 1,
       \ 'commit'  : 1,
       \ 'del'     : 1,
+      \ 'info'    : 0,
       \ 'revert'  : 1,
       \ 'shelve'  : 1,
       \ 'uncommit': 1,
@@ -71,6 +74,7 @@ let s:bzrstatus_op_needtty =
       \ 'add'     : 0,
       \ 'commit'  : 1,
       \ 'del'     : 0,
+      \ 'info'    : 0,
       \ 'revert'  : 0,
       \ 'shelve'  : 1,
       \ 'uncommit': 1,
@@ -542,7 +546,7 @@ function! bzrstatus#update()
 endfunction
 
 function! bzrstatus#info()
-  call bzrstatus#exec_bzr('info', '', [], 0, 0, 0)
+  call bzrstatus#bzr_op(0, 0, 0, 'info')
 endfunction
 
 function! bzrstatus#start(...)
