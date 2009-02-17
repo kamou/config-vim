@@ -475,6 +475,18 @@ function! bzrstatus#unshelve()
   call bzrstatus#bzr_op(0, 0, 0, 'unshelve')
 endfunction
 
+function! bzrstatus#info()
+  call bzrstatus#bzr_op(0, 0, 0, 'info')
+endfunction
+
+function! bzrstatus#log()
+  call bzrstatus#bzr_op(0, 0, 0, 'log')
+endfunction
+
+function! bzrstatus#missing()
+  call bzrstatus#bzr_op(0, 0, 0, 'missing')
+endfunction
+
 function! bzrstatus#quit()
 
   call bzrstatus#clean_state(1)
@@ -568,18 +580,6 @@ endfunction
 
 function! bzrstatus#update()
   call bzrstatus#update_buffer(1)
-endfunction
-
-function! bzrstatus#info()
-  call bzrstatus#bzr_op(0, 0, 0, 'info')
-endfunction
-
-function! bzrstatus#log()
-  call bzrstatus#bzr_op(0, 0, 0, 'log')
-endfunction
-
-function! bzrstatus#missing()
-  call bzrstatus#bzr_op(0, 0, 0, 'missing')
 endfunction
 
 function! bzrstatus#start(...)
