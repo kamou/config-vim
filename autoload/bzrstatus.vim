@@ -4,6 +4,7 @@ let s:bzrstatus_mappings =
       \ 'quit'     : [ 'q', ],
       \ 'update'   : [ 'u', ],
       \ 'diff_open': [ '<2-Leftmouse>', '<CR>' ],
+      \ 'info'     : [ 'i' ],
       \
       \ 'add'     : [ 'A' ],
       \ 'commit'  : [ 'C' ],
@@ -528,6 +529,10 @@ function! bzrstatus#update()
   call bzrstatus#update_buffer(1)
 endfunction
 
+function! bzrstatus#info()
+  call bzrstatus#exec_bzr('info', '', [], 0, 0, 0)
+endfunction
+
 function! bzrstatus#start(...)
 
   if a:0
@@ -557,7 +562,7 @@ function! bzrstatus#start(...)
 
   call bzrstatus#update_buffer(1)
 
-  for name in [ 'quit', 'update', 'diff_open', 'unshelve', 'toggle_tag' ]
+  for name in [ 'quit', 'update', 'diff_open', 'info', 'unshelve', 'toggle_tag' ]
     for map in s:bzrstatus_mappings[name]
       exe 'nnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'()<CR>'
     endfor
