@@ -255,8 +255,8 @@ function! bzrstatus#diff_open()
 
   if modified
     " Set filetype from original for correct syntax highlighting...
-    let ft = ft
-    let fenc = fenc
+    let &ft = ft
+    let &fenc = fenc
     diffthis
   elseif deleted
     " ...or try to detect it
