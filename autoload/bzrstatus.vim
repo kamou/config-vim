@@ -311,7 +311,7 @@ function! bzrstatus#diff_open()
 
 endfunction
 
-function! bzrstatus#exec_bzr(cmd, options, files, confirm, needtty)
+function! bzrstatus#exec_bzr(cmd, options, files, confirm, needtty, update)
 
   setlocal modifiable
 
@@ -355,7 +355,9 @@ function! bzrstatus#exec_bzr(cmd, options, files, confirm, needtty)
   exe 'read '.tf
   exe 'silent! '.t:bzrstatus_msgline.',$s/\s*\r/\r/g'
 
-  call bzrstatus#update_buffer(0)
+  if a:update
+    call bzrstatus#update_buffer(0)
+  endif
 
 endfunction
 
@@ -407,7 +409,7 @@ function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
   let confirm = s:bzrstatus_op_confirm[a:op]
   let needtty = s:bzrstatus_op_needtty[a:op]
 
-  call bzrstatus#exec_bzr(a:op, options, files, confirm, needtty)
+  call bzrstatus#exec_bzr(a:op, options, files, confirm, needtty, 1)
 
 endfunction
 
