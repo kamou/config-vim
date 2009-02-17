@@ -4,12 +4,16 @@ let s:bzrstatus_mappings =
       \ 'quit'     : [ 'q', ],
       \ 'update'   : [ 'u', ],
       \ 'diff_open': [ '<2-Leftmouse>', '<CR>' ],
+      \ 'info'     : [ 'i' ],
+      \ 'log'      : [ 'l' ],
+      \ 'missing'  : [ 'm' ],
       \
       \ 'add'     : [ 'A' ],
       \ 'commit'  : [ 'C' ],
       \ 'del'     : [ 'D' ],
       \ 'revert'  : [ 'R' ],
       \ 'shelve'  : [ 'S' ],
+      \ 'uncommit': [ 'B' ],
       \ 'unshelve': [ 'U' ],
       \
       \ 'toggle_tag'  : [ '<Space>' ],
@@ -32,8 +36,12 @@ let s:bzrstatus_op_criterion =
       \ 'add'     : 'unknown',
       \ 'commit'  : '!unknown',
       \ 'del'     : '!unknown && !deleted && !added',
+      \ 'info'    : '',
+      \ 'log'     : '',
+      \ 'missing' : '',
       \ 'revert'  : 'modified || deleted || renamed || added',
       \ 'shelve'  : '!unknown',
+      \ 'uncommit': '',
       \ 'unshelve': '',
       \ }
 
@@ -42,8 +50,12 @@ let s:bzrstatus_op_options =
       \ 'add'     : '',
       \ 'commit'  : '--show-diff',
       \ 'del'     : '',
+      \ 'info'    : '',
+      \ 'log'     : '',
+      \ 'missing' : '',
       \ 'revert'  : '',
       \ 'shelve'  : '',
+      \ 'uncommit': '',
       \ 'unshelve': '',
       \ }
 
@@ -56,8 +68,40 @@ let s:bzrstatus_op_confirm =
       \ 'add'     : 1,
       \ 'commit'  : 1,
       \ 'del'     : 1,
+      \ 'info'    : 0,
+      \ 'log'     : 0,
+      \ 'missing' : 0,
       \ 'revert'  : 1,
       \ 'shelve'  : 1,
+      \ 'uncommit': 1,
+      \ 'unshelve': 1,
+      \ }
+
+let s:bzrstatus_op_needtty =
+      \ {
+      \ 'add'     : 0,
+      \ 'commit'  : 1,
+      \ 'del'     : 0,
+      \ 'info'    : 0,
+      \ 'log'     : 0,
+      \ 'missing' : 0,
+      \ 'revert'  : 0,
+      \ 'shelve'  : 1,
+      \ 'uncommit': 1,
+      \ 'unshelve': 0,
+      \ }
+
+let s:bzrstatus_op_update =
+      \ {
+      \ 'add'     : 1,
+      \ 'commit'  : 1,
+      \ 'del'     : 1,
+      \ 'info'    : 0,
+      \ 'log'     : 0,
+      \ 'missing' : 0,
+      \ 'revert'  : 1,
+      \ 'shelve'  : 1,
+      \ 'uncommit': 1,
       \ 'unshelve': 1,
       \ }
 
@@ -300,7 +344,7 @@ function! bzrstatus#diff_open()
 
 endfunction
 
-function! bzrstatus#exec_bzr(cmd, options, files, confirm)
+function! bzrstatus#exec_bzr(cmd, options, files, confirm, needtty, update)
 
   setlocal modifiable
 
@@ -335,11 +379,19 @@ function! bzrstatus#exec_bzr(cmd, options, files, confirm)
 
   exe ':'.(t:bzrstatus_msgline + 2)
   let tf = tempname()
-  exe 'silent !2>'.tf.' '.cmd
+  if !a:needtty
+    let pre_cmd = '1>'.tf.' 2>&1 '
+  else
+    let pre_cmd = '2>'.tf.' '
+  endif
+  exe 'silent !'.pre_cmd.cmd
   exe 'read '.tf
   exe 'silent! '.t:bzrstatus_msgline.',$s/\s*\r/\r/g'
+  redraw!
 
-  call bzrstatus#update_buffer(0)
+  if a:update
+    call bzrstatus#update_buffer(0)
+  endif
 
 endfunction
 
@@ -389,8 +441,10 @@ function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
 
   let options = s:bzrstatus_op_options[a:op]
   let confirm = s:bzrstatus_op_confirm[a:op]
+  let needtty = s:bzrstatus_op_needtty[a:op]
+  let update = s:bzrstatus_op_update[a:op]
 
-  call bzrstatus#exec_bzr(a:op, options, files, confirm)
+  call bzrstatus#exec_bzr(a:op, options, files, confirm, needtty, update)
 
 endfunction
 
@@ -413,8 +467,24 @@ function! bzrstatus#shelve(tagged) range
   call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'shelve')
 endfunction
 
+function! bzrstatus#uncommit()
+  call bzrstatus#bzr_op(0, 0, 0, 'uncommit')
+endfunction
+
 function! bzrstatus#unshelve()
   call bzrstatus#bzr_op(0, 0, 0, 'unshelve')
+endfunction
+
+function! bzrstatus#info()
+  call bzrstatus#bzr_op(0, 0, 0, 'info')
+endfunction
+
+function! bzrstatus#log()
+  call bzrstatus#bzr_op(0, 0, 0, 'log')
+endfunction
+
+function! bzrstatus#missing()
+  call bzrstatus#bzr_op(0, 0, 0, 'missing')
 endfunction
 
 function! bzrstatus#quit()
@@ -541,7 +611,7 @@ function! bzrstatus#start(...)
 
   call bzrstatus#update_buffer(1)
 
-  for name in [ 'quit', 'update', 'diff_open', 'unshelve', 'toggle_tag' ]
+  for name in [ 'quit', 'update', 'diff_open', 'info', 'log', 'missing', 'uncommit', 'unshelve', 'toggle_tag' ]
     for map in s:bzrstatus_mappings[name]
       exe 'nnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'()<CR>'
     endfor
