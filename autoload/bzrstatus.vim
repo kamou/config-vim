@@ -6,8 +6,8 @@ let s:bzrstatus_op_criterion =
       \ {
       \ 'add'     : 'unknown',
       \ 'commit'  : '!unknown',
-      \ 'del'     : '!unknown && !deleted',
-      \ 'revert'  : 'modified || deleted || renamed',
+      \ 'del'     : '!unknown && !deleted && !added',
+      \ 'revert'  : 'modified || deleted || renamed || added',
       \ 'shelve'  : '!unknown',
       \ 'unshelve': '',
       \ }
