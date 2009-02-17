@@ -61,6 +61,16 @@ let s:bzrstatus_op_confirm =
       \ 'unshelve': 1,
       \ }
 
+let s:bzrstatus_op_needtty =
+      \ {
+      \ 'add'     : 0,
+      \ 'commit'  : 1,
+      \ 'del'     : 0,
+      \ 'revert'  : 0,
+      \ 'shelve'  : 1,
+      \ 'unshelve': 0,
+      \ }
+
 if exists('g:bzrstatus_op_confirm')
   call extend(s:bzrstatus_op_confirm, g:bzrstatus_op_confirm)
 endif
@@ -300,7 +310,7 @@ function! bzrstatus#diff_open()
 
 endfunction
 
-function! bzrstatus#exec_bzr(cmd, options, files, confirm)
+function! bzrstatus#exec_bzr(cmd, options, files, confirm, needtty)
 
   setlocal modifiable
 
@@ -335,7 +345,12 @@ function! bzrstatus#exec_bzr(cmd, options, files, confirm)
 
   exe ':'.(t:bzrstatus_msgline + 2)
   let tf = tempname()
-  exe 'silent !2>'.tf.' '.cmd
+  if !a:needtty
+    let pre_cmd = '1>'.tf.' 2>&1 '
+  else
+    let pre_cmd = '2>'.tf.' '
+  endif
+  exe 'silent !'.pre_cmd.cmd
   exe 'read '.tf
   exe 'silent! '.t:bzrstatus_msgline.',$s/\s*\r/\r/g'
 
@@ -389,8 +404,9 @@ function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
 
   let options = s:bzrstatus_op_options[a:op]
   let confirm = s:bzrstatus_op_confirm[a:op]
+  let needtty = s:bzrstatus_op_needtty[a:op]
 
-  call bzrstatus#exec_bzr(a:op, options, files, confirm)
+  call bzrstatus#exec_bzr(a:op, options, files, confirm, needtty)
 
 endfunction
 
