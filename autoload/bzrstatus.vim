@@ -1,6 +1,44 @@
 
-let s:bzrstatus_nextline = '^[-+R ][NDM][* ]\s'
-let s:bzrstatus_matchline = '^\([-+R ][NDM][* ]\|[R?]  \|  \*\)\s\+\(.*\)$'
+let s:bzrstatus_nextline = '^\([-+R ][NDM][* ]\|[R?]  \|  \*\)'
+let s:bzrstatus_matchline = s:bzrstatus_nextline.'\s\+\(.*\)$'
+
+let s:bzrstatus_op_criterion =
+      \ {
+      \ 'add'     : 'unknown',
+      \ 'commit'  : '!unknown',
+      \ 'del'     : '!unknown && !deleted',
+      \ 'revert'  : 'modified || deleted || renamed',
+      \ 'shelve'  : '!unknown',
+      \ 'unshelve': '',
+      \ }
+
+let s:bzrstatus_op_options =
+      \ {
+      \ 'add'     : '',
+      \ 'commit'  : '--show-diff',
+      \ 'del'     : '',
+      \ 'revert'  : '',
+      \ 'shelve'  : '',
+      \ 'unshelve': '',
+      \ }
+
+if exists('g:bzrstatus_op_options')
+  call extend(s:bzrstatus_op_options, g:bzrstatus_op_options)
+endif
+
+let s:bzrstatus_op_confirm =
+      \ {
+      \ 'add'     : 1,
+      \ 'commit'  : 1,
+      \ 'del'     : 1,
+      \ 'revert'  : 1,
+      \ 'shelve'  : 1,
+      \ 'unshelve': 1,
+      \ }
+
+if exists('g:bzrstatus_op_confirm')
+  call extend(s:bzrstatus_op_confirm, g:bzrstatus_op_confirm)
+endif
 
 function! bzrstatus#tag(ln)
 
@@ -60,6 +98,10 @@ endfunction
 
 function! bzrstatus#unselect()
 
+  if 0 == t:bzrstatus_selection
+    return
+  endif
+
   if has('signs')
     if has_key(t:bzrstatus_tagged, t:bzrstatus_selection)
       exe ':sign place '.t:bzrstatus_selection.' line='.t:bzrstatus_selection.' name=bzrstatus_sign_tag buffer='.t:bzrstatus_buffer
@@ -76,6 +118,7 @@ function! bzrstatus#clean_state(clear_tagged)
 
   if exists('t:bzrstatus_diffbuf')
     call setbufvar(t:bzrstatus_diffbuf, '&diff', 0)
+    set nodiff noscrollbind
     unlet t:bzrstatus_diffbuf
   endif
 
@@ -94,7 +137,7 @@ endfunction
 
 function! bzrstatus#parse_entry_state(ln)
 
-  if a:ln > t:bzrstatus_msgline
+  if a:ln <= 2 || a:ln >= t:bzrstatus_msgline
     return []
   endif
 
@@ -192,6 +235,7 @@ function! bzrstatus#diff_open()
     " Prepare for diff...
     let t:bzrstatus_diffbuf = bufnr('')
     let ft = &ft
+    let fenc = &fenc
     diffthis
     rightb vertical new
   elseif deleted
@@ -200,18 +244,19 @@ function! bzrstatus#diff_open()
   endif
 
   if modified || deleted
+    setlocal buftype=nofile noswapfile
     " Get original version from Bazaar.
     let t:bzrstatus_tmpbuf = bufnr('')
     exe 'file [BZR] '.fnameescape(old_entry)
     redraw
     exe 'silent read !'.g:bzrstatus_bzr.' cat '.shellescape(old_entry_fullpath)
     exe 'normal 1Gdd'
-    setlocal buftype=nofile
   end
 
   if modified
     " Set filetype from original for correct syntax highlighting...
     let &ft = ft
+    let &fenc = fenc
     diffthis
   elseif deleted
     " ...or try to detect it
@@ -222,7 +267,7 @@ function! bzrstatus#diff_open()
 
 endfunction
 
-function! bzrstatus#exec_bzr(cmd, files, confirm)
+function! bzrstatus#exec_bzr(cmd, options, files, confirm)
 
   setlocal modifiable
 
@@ -233,8 +278,7 @@ function! bzrstatus#exec_bzr(cmd, files, confirm)
   let cmd = a:cmd
 
   if [] != a:files
-    let files = map(a:files, 'shellescape(v:val)')
-    let cmd = cmd.' '.join(files, ' ')
+    let cmd .= ' '.join(a:files, ' ')
   endif
 
   if a:confirm && 2 == confirm(cmd, "&Yes\n&No", 2)
@@ -242,16 +286,24 @@ function! bzrstatus#exec_bzr(cmd, files, confirm)
     return
   endif
 
-  let cmd = g:bzrstatus_bzr.' '.cmd
+  let cmd = g:bzrstatus_bzr.' '.a:cmd
+
+  if '' != a:options
+    let cmd .= ' '.a:options
+  endif
+
+  if [] != a:files
+    let cmd .= ' '.join(map(a:files, 'shellescape(v:val)'), ' ')
+  endif
 
   call append(t:bzrstatus_msgline, [cmd, ''])
   redraw
 
   exe ':'.(t:bzrstatus_msgline + 2)
   let tf = tempname()
-  exe '!2>'.tf.' '.cmd
+  exe 'silent !2>'.tf.' '.cmd
   exe 'read '.tf
-  exe 'silent! '.t:bzrstatus_msgline.',$s/\s*\r//g'
+  exe 'silent! '.t:bzrstatus_msgline.',$s/\s*\r/\r/g'
 
   call bzrstatus#update(0)
 
@@ -261,6 +313,10 @@ function! bzrstatus#toggle_tag()
 
   let ln = line('.')
 
+  if ln <= 2 || ln >= t:bzrstatus_msgline
+    return
+  endif
+
   if has_key(t:bzrstatus_tagged, ln)
     call bzrstatus#untag(ln)
   else
@@ -269,60 +325,73 @@ function! bzrstatus#toggle_tag()
 
 endfunction
 
-function! bzrstatus#bzr_op(tagged, firstl, lastl, criterion, cmd, confirm)
+function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
 
-  if a:tagged
-    let r = keys(t:bzrstatus_tagged)
+  let criterion = s:bzrstatus_op_criterion[a:op]
+
+  if '' != criterion
+
+    if a:tagged
+      let r = keys(t:bzrstatus_tagged)
+    else
+      let r = range(a:firstl, a:lastl)
+    endif
+
+    if [] == r
+      return
+    endif
+
+    let files = bzrstatus#filter_entries(r, criterion)
+    if [] == files
+      return
+    endif
+
   else
-    let r = range(a:firstl, a:lastl)
+
+    let files = []
+
   endif
 
-  if [] == r
-    return
-  endif
+  let options = s:bzrstatus_op_options[a:op]
+  let confirm = s:bzrstatus_op_confirm[a:op]
 
-  let files = bzrstatus#filter_entries(r, a:criterion)
-  if [] == files
-    return
-  endif
-
-  call bzrstatus#exec_bzr(a:cmd, files, a:confirm)
+  call bzrstatus#exec_bzr(a:op, options, files, confirm)
 
 endfunction
 
 function! bzrstatus#add(tagged) range
 
-  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'unknown', 'add', 1)
+  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'add')
 
 endfunction
 
 function! bzrstatus#commit(tagged) range
 
-  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, '!unknown', 'commit', 1)
+  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'commit')
 
 endfunction
 
 function! bzrstatus#del(tagged) range
 
-  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, '!unknown && !deleted', 'del', 1)
+  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'del')
 
 endfunction
 
 function! bzrstatus#revert(tagged) range
 
-  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'modified || deleted || renamed', 'revert', 1)
+  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'revert')
 
 endfunction
 
 function! bzrstatus#shelve(tagged) range
 
-  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, '!unknown', 'shelve', 1)
+  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'shelve')
 
 endfunction
 
 function! bzrstatus#unshelve()
 
-  call bzrstatus#exec_bzr('unshelve', [], 1)
+  call bzrstatus#bzr_op(0, 0, 0, 'unshelve')
 
 endfunction
 
@@ -331,6 +400,25 @@ function! bzrstatus#quit()
   call bzrstatus#clean_state(1)
 
   bwipeout
+
+endfunction
+
+function! bzrstatus#next_entry(from_top, wrap)
+
+  if a:from_top
+    :2
+  else
+    exe 'normal $'
+  endif
+
+  if search(s:bzrstatus_nextline, 'eW', t:bzrstatus_msgline)
+    return
+  endif
+
+  if a:wrap
+    :2
+    call search(s:bzrstatus_nextline, 'eW', t:bzrstatus_msgline)
+  endif
 
 endfunction
 
@@ -360,7 +448,7 @@ function! bzrstatus#update(all)
   let t:bzrstatus_msgline = l + 1
 
   :2
-  call search(s:bzrstatus_nextline, 'eW')
+  call bzrstatus#next_entry(1, 0)
 
   setlocal nomodifiable
 
@@ -380,8 +468,8 @@ function! bzrstatus#start(...)
   let t:bzrstatus_tagged = {}
 
   silent botright split new
-  setlocal buftype=nofile ft=bzrstatus fenc=utf-8
-  exe 'file '.fnameescape(t:bzrstatus_tree)
+  setlocal buftype=nofile noswapfile ft=bzrstatus fenc=utf-8
+  exe 'silent file '.fnameescape(t:bzrstatus_tree)
 
   let t:bzrstatus_buffer = bufnr('')
 
@@ -397,7 +485,7 @@ function! bzrstatus#start(...)
 
   nnoremap <silent> <buffer> <2-Leftmouse> :call bzrstatus#diff_open()<CR>
   nnoremap <silent> <buffer> <CR> :call bzrstatus#diff_open()<CR>
-  nnoremap <silent> <buffer> <Space> :call bzrstatus#toggle_tag()<CR>
+  nnoremap <silent> <buffer> <Space> :call bzrstatus#toggle_tag()\|call bzrstatus#next_entry(0, 1)<CR>
   nnoremap <silent> <buffer> q :call bzrstatus#quit()<CR>
   nnoremap <silent> <buffer> u :call bzrstatus#update(1)<CR>
 
