@@ -86,6 +86,19 @@ let s:bzrstatus_op_needtty =
       \ 'unshelve': 0,
       \ }
 
+let s:bzrstatus_op_update =
+      \ {
+      \ 'add'     : 1,
+      \ 'commit'  : 1,
+      \ 'del'     : 1,
+      \ 'info'    : 0,
+      \ 'missing' : 0,
+      \ 'revert'  : 1,
+      \ 'shelve'  : 1,
+      \ 'uncommit': 1,
+      \ 'unshelve': 1,
+      \ }
+
 if exists('g:bzrstatus_op_confirm')
   call extend(s:bzrstatus_op_confirm, g:bzrstatus_op_confirm)
 endif
@@ -423,8 +436,9 @@ function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
   let options = s:bzrstatus_op_options[a:op]
   let confirm = s:bzrstatus_op_confirm[a:op]
   let needtty = s:bzrstatus_op_needtty[a:op]
+  let update = s:bzrstatus_op_update[a:op]
 
-  call bzrstatus#exec_bzr(a:op, options, files, confirm, needtty, 1)
+  call bzrstatus#exec_bzr(a:op, options, files, confirm, needtty, update)
 
 endfunction
 
