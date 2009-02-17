@@ -207,10 +207,7 @@ function! bzrstatus#parse_entry_state(ln)
 
   endif
 
-  let old_entry_fullpath = t:bzrstatus_tree.'/'.old_entry
-  let new_entry_fullpath = t:bzrstatus_tree.'/'.new_entry
-
-  return [renamed, unknown, modified, deleted, added, old_entry, old_entry_fullpath, new_entry, new_entry_fullpath]
+  return [renamed, unknown, modified, deleted, added, old_entry, new_entry]
 
 endfunction
 
@@ -225,12 +222,12 @@ function! bzrstatus#filter_entries(range, criterion)
       continue
     endif
 
-    let [renamed, unknown, modified, deleted, added, old_entry, old_entry_fullpath, new_entry, new_entry_fullpath] = s
+    let [renamed, unknown, modified, deleted, added, old_entry, new_entry] = s
     if !eval(a:criterion)
       continue
     endif
 
-    let files += [new_entry_fullpath]
+    let files += [new_entry]
 
   endfor
 
@@ -247,7 +244,10 @@ function! bzrstatus#diff_open()
     return
   endif
 
-  let [renamed, unknown, modified, deleted, added, old_entry, old_entry_fullpath, new_entry, new_entry_fullpath] = s
+  let [renamed, unknown, modified, deleted, added, old_entry, new_entry] = s
+
+  let old_entry_fullpath = t:bzrstatus_tree.'/'.old_entry
+  let new_entry_fullpath = t:bzrstatus_tree.'/'.new_entry
 
   call bzrstatus#clean_state(0)
 
@@ -326,7 +326,8 @@ function! bzrstatus#exec_bzr(cmd, options, files, confirm)
   endif
 
   if [] != a:files
-    let cmd .= ' '.join(map(a:files, 'shellescape(v:val)'), ' ')
+    let files = map(a:files, 'shellescape(t:bzrstatus_tree."/".v:val)')
+    let cmd .= ' '.join(files, ' ')
   endif
 
   call append(t:bzrstatus_msgline, [cmd, ''])
@@ -439,7 +440,7 @@ function! bzrstatus#tag(criterion, set)
       continue
     endif
 
-    let [renamed, unknown, modified, deleted, added, old_entry, old_entry_fullpath, new_entry, new_entry_fullpath] = s
+    let [renamed, unknown, modified, deleted, added, old_entry, new_entry] = s
     if eval(a:criterion)
       if a:set
         call bzrstatus#tag_line(ln)
