@@ -1,4 +1,29 @@
 
+let s:bzrstatus_mappings =
+      \ {
+      \ 'quit'     : [ 'q', ],
+      \ 'update'   : [ 'u', ],
+      \ 'diff_open': [ '<2-Leftmouse>', '<CR>' ],
+      \
+      \ 'add'     : [ 'A' ],
+      \ 'commit'  : [ 'C' ],
+      \ 'del'     : [ 'D' ],
+      \ 'revert'  : [ 'R' ],
+      \ 'shelve'  : [ 'S' ],
+      \ 'unshelve': [ 'U' ],
+      \
+      \ 'toggle_tag'  : [ '<Space>' ],
+      \ 'tag_added'   : [ 'N' ],
+      \ 'tag_deleted' : [ 'D' ],
+      \ 'tag_modified': [ 'M' ],
+      \ 'tag_renamed' : [ 'R' ],
+      \ 'tag_unknown' : [ 'U' ],
+      \ }
+
+if exists('g:bzrstatus_mappings')
+  call extend(s:bzrstatus_mappings, g:bzrstatus_mappings)
+endif
+
 let s:bzrstatus_nextline = '^\([-+R ][NDM][* ]\|[R?]  \|  \*\)'
 let s:bzrstatus_matchline = s:bzrstatus_nextline.'\s\+\(.*\)$'
 
@@ -313,21 +338,24 @@ function! bzrstatus#exec_bzr(cmd, options, files, confirm)
   exe 'read '.tf
   exe 'silent! '.t:bzrstatus_msgline.',$s/\s*\r/\r/g'
 
-  call bzrstatus#update(0)
+  call bzrstatus#update_buffer(0)
 
 endfunction
 
-function! bzrstatus#toggle_tag(ln)
+function! bzrstatus#toggle_tag()
 
-  if a:ln <= 2 || a:ln >= t:bzrstatus_msgline
+  let ln = line('.')
+  if ln <= 2 || ln >= t:bzrstatus_msgline
     return
   endif
 
-  if has_key(t:bzrstatus_tagged, a:ln)
-    call bzrstatus#untag_line(a:ln)
+  if has_key(t:bzrstatus_tagged, ln)
+    call bzrstatus#untag_line(ln)
   else
-    call bzrstatus#tag_line(a:ln)
+    call bzrstatus#tag_line(ln)
   endif
+
+  call bzrstatus#next_entry(0, 1)
 
 endfunction
 
@@ -366,39 +394,26 @@ function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
 endfunction
 
 function! bzrstatus#add(tagged) range
-
   call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'add')
-
 endfunction
 
 function! bzrstatus#commit(tagged) range
-
   call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'commit')
-
 endfunction
-
 function! bzrstatus#del(tagged) range
-
   call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'del')
-
 endfunction
 
 function! bzrstatus#revert(tagged) range
-
   call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'revert')
-
 endfunction
 
 function! bzrstatus#shelve(tagged) range
-
   call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'shelve')
-
 endfunction
 
 function! bzrstatus#unshelve()
-
   call bzrstatus#bzr_op(0, 0, 0, 'unshelve')
-
 endfunction
 
 function! bzrstatus#quit()
@@ -460,7 +475,7 @@ function! bzrstatus#next_entry(from_top, wrap)
 
 endfunction
 
-function! bzrstatus#update(all)
+function! bzrstatus#update_buffer(all)
 
   call bzrstatus#clean_state(1)
 
@@ -492,6 +507,10 @@ function! bzrstatus#update(all)
 
 endfunction
 
+function! bzrstatus#update()
+  call bzrstatus#update_buffer(1)
+endfunction
+
 function! bzrstatus#start(...)
 
   if a:0
@@ -519,47 +538,28 @@ function! bzrstatus#start(...)
     exe ':sign place 1 line=1 name=bzrstatus_sign_start buffer='.t:bzrstatus_buffer
   endif
 
-  call bzrstatus#update(1)
+  call bzrstatus#update_buffer(1)
 
-  nnoremap <silent> <buffer> <2-Leftmouse> :call bzrstatus#diff_open()<CR>
-  nnoremap <silent> <buffer> <CR> :call bzrstatus#diff_open()<CR>
-  nnoremap <silent> <buffer> q :call bzrstatus#quit()<CR>
-  nnoremap <silent> <buffer> u :call bzrstatus#update(1)<CR>
+  for name in [ 'quit', 'update', 'diff_open', 'unshelve', 'toggle_tag' ]
+    for map in s:bzrstatus_mappings[name]
+      exe 'nnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'()<CR>'
+    endfor
+  endfor
 
-  " Tagging.
-  nnoremap <silent> <buffer> <Space> :call bzrstatus#toggle_tag(line('.'))\|call bzrstatus#next_entry(0, 1)<CR>
-  nnoremap <silent> <buffer> ,<Space>D :call bzrstatus#tag('deleted', 1)<CR>
-  nnoremap <silent> <buffer> ,<Space>d :call bzrstatus#tag('deleted', 0)<CR>
-  nnoremap <silent> <buffer> ,<Space>N :call bzrstatus#tag('added', 1)<CR>
-  nnoremap <silent> <buffer> ,<Space>n :call bzrstatus#tag('added', 0)<CR>
-  nnoremap <silent> <buffer> ,<Space>M :call bzrstatus#tag('modified', 1)<CR>
-  nnoremap <silent> <buffer> ,<Space>m :call bzrstatus#tag('modified', 0)<CR>
-  nnoremap <silent> <buffer> ,<Space>R :call bzrstatus#tag('renamed', 1)<CR>
-  nnoremap <silent> <buffer> ,<Space>r :call bzrstatus#tag('renamed', 0)<CR>
-  nnoremap <silent> <buffer> ,<Space>? :call bzrstatus#tag('unknown', 1)<CR>
-  nnoremap <silent> <buffer> ,<Space>! :call bzrstatus#tag('unknown', 0)<CR>
+  for name in [ 'add', 'commit', 'del', 'revert', 'shelve' ]
+    for map in s:bzrstatus_mappings[name]
+      exe 'nnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'(0)<CR>'
+      exe 'vnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'(0)<CR>'
+      exe 'vnoremap <silent> <buffer> ,'.map.' :call bzrstatus#'.name.'(1)<CR>'
+    endfor
+  endfor
 
-  " Operations on current line entry.
-  nnoremap <silent> <buffer> A :call bzrstatus#add(0)<CR>
-  nnoremap <silent> <buffer> C :call bzrstatus#commit(0)<CR>
-  nnoremap <silent> <buffer> D :call bzrstatus#del(0)<CR>
-  nnoremap <silent> <buffer> R :call bzrstatus#revert(0)<CR>
-  nnoremap <silent> <buffer> S :call bzrstatus#shelve(0)<CR>
-  nnoremap <silent> <buffer> U :call bzrstatus#unshelve()<CR>
-
-  " Operations on visual selection entries.
-  vnoremap <silent> <buffer> A :call bzrstatus#add(0)<CR>
-  vnoremap <silent> <buffer> C :call bzrstatus#commit(0)<CR>
-  vnoremap <silent> <buffer> D :call bzrstatus#del(0)<CR>
-  vnoremap <silent> <buffer> R :call bzrstatus#revert(0)<CR>
-  vnoremap <silent> <buffer> S :call bzrstatus#shelve(0)<CR>
-
-  " Operation on tagged entries.
-  nnoremap <silent> <buffer> ,A :call bzrstatus#add(1)<CR>
-  nnoremap <silent> <buffer> ,C :call bzrstatus#commit(1)<CR>
-  nnoremap <silent> <buffer> ,D :call bzrstatus#del(1)<CR>
-  nnoremap <silent> <buffer> ,R :call bzrstatus#revert(1)<CR>
-  nnoremap <silent> <buffer> ,S :call bzrstatus#shelve(1)<CR>
+  for name in [ 'added', 'deleted', 'modified', 'renamed', 'unknown' ]
+    for map in s:bzrstatus_mappings['tag_'.name]
+      exe 'nnoremap <silent> <buffer> ,<Space>'.toupper(map).' :call bzrstatus#tag("'.name.'", 1)<CR>'
+      exe 'nnoremap <silent> <buffer> ,<Space>'.tolower(map).' :call bzrstatus#tag("'.name.'", 0)<CR>'
+    endfor
+  endfor
 
 endfunction
 
