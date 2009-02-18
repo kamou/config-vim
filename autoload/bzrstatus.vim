@@ -402,6 +402,8 @@ function! bzrstatus#exec_bzr(cmd, options, files, confirm, needtty, update)
   exe 'silent! '.t:bzrstatus_msgline.',$s/\s*\r/\r/g'
   redraw!
 
+  setlocal nomodifiable
+
   exe 'lcd '.fnameescape(oldpwd)
 
   if a:update
