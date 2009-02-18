@@ -110,6 +110,15 @@ if exists('g:bzrstatus_op_confirm')
   call extend(s:bzrstatus_op_confirm, g:bzrstatus_op_confirm)
 endif
 
+let s:bzrstatus_commands = []
+
+for cmd in split(system(g:bzrstatus_bzr.' shell-complete'), "\n")
+  let m = matchlist(cmd, '^\([_a-zA_Z][-_a-zA_Z0-9]*\):')
+  if [] != m
+    let s:bzrstatus_commands += [m[1]]
+  endif
+endfor
+
 function! bzrstatus#tag_line(ln)
 
   if has_key(t:bzrstatus_tagged, a:ln)
@@ -493,16 +502,53 @@ function! bzrstatus#missing()
   call bzrstatus#bzr_op(0, 0, 0, 'missing')
 endfunction
 
-function! bzrstatus#exec()
+function! bzrstatus#complete(arglead, cmdline, cursorpos)
 
-  let cmd = input('bzr ', '', 'file')
+  let args = split(a:cmdline[:a:cursorpos-1])
 
-  let args = split(cmd)
-  if [] == args
+  if '' == a:arglead
+    let argc = len(args) + 1
+  else
+    let argc = len(args)
+  endif
+
+  " call Decho('cmdline :'.a:cmdline)
+  " call Decho('arglead :'.a:arglead)
+  " call Decho('argc :'.argc)
+
+  if 2 == argc
+
+    " Complete command.
+
+    let matches = []
+
+    let re = '^\V'.escape(a:arglead, '\')
+
+    for cmd in s:bzrstatus_commands
+      if cmd =~ re
+        let matches += [cmd]
+      endif
+    endfor
+
+    return matches
+
+  endif
+
+  " Complete file path.
+
+  let pattern = escape(a:arglead, '[]*?').'*'
+
+  return split(glob(pattern), "\n")
+
+endfunction
+
+function! bzrstatus#exec(...)
+
+  if [] == a:000
     return
   endif
 
-  let [cmd; args] = args
+  let [cmd; args] = a:000
   let options = ''
   let files = []
 
@@ -645,7 +691,7 @@ function! bzrstatus#start(...)
 
   call bzrstatus#update_buffer(1)
 
-  for name in [ 'quit', 'update', 'diff_open', 'exec', 'info', 'log', 'missing', 'uncommit', 'unshelve', 'toggle_tag' ]
+  for name in [ 'quit', 'update', 'diff_open', 'info', 'log', 'missing', 'uncommit', 'unshelve', 'toggle_tag' ]
     for map in s:bzrstatus_mappings[name]
       exe 'nnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'()<CR>'
     endfor
@@ -666,5 +712,11 @@ function! bzrstatus#start(...)
     endfor
   endfor
 
+  for map in s:bzrstatus_mappings['exec']
+    exe 'nnoremap <buffer> '.map.' :BzrStatusExec '
+  endfor
+
 endfunction
+
+command! -nargs=* -complete=customlist,bzrstatus#complete BzrStatusExec call bzrstatus#exec(<f-args>)
 
