@@ -113,7 +113,7 @@ endif
 let s:bzrstatus_commands = []
 
 for cmd in split(system(g:bzrstatus_bzr.' shell-complete'), "\n")
-  let m = matchlist(cmd, '^\([_a-zA_Z][-_a-zA_Z0-9]*\):')
+  let m = matchlist(cmd, '^\([_a-zA_Z][-_a-zA_Z0-9]*\)\(:.*\)\?$')
   if [] != m
     let s:bzrstatus_commands += [m[1]]
   endif
