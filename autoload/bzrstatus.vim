@@ -4,6 +4,7 @@ let s:bzrstatus_mappings =
       \ 'quit'     : [ 'q', ],
       \ 'update'   : [ 'u', ],
       \ 'diff_open': [ '<2-Leftmouse>', '<CR>' ],
+      \ 'exec'     : [ 'e' ],
       \ 'info'     : [ 'i' ],
       \ 'log'      : [ 'l' ],
       \ 'missing'  : [ 'm' ],
@@ -51,8 +52,8 @@ let s:bzrstatus_op_options =
       \ 'commit'  : '--show-diff',
       \ 'del'     : '',
       \ 'info'    : '',
-      \ 'log'     : '',
-      \ 'missing' : '',
+      \ 'log'     : '--line',
+      \ 'missing' : '--line',
       \ 'revert'  : '',
       \ 'shelve'  : '',
       \ 'uncommit': '',
@@ -108,6 +109,15 @@ let s:bzrstatus_op_update =
 if exists('g:bzrstatus_op_confirm')
   call extend(s:bzrstatus_op_confirm, g:bzrstatus_op_confirm)
 endif
+
+let s:bzrstatus_commands = []
+
+for cmd in split(system(g:bzrstatus_bzr.' shell-complete'), "\n")
+  let m = matchlist(cmd, '^\([_a-zA_Z][-_a-zA_Z0-9]*\)\(:.*\)\?$')
+  if [] != m
+    let s:bzrstatus_commands += [m[1]]
+  endif
+endfor
 
 function! bzrstatus#tag_line(ln)
 
@@ -370,12 +380,15 @@ function! bzrstatus#exec_bzr(cmd, options, files, confirm, needtty, update)
   endif
 
   if [] != a:files
-    let files = map(a:files, 'shellescape(t:bzrstatus_tree."/".v:val)')
+    let files = map(a:files, 'shellescape(v:val)')
     let cmd .= ' '.join(files, ' ')
   endif
 
   call append(t:bzrstatus_msgline, [cmd, ''])
   redraw
+
+  let oldpwd = getcwd()
+  exe 'lcd '.fnameescape(t:bzrstatus_tree)
 
   exe ':'.(t:bzrstatus_msgline + 2)
   let tf = tempname()
@@ -388,6 +401,10 @@ function! bzrstatus#exec_bzr(cmd, options, files, confirm, needtty, update)
   exe 'read '.tf
   exe 'silent! '.t:bzrstatus_msgline.',$s/\s*\r/\r/g'
   redraw!
+
+  setlocal nomodifiable
+
+  exe 'lcd '.fnameescape(oldpwd)
 
   if a:update
     call bzrstatus#update_buffer(0)
@@ -485,6 +502,71 @@ endfunction
 
 function! bzrstatus#missing()
   call bzrstatus#bzr_op(0, 0, 0, 'missing')
+endfunction
+
+function! bzrstatus#complete(arglead, cmdline, cursorpos)
+
+  let args = split(a:cmdline[:a:cursorpos-1])
+
+  if '' == a:arglead
+    let argc = len(args) + 1
+  else
+    let argc = len(args)
+  endif
+
+  " call Decho('cmdline :'.a:cmdline)
+  " call Decho('arglead :'.a:arglead)
+  " call Decho('argc :'.argc)
+
+  if 2 == argc
+
+    " Complete command.
+
+    let matches = []
+
+    let re = '^\V'.escape(a:arglead, '\')
+
+    for cmd in s:bzrstatus_commands
+      if cmd =~ re
+        let matches += [cmd]
+      endif
+    endfor
+
+    return matches
+
+  endif
+
+  " Complete file path.
+
+  let pattern = escape(a:arglead, '[]*?').'*'
+
+  return split(glob(pattern), "\n")
+
+endfunction
+
+function! bzrstatus#exec(...)
+
+  if [] == a:000
+    return
+  endif
+
+  let [cmd; args] = a:000
+  let options = ''
+  let files = []
+
+  for arg in args
+    if arg =~ '^-'
+      let options .= arg
+    else
+      let files += [arg]
+    endif
+  endfor
+
+  let needtty = get(s:bzrstatus_op_needtty, cmd, 0)
+  let update = get(s:bzrstatus_op_update, cmd, 0)
+
+  call bzrstatus#exec_bzr(cmd, options, files, 0, needtty, update)
+
 endfunction
 
 function! bzrstatus#quit()
@@ -632,5 +714,11 @@ function! bzrstatus#start(...)
     endfor
   endfor
 
+  for map in s:bzrstatus_mappings['exec']
+    exe 'nnoremap <buffer> '.map.' :BzrStatusExec '
+  endfor
+
 endfunction
+
+command! -nargs=* -complete=customlist,bzrstatus#complete BzrStatusExec call bzrstatus#exec(<f-args>)
 
