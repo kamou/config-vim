@@ -37,27 +37,15 @@ let s:bzrstatus_op_criterion =
       \ 'add'     : 'unknown',
       \ 'commit'  : '!unknown',
       \ 'del'     : '!unknown && !deleted && !added',
-      \ 'info'    : '',
-      \ 'log'     : '',
-      \ 'missing' : '',
       \ 'revert'  : 'modified || deleted || renamed || added',
       \ 'shelve'  : '!unknown',
-      \ 'uncommit': '',
-      \ 'unshelve': '',
       \ }
 
 let s:bzrstatus_op_options =
       \ {
-      \ 'add'     : '',
       \ 'commit'  : '--show-diff',
-      \ 'del'     : '',
-      \ 'info'    : '',
       \ 'log'     : '--line',
       \ 'missing' : '--line',
-      \ 'revert'  : '',
-      \ 'shelve'  : '',
-      \ 'uncommit': '',
-      \ 'unshelve': '',
       \ }
 
 if exists('g:bzrstatus_op_options')
@@ -69,9 +57,6 @@ let s:bzrstatus_op_confirm =
       \ 'add'     : 1,
       \ 'commit'  : 1,
       \ 'del'     : 1,
-      \ 'info'    : 0,
-      \ 'log'     : 0,
-      \ 'missing' : 0,
       \ 'revert'  : 1,
       \ 'shelve'  : 1,
       \ 'uncommit': 1,
@@ -80,16 +65,9 @@ let s:bzrstatus_op_confirm =
 
 let s:bzrstatus_op_needtty =
       \ {
-      \ 'add'     : 0,
       \ 'commit'  : 1,
-      \ 'del'     : 0,
-      \ 'info'    : 0,
-      \ 'log'     : 0,
-      \ 'missing' : 0,
-      \ 'revert'  : 0,
       \ 'shelve'  : 1,
       \ 'uncommit': 1,
-      \ 'unshelve': 0,
       \ }
 
 let s:bzrstatus_op_update =
@@ -97,9 +75,6 @@ let s:bzrstatus_op_update =
       \ 'add'     : 1,
       \ 'commit'  : 1,
       \ 'del'     : 1,
-      \ 'info'    : 0,
-      \ 'log'     : 0,
-      \ 'missing' : 0,
       \ 'revert'  : 1,
       \ 'shelve'  : 1,
       \ 'uncommit': 1,
@@ -431,7 +406,7 @@ endfunction
 
 function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
 
-  let criterion = s:bzrstatus_op_criterion[a:op]
+  let criterion = get(s:bzrstatus_op_criterion, a:op, '')
 
   if '' != criterion
 
@@ -456,10 +431,10 @@ function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
 
   endif
 
-  let options = s:bzrstatus_op_options[a:op]
-  let confirm = s:bzrstatus_op_confirm[a:op]
-  let needtty = s:bzrstatus_op_needtty[a:op]
-  let update = s:bzrstatus_op_update[a:op]
+  let options = get(s:bzrstatus_op_options, a:op, '')
+  let confirm = get(s:bzrstatus_op_confirm, a:op, 0)
+  let needtty = get(s:bzrstatus_op_needtty, a:op, 0)
+  let update = get(s:bzrstatus_op_update, a:op, 0)
 
   call bzrstatus#exec_bzr(a:op, options, files, confirm, needtty, update)
 
