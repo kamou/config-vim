@@ -55,7 +55,6 @@ endif
 let s:bzrstatus_op_confirm =
       \ {
       \ 'revert'  : 1,
-      \ 'uncommit': 1,
       \ 'unshelve': 1,
       \ }
 
