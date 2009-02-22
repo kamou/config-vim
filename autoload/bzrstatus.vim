@@ -55,7 +55,6 @@ endif
 let s:bzrstatus_op_confirm =
       \ {
       \ 'add'     : 1,
-      \ 'commit'  : 1,
       \ 'del'     : 1,
       \ 'revert'  : 1,
       \ 'uncommit': 1,
