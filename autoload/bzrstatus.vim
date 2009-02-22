@@ -526,12 +526,12 @@ function! bzrstatus#exec(...)
   endif
 
   let [cmd; args] = a:000
-  let options = ''
+  let options = []
   let files = []
 
   for arg in args
     if arg =~ '^-'
-      let options .= arg
+      let options += [arg]
     else
       let files += [arg]
     endif
@@ -540,7 +540,7 @@ function! bzrstatus#exec(...)
   let needtty = get(s:bzrstatus_op_needtty, cmd, 0)
   let update = get(s:bzrstatus_op_update, cmd, 0)
 
-  call bzrstatus#exec_bzr(cmd, options, files, 0, needtty, update)
+  call bzrstatus#exec_bzr(cmd, join(options, ' '), files, 0, needtty, update)
 
 endfunction
 
