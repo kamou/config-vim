@@ -58,13 +58,6 @@ let s:bzrstatus_op_confirm =
       \ 'unshelve': 1,
       \ }
 
-let s:bzrstatus_op_needtty =
-      \ {
-      \ 'commit'  : 1,
-      \ 'shelve'  : 1,
-      \ 'uncommit': 1,
-      \ }
-
 let s:bzrstatus_op_update =
       \ {
       \ 'add'     : 1,
@@ -326,7 +319,7 @@ function! bzrstatus#diff_open()
 
 endfunction
 
-function! bzrstatus#exec_bzr(cmd, options, files, confirm, needtty, update)
+function! bzrstatus#exec_bzr(cmd, update)
 
   setlocal modifiable
 
@@ -334,27 +327,7 @@ function! bzrstatus#exec_bzr(cmd, options, files, confirm, needtty, update)
     exe 'silent '.(t:bzrstatus_msgline + 1).',$delete'
   endif
 
-  let cmd = a:cmd
-
-  if [] != a:files
-    let cmd .= ' '.join(a:files, ' ')
-  endif
-
-  if a:confirm && 2 == confirm(cmd, "&Yes\n&No", 2)
-    setlocal nomodifiable
-    return
-  endif
-
   let cmd = g:bzrstatus_bzr.' '.a:cmd
-
-  if '' != a:options
-    let cmd .= ' '.a:options
-  endif
-
-  if [] != a:files
-    let files = map(a:files, 'shellescape(v:val)')
-    let cmd .= ' '.join(files, ' ')
-  endif
 
   call append(t:bzrstatus_msgline, [cmd, ''])
   redraw
@@ -364,14 +337,14 @@ function! bzrstatus#exec_bzr(cmd, options, files, confirm, needtty, update)
 
   exe ':'.(t:bzrstatus_msgline + 2)
   let tf = tempname()
-  if !a:needtty
-    let pre_cmd = '1>'.tf.' 2>&1 '
+  if has('gui_running')
+    let pre = ''
   else
-    let pre_cmd = '2>'.tf.' '
+    let pre = 'silent '
   endif
-  exe 'silent !'.pre_cmd.cmd
-  exe 'read '.tf
-  exe 'silent! '.t:bzrstatus_msgline.',$s/\s*\r/\r/g'
+  exe pre.'!script -q -c '.shellescape(cmd).' '.tf
+  exe 'read !col -pbx <'.tf
+  exe (t:bzrstatus_msgline + 3).'g/^Script started/d'
   redraw!
 
   setlocal nomodifiable
@@ -430,10 +403,30 @@ function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
 
   let options = get(s:bzrstatus_op_options, a:op, '')
   let confirm = get(s:bzrstatus_op_confirm, a:op, 0)
-  let needtty = get(s:bzrstatus_op_needtty, a:op, 0)
   let update = get(s:bzrstatus_op_update, a:op, 0)
 
-  call bzrstatus#exec_bzr(a:op, options, files, confirm, needtty, update)
+  let cmd = a:op
+
+  if [] != files
+    let cmd .= ' '.join(files, ' ')
+  endif
+
+  if confirm && 2 == confirm(cmd, "&Yes\n&No", 2)
+    setlocal nomodifiable
+    return
+  endif
+
+  let cmd = a:op
+
+  if '' != options
+    let cmd .= ' '.options
+  endif
+
+  if [] != files
+    let cmd .= ' '.join(map(files, 'shellescape(v:val)'), ' ')
+  endif
+
+  call bzrstatus#exec_bzr(cmd, update)
 
 endfunction
 
@@ -523,21 +516,44 @@ function! bzrstatus#exec(...)
   endif
 
   let [cmd; args] = a:000
-  let options = []
-  let files = []
 
-  for arg in args
-    if arg =~ '^-'
-      let options += [arg]
-    else
-      let files += [arg]
-    endif
-  endfor
-
-  let needtty = get(s:bzrstatus_op_needtty, cmd, 0)
   let update = get(s:bzrstatus_op_update, cmd, 0)
 
-  call bzrstatus#exec_bzr(cmd, join(options, ' '), files, 0, needtty, update)
+  let cmd .= ' '.join(args, ' ')
+
+  call bzrstatus#exec_bzr(cmd, update)
+
+endfunction
+
+function! bzrstatus#get_entries(mode)
+
+  if 'l' == a:mode
+    let r = [line('.')]
+  elseif 't' == a:mode
+    let r = keys(t:bzrstatus_tagged)
+  elseif 'v' == a:mode
+    let r = range(line("'<"), line("'>"))
+  else
+    return []
+  endif
+
+  let entries = bzrstatus#filter_entries(r, '1')
+
+  let s = ''
+
+  for e in entries
+
+    let es = shellescape(e)
+
+    if es == "'".e."'"
+      let s .= e.' '
+    else
+      let s .= es. ' '
+    endif
+
+  endfor
+
+  return s
 
 endfunction
 
@@ -614,7 +630,7 @@ function! bzrstatus#update_buffer(all)
     silent %delete
   endif
 
-  let cmd = g:bzrstatus_bzr.' status -S '.shellescape(t:bzrstatus_path)
+  let cmd = g:bzrstatus_bzr.' status -S -v '.shellescape(t:bzrstatus_path)
   call append(0, cmd)
   redraw
 
@@ -687,8 +703,12 @@ function! bzrstatus#start(...)
   endfor
 
   for map in s:bzrstatus_mappings['exec']
-    exe 'nnoremap <buffer> '.map.' :BzrStatusExec '
+    exe 'nnoremap <buffer> '.map.' :let t:bzrstatus_mode="l"<CR>:BzrStatusExec '
+    exe 'vnoremap <buffer> '.map.' v:let t:bzrstatus_mode="v"<CR>:BzrStatusExec '
   endfor
+
+  cnoremap <buffer> <C-R><C-E> <C-R>=bzrstatus#get_entries(t:bzrstatus_mode)<CR>
+  cnoremap <buffer> <C-R><C-T> <C-R>=bzrstatus#get_entries('t')<CR>
 
 endfunction
 
