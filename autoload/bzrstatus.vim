@@ -58,13 +58,6 @@ let s:bzrstatus_op_confirm =
       \ 'unshelve': 1,
       \ }
 
-let s:bzrstatus_op_needtty =
-      \ {
-      \ 'commit'  : 1,
-      \ 'shelve'  : 1,
-      \ 'uncommit': 1,
-      \ }
-
 let s:bzrstatus_op_update =
       \ {
       \ 'add'     : 1,
@@ -326,7 +319,7 @@ function! bzrstatus#diff_open()
 
 endfunction
 
-function! bzrstatus#exec_bzr(cmd, needtty, update)
+function! bzrstatus#exec_bzr(cmd, update)
 
   setlocal modifiable
 
@@ -410,7 +403,6 @@ function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
 
   let options = get(s:bzrstatus_op_options, a:op, '')
   let confirm = get(s:bzrstatus_op_confirm, a:op, 0)
-  let needtty = get(s:bzrstatus_op_needtty, a:op, 0)
   let update = get(s:bzrstatus_op_update, a:op, 0)
 
   let cmd = a:op
@@ -434,7 +426,7 @@ function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
     let cmd .= ' '.join(map(files, 'shellescape(v:val)'), ' ')
   endif
 
-  call bzrstatus#exec_bzr(cmd, needtty, update)
+  call bzrstatus#exec_bzr(cmd, update)
 
 endfunction
 
@@ -525,12 +517,11 @@ function! bzrstatus#exec(...)
 
   let [cmd; args] = a:000
 
-  let needtty = get(s:bzrstatus_op_needtty, cmd, 0)
   let update = get(s:bzrstatus_op_update, cmd, 0)
 
   let cmd .= ' '.join(args, ' ')
 
-  call bzrstatus#exec_bzr(cmd, needtty, update)
+  call bzrstatus#exec_bzr(cmd, update)
 
 endfunction
 
