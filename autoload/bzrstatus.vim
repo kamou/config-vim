@@ -326,7 +326,7 @@ function! bzrstatus#diff_open()
 
 endfunction
 
-function! bzrstatus#exec_bzr(cmd, options, files, confirm, needtty, update)
+function! bzrstatus#exec_bzr(cmd, needtty, update)
 
   setlocal modifiable
 
@@ -334,27 +334,7 @@ function! bzrstatus#exec_bzr(cmd, options, files, confirm, needtty, update)
     exe 'silent '.(t:bzrstatus_msgline + 1).',$delete'
   endif
 
-  let cmd = a:cmd
-
-  if [] != a:files
-    let cmd .= ' '.join(a:files, ' ')
-  endif
-
-  if a:confirm && 2 == confirm(cmd, "&Yes\n&No", 2)
-    setlocal nomodifiable
-    return
-  endif
-
   let cmd = g:bzrstatus_bzr.' '.a:cmd
-
-  if '' != a:options
-    let cmd .= ' '.a:options
-  endif
-
-  if [] != a:files
-    let files = map(a:files, 'shellescape(v:val)')
-    let cmd .= ' '.join(files, ' ')
-  endif
 
   call append(t:bzrstatus_msgline, [cmd, ''])
   redraw
@@ -433,7 +413,28 @@ function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
   let needtty = get(s:bzrstatus_op_needtty, a:op, 0)
   let update = get(s:bzrstatus_op_update, a:op, 0)
 
-  call bzrstatus#exec_bzr(a:op, options, files, confirm, needtty, update)
+  let cmd = a:op
+
+  if [] != files
+    let cmd .= ' '.join(files, ' ')
+  endif
+
+  if confirm && 2 == confirm(cmd, "&Yes\n&No", 2)
+    setlocal nomodifiable
+    return
+  endif
+
+  let cmd = a:op
+
+  if '' != options
+    let cmd .= ' '.options
+  endif
+
+  if [] != files
+    let cmd .= ' '.join(map(files, 'shellescape(v:val)'), ' ')
+  endif
+
+  call bzrstatus#exec_bzr(cmd, needtty, update)
 
 endfunction
 
@@ -523,21 +524,13 @@ function! bzrstatus#exec(...)
   endif
 
   let [cmd; args] = a:000
-  let options = []
-  let files = []
-
-  for arg in args
-    if arg =~ '^-'
-      let options += [arg]
-    else
-      let files += [arg]
-    endif
-  endfor
 
   let needtty = get(s:bzrstatus_op_needtty, cmd, 0)
   let update = get(s:bzrstatus_op_update, cmd, 0)
 
-  call bzrstatus#exec_bzr(cmd, join(options, ' '), files, 0, needtty, update)
+  let cmd .= ' '.join(args, ' ')
+
+  call bzrstatus#exec_bzr(cmd, needtty, update)
 
 endfunction
 
