@@ -630,7 +630,7 @@ function! bzrstatus#update_buffer(all)
     silent %delete
   endif
 
-  let cmd = g:bzrstatus_bzr.' status -S '.shellescape(t:bzrstatus_path)
+  let cmd = g:bzrstatus_bzr.' status -S -v '.shellescape(t:bzrstatus_path)
   call append(0, cmd)
   redraw
 
