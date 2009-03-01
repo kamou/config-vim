@@ -344,14 +344,14 @@ function! bzrstatus#exec_bzr(cmd, needtty, update)
 
   exe ':'.(t:bzrstatus_msgline + 2)
   let tf = tempname()
-  if !a:needtty
-    let pre_cmd = '1>'.tf.' 2>&1 '
+  if has('gui_running')
+    let pre = ''
   else
-    let pre_cmd = '2>'.tf.' '
+    let pre = 'silent '
   endif
-  exe 'silent !'.pre_cmd.cmd
-  exe 'read '.tf
-  exe 'silent! '.t:bzrstatus_msgline.',$s/\s*\r/\r/g'
+  exe pre.'!script -q -c '.shellescape(cmd).' '.tf
+  exe 'read !col -pbx <'.tf
+  exe (t:bzrstatus_msgline + 3).'g/^Script started/d'
   redraw!
 
   setlocal nomodifiable
