@@ -534,6 +534,38 @@ function! bzrstatus#exec(...)
 
 endfunction
 
+function! bzrstatus#get_entries(mode)
+
+  if 'l' == a:mode
+    let r = [line('.')]
+  elseif 't' == a:mode
+    let r = keys(t:bzrstatus_tagged)
+  elseif 'v' == a:mode
+    let r = range(line("'<"), line("'>"))
+  else
+    return []
+  endif
+
+  let entries = bzrstatus#filter_entries(r, '1')
+
+  let s = ''
+
+  for e in entries
+
+    let es = shellescape(e)
+
+    if es == "'".e."'"
+      let s .= e.' '
+    else
+      let s .= es. ' '
+    endif
+
+  endfor
+
+  return s
+
+endfunction
+
 function! bzrstatus#quit()
 
   call bzrstatus#clean_state(1)
@@ -680,8 +712,12 @@ function! bzrstatus#start(...)
   endfor
 
   for map in s:bzrstatus_mappings['exec']
-    exe 'nnoremap <buffer> '.map.' :BzrStatusExec '
+    exe 'nnoremap <buffer> '.map.' :let t:bzrstatus_mode="l"<CR>:BzrStatusExec '
+    exe 'vnoremap <buffer> '.map.' v:let t:bzrstatus_mode="v"<CR>:BzrStatusExec '
   endfor
+
+  cnoremap <buffer> <C-R><C-E> <C-R>=bzrstatus#get_entries(t:bzrstatus_mode)<CR>
+  cnoremap <buffer> <C-R><C-T> <C-R>=bzrstatus#get_entries('t')<CR>
 
 endfunction
 
