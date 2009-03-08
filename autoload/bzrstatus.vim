@@ -271,6 +271,10 @@ function! bzrstatus#showdiff(vimdiff)
 
   let [renamed, unknown, modified, deleted, added, old_entry, new_entry] = s
 
+  if a:vimdiff && !modified
+    return
+  endif
+
   let old_entry_fullpath = t:bzrstatus_tree.'/'.old_entry
   let new_entry_fullpath = t:bzrstatus_tree.'/'.new_entry
 
@@ -282,10 +286,6 @@ function! bzrstatus#showdiff(vimdiff)
     new
   else
     wincmd k
-  endif
-
-  if a:vimdiff && !modified
-    return
   endif
 
   let vimdiff = modified && a:vimdiff
