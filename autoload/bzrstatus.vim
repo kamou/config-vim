@@ -64,11 +64,13 @@ let s:bzrstatus_op_update =
       \ 'commit'  : 1,
       \ 'del'     : 1,
       \ 'merge'   : 1,
+      \ 'pull'    : 1,
       \ 'revert'  : 1,
       \ 'shelve'  : 1,
       \ 'switch'  : 1,
       \ 'uncommit': 1,
       \ 'unshelve': 1,
+      \ 'update'  : 1,
       \ }
 
 if exists('g:bzrstatus_op_confirm')
