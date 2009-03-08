@@ -52,6 +52,7 @@
 :MatchDebug	matchit.txt	/*:MatchDebug*
 :MkVimball	pi_vimball.txt	/*:MkVimball*
 :RmVimball	pi_vimball.txt	/*:RmVimball*
+:TextobjIndentDefaultKeyMappings	textobj-indent.txt	/*:TextobjIndentDefaultKeyMappings*
 :TlistAddFiles	taglist.txt	/*:TlistAddFiles*
 :TlistAddFilesRecursive	taglist.txt	/*:TlistAddFilesRecursive*
 :TlistClose	taglist.txt	/*:TlistClose*
@@ -87,6 +88,8 @@
 :VCSUpdate	vcscommand.txt	/*:VCSUpdate*
 :VCSVimDiff	vcscommand.txt	/*:VCSVimDiff*
 :VimballList	pi_vimball.txt	/*:VimballList*
+<Plug>(textobj-indent-a)	textobj-indent.txt	/*<Plug>(textobj-indent-a)*
+<Plug>(textobj-indent-i)	textobj-indent.txt	/*<Plug>(textobj-indent-i)*
 Decho.vim	Decho.txt	/*Decho.vim*
 DechoMsgOff	Decho.txt	/*DechoMsgOff*
 DechoMsgOn	Decho.txt	/*DechoMsgOn*
@@ -272,6 +275,7 @@ g:manpageview_sfx_EXT	manpageview.txt	/*g:manpageview_sfx_EXT*
 g:manpageview_syntax_EXT	manpageview.txt	/*g:manpageview_syntax_EXT*
 g:manpageview_winopen	manpageview.txt	/*g:manpageview_winopen*
 g:manpgeview_user	manpageview.txt	/*g:manpgeview_user*
+g:textobj_indent_no_default_key_mappings	textobj-indent.txt	/*g:textobj_indent_no_default_key_mappings*
 g:vimball_home	pi_vimball.txt	/*g:vimball_home*
 g:vimball_mkdir	pi_vimball.txt	/*g:vimball_mkdir*
 g:vimball_path_escape	pi_vimball.txt	/*g:vimball_path_escape*
@@ -370,6 +374,15 @@ textobj#user#move()	textobj-user.txt	/*textobj#user#move()*
 textobj#user#plugin()	textobj-user.txt	/*textobj#user#plugin()*
 textobj#user#select()	textobj-user.txt	/*textobj#user#select()*
 textobj#user#select_pair()	textobj-user.txt	/*textobj#user#select_pair()*
+textobj-indent	textobj-indent.txt	/*textobj-indent*
+textobj-indent-bugs	textobj-indent.txt	/*textobj-indent-bugs*
+textobj-indent-changelog	textobj-indent.txt	/*textobj-indent-changelog*
+textobj-indent-contents	textobj-indent.txt	/*textobj-indent-contents*
+textobj-indent-customizing	textobj-indent.txt	/*textobj-indent-customizing*
+textobj-indent-interface	textobj-indent.txt	/*textobj-indent-interface*
+textobj-indent-introduction	textobj-indent.txt	/*textobj-indent-introduction*
+textobj-indent-mappings	textobj-indent.txt	/*textobj-indent-mappings*
+textobj-indent.txt	textobj-indent.txt	/*textobj-indent.txt*
 textobj-user	textobj-user.txt	/*textobj-user*
 textobj-user-bugs	textobj-user.txt	/*textobj-user-bugs*
 textobj-user-changelog	textobj-user.txt	/*textobj-user-changelog*
