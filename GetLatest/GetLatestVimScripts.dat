@@ -16,6 +16,7 @@ ScriptID SourceID Filename
 974 4316 :AutoInstall: python.vim
 489 9573 :AutoInstall: manpageviewPlugin
 39 8196 :AutoInstall: matchit.vim
+2100 9391 :AutoInstall: textobj/user.vim
 1464 8765 moria.vim
 2555 10037 jellybeans.vim
 2536 10033 lucius.vim
