@@ -271,6 +271,10 @@ function! bzrstatus#showdiff(vimdiff)
 
   let [renamed, unknown, modified, deleted, added, old_entry, new_entry] = s
 
+  if a:vimdiff && !modified
+    return
+  endif
+
   let old_entry_fullpath = t:bzrstatus_tree.'/'.old_entry
   let new_entry_fullpath = t:bzrstatus_tree.'/'.new_entry
 
@@ -282,10 +286,6 @@ function! bzrstatus#showdiff(vimdiff)
     new
   else
     wincmd k
-  endif
-
-  if a:vimdiff && !modified
-    return
   endif
 
   let vimdiff = modified && a:vimdiff
@@ -694,6 +694,7 @@ function! bzrstatus#start(...)
   let t:bzrstatus_tree = system(g:bzrstatus_bzr.' root '.shellescape(t:bzrstatus_path))[0:-2]
   let t:bzrstatus_selection = 0
   let t:bzrstatus_tagged = {}
+  let t:bzrstatus_mode = "l"
 
   silent botright split new
   setlocal buftype=nofile noswapfile ft=bzrstatus fenc=utf-8
