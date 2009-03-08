@@ -12,6 +12,7 @@ let s:bzrstatus_mappings =
       \ 'add'     : [ 'A' ],
       \ 'commit'  : [ 'C' ],
       \ 'del'     : [ 'D' ],
+      \ 'extmerge': [ 'M' ],
       \ 'revert'  : [ 'R' ],
       \ 'shelve'  : [ 'S' ],
       \ 'uncommit': [ 'B' ],
@@ -37,6 +38,7 @@ let s:bzrstatus_op_criterion =
       \ 'add'     : 'unknown',
       \ 'commit'  : '!unknown',
       \ 'del'     : '!unknown && !deleted && !added',
+      \ 'extmerge': 'modified',
       \ 'revert'  : 'modified || deleted || renamed || added',
       \ 'shelve'  : '!unknown',
       \ }
@@ -443,6 +445,10 @@ function! bzrstatus#del(tagged) range
   call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'del')
 endfunction
 
+function! bzrstatus#extmerge(tagged) range
+  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'extmerge')
+endfunction
+
 function! bzrstatus#revert(tagged) range
   call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'revert')
 endfunction
@@ -689,7 +695,7 @@ function! bzrstatus#start(...)
     endfor
   endfor
 
-  for name in [ 'add', 'commit', 'del', 'revert', 'shelve' ]
+  for name in [ 'add', 'commit', 'del', 'extmerge', 'revert', 'shelve' ]
     for map in s:bzrstatus_mappings[name]
       exe 'nnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'(0)<CR>'
       exe 'vnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'(0)<CR>'
