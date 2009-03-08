@@ -67,6 +67,7 @@ let s:bzrstatus_op_update =
       \ 'del'     : 1,
       \ 'merge'   : 1,
       \ 'pull'    : 1,
+      \ 'resolve' : 1,
       \ 'revert'  : 1,
       \ 'shelve'  : 1,
       \ 'switch'  : 1,
