@@ -694,6 +694,7 @@ function! bzrstatus#start(...)
   let t:bzrstatus_tree = system(g:bzrstatus_bzr.' root '.shellescape(t:bzrstatus_path))[0:-2]
   let t:bzrstatus_selection = 0
   let t:bzrstatus_tagged = {}
+  let t:bzrstatus_mode = "l"
 
   silent botright split new
   setlocal buftype=nofile noswapfile ft=bzrstatus fenc=utf-8
