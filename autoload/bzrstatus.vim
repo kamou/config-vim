@@ -12,10 +12,12 @@ let s:bzrstatus_mappings =
       \ 'add'     : [ 'A' ],
       \ 'commit'  : [ 'C' ],
       \ 'del'     : [ 'D' ],
+      \ 'extmerge': [ 'M' ],
       \ 'revert'  : [ 'R' ],
       \ 'shelve'  : [ 'S' ],
       \ 'uncommit': [ 'B' ],
       \ 'unshelve': [ 'U' ],
+      \ 'vimdiff':  [ 'V' ],
       \
       \ 'toggle_tag'  : [ '<Space>' ],
       \ 'tag_added'   : [ 'N' ],
@@ -37,6 +39,7 @@ let s:bzrstatus_op_criterion =
       \ 'add'     : 'unknown',
       \ 'commit'  : '!unknown',
       \ 'del'     : '!unknown && !deleted && !added',
+      \ 'extmerge': 'modified',
       \ 'revert'  : 'modified || deleted || renamed || added',
       \ 'shelve'  : '!unknown',
       \ }
@@ -64,11 +67,14 @@ let s:bzrstatus_op_update =
       \ 'commit'  : 1,
       \ 'del'     : 1,
       \ 'merge'   : 1,
+      \ 'pull'    : 1,
+      \ 'resolve' : 1,
       \ 'revert'  : 1,
       \ 'shelve'  : 1,
       \ 'switch'  : 1,
       \ 'uncommit': 1,
       \ 'unshelve': 1,
+      \ 'update'  : 1,
       \ }
 
 if exists('g:bzrstatus_op_confirm')
@@ -254,7 +260,7 @@ function! bzrstatus#filter_entries(range, criterion)
 
 endfunction
 
-function! bzrstatus#diff_open()
+function! bzrstatus#showdiff(vimdiff)
 
   let ln = line('.')
 
@@ -278,12 +284,18 @@ function! bzrstatus#diff_open()
     wincmd k
   endif
 
-  if modified || added || unknown
+  if a:vimdiff && !modified
+    return
+  endif
+
+  let vimdiff = modified && a:vimdiff
+
+  if vimdiff || added || unknown
     " Open current tree version.
     exe 'edit '.fnameescape(new_entry_fullpath)
   endif
 
-  if modified
+  if vimdiff
     " Prepare for diff...
     let t:bzrstatus_diffbuf = bufnr('')
     let ft = &ft
@@ -295,17 +307,23 @@ function! bzrstatus#diff_open()
     enew
   endif
 
-  if modified || deleted
+  if vimdiff || modified || deleted
     setlocal buftype=nofile noswapfile
-    " Get original version from Bazaar.
     let t:bzrstatus_tmpbuf = bufnr('')
     exe 'file [BZR] '.fnameescape(old_entry)
     redraw
-    exe 'silent read !'.g:bzrstatus_bzr.' cat '.shellescape(old_entry_fullpath)
+    if vimdiff
+      " Get original version from Bazaar.
+      exe 'silent read !'.g:bzrstatus_bzr.' cat '.shellescape(old_entry_fullpath)
+    else
+      " Get diff.
+      exe 'silent read !'.g:bzrstatus_bzr.' diff '.shellescape(old_entry_fullpath)
+      set ft=diff
+    endif
     exe 'normal 1Gdd'
   end
 
-  if modified
+  if vimdiff
     " Set filetype from original for correct syntax highlighting...
     let &ft = ft
     let &fenc = fenc
@@ -317,6 +335,10 @@ function! bzrstatus#diff_open()
 
   exe bufwinnr(t:bzrstatus_buffer).' wincmd w'
 
+endfunction
+
+function! bzrstatus#diff_open()
+  call bzrstatus#showdiff(0)
 endfunction
 
 function! bzrstatus#exec_bzr(cmd, update)
@@ -344,7 +366,7 @@ function! bzrstatus#exec_bzr(cmd, update)
   endif
   exe pre.'!script -q -c '.shellescape(cmd).' '.tf
   exe 'read !col -pbx <'.tf
-  exe (t:bzrstatus_msgline + 3).'g/^Script started/d'
+  exe 'silent! '.(t:bzrstatus_msgline + 3).'g/^Script started/d'
   redraw!
 
   setlocal nomodifiable
@@ -441,12 +463,20 @@ function! bzrstatus#del(tagged) range
   call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'del')
 endfunction
 
+function! bzrstatus#extmerge(tagged) range
+  call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'extmerge')
+endfunction
+
 function! bzrstatus#revert(tagged) range
   call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'revert')
 endfunction
 
 function! bzrstatus#shelve(tagged) range
   call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'shelve')
+endfunction
+
+function! bzrstatus#vimdiff()
+  call bzrstatus#showdiff(1)
 endfunction
 
 function! bzrstatus#uncommit()
@@ -681,13 +711,13 @@ function! bzrstatus#start(...)
 
   call bzrstatus#update_buffer(1)
 
-  for name in [ 'quit', 'update', 'diff_open', 'info', 'log', 'missing', 'uncommit', 'unshelve', 'toggle_tag' ]
+  for name in [ 'quit', 'update', 'diff_open', 'info', 'log', 'missing', 'uncommit', 'unshelve', 'vimdiff', 'toggle_tag' ]
     for map in s:bzrstatus_mappings[name]
       exe 'nnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'()<CR>'
     endfor
   endfor
 
-  for name in [ 'add', 'commit', 'del', 'revert', 'shelve' ]
+  for name in [ 'add', 'commit', 'del', 'extmerge', 'revert', 'shelve' ]
     for map in s:bzrstatus_mappings[name]
       exe 'nnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'(0)<CR>'
       exe 'vnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'(0)<CR>'
