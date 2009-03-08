@@ -346,7 +346,7 @@ function! bzrstatus#exec_bzr(cmd, update)
   endif
   exe pre.'!script -q -c '.shellescape(cmd).' '.tf
   exe 'read !col -pbx <'.tf
-  exe (t:bzrstatus_msgline + 3).'g/^Script started/d'
+  exe 'silent! '.(t:bzrstatus_msgline + 3).'g/^Script started/d'
   redraw!
 
   setlocal nomodifiable
