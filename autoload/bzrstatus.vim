@@ -90,6 +90,13 @@ for cmd in split(system(g:bzrstatus_bzr.' shell-complete'), "\n")
   endif
 endfor
 
+for alias in split(system(g:bzrstatus_bzr.' alias'), "\n")
+  let m = matchlist(alias, '^bzr alias \([_a-zA_Z][-_a-zA_Z0-9]*\)=.*')
+  if [] != m
+    let s:bzrstatus_commands += [m[1]]
+  endif
+endfor
+
 function! bzrstatus#tag_line(ln)
 
   if has_key(t:bzrstatus_tagged, a:ln)
@@ -509,10 +516,6 @@ function! bzrstatus#complete(arglead, cmdline, cursorpos)
     let argc = len(args)
   endif
 
-  " call Decho('cmdline :'.a:cmdline)
-  " call Decho('arglead :'.a:arglead)
-  " call Decho('argc :'.argc)
-
   if 2 == argc
 
     " Complete command.
@@ -535,7 +538,7 @@ function! bzrstatus#complete(arglead, cmdline, cursorpos)
 
   let pattern = escape(a:arglead, '[]*?').'*'
 
-  return split(glob(pattern), "\n")
+  return map(split(glob(pattern), "\n"), "isdirectory(v:val) ? v:val.'/' : v:val")
 
 endfunction
 
