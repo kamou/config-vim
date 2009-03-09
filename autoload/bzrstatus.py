@@ -7,7 +7,6 @@ import os.path
 import shlex
 import glob
 import vim
-import re
 
 bzrlib.plugin.load_plugins()
 
@@ -34,18 +33,11 @@ def bzr_complete_options(cmdname):
     return [ '--' + opt.name for opt in cmdobj.options().values() ]
 
 def bzr_complete_fix_path(path):
+
     if os.path.isdir(path):
         return path + '/'
+
     return path
-
-def bzr_complete_path(arglead):
-
-    m = re.match('^(~\w*)(/.*|$)', arglead)
-
-    if m:
-        arglead = os.path.expanduser(m.group(1)) + m.group(2)
-
-    return [ glob.iglob(arglead + '*'), bzr_complete_fix_path ]
 
 def bzr_complete(arglead, cmdline):
 
@@ -64,7 +56,10 @@ def bzr_complete(arglead, cmdline):
         if 0 < len(arglead) and '-' == arglead[0]:
             list = bzr_complete_options(args[1])
         else:
-            list, fix = bzr_complete_path(arglead)
+            if '~' == arglead[0]:
+                arglead = os.path.expanduser(arglead)
+            list = glob.iglob(arglead + '*')
+            fix = bzr_complete_fix_path
 
     matches = []
 
