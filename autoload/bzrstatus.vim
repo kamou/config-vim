@@ -531,7 +531,7 @@ function! bzrstatus#complete(arglead, cmdline, cursorpos)
 
   let pattern = escape(a:arglead, '[]*?').'*'
 
-  return split(glob(pattern), "\n")
+  return map(split(glob(pattern), "\n"), "isdirectory(v:val) ? v:val.'/' : v:val")
 
 endfunction
 
