@@ -81,21 +81,7 @@ if exists('g:bzrstatus_op_confirm')
   call extend(s:bzrstatus_op_confirm, g:bzrstatus_op_confirm)
 endif
 
-let s:bzrstatus_commands = []
-
-for cmd in split(system(g:bzrstatus_bzr.' shell-complete'), "\n")
-  let m = matchlist(cmd, '^\([_a-zA_Z][-_a-zA_Z0-9]*\)\(:.*\)\?$')
-  if [] != m
-    let s:bzrstatus_commands += [m[1]]
-  endif
-endfor
-
-for alias in split(system(g:bzrstatus_bzr.' alias'), "\n")
-  let m = matchlist(alias, '^bzr alias \([_a-zA_Z][-_a-zA_Z0-9]*\)=.*')
-  if [] != m
-    let s:bzrstatus_commands += [m[1]]
-  endif
-endfor
+pyfile $USERVIM/autoload/bzrstatus.py
 
 function! bzrstatus#tag_line(ln)
 
@@ -508,37 +494,9 @@ endfunction
 
 function! bzrstatus#complete(arglead, cmdline, cursorpos)
 
-  let args = split(a:cmdline[:a:cursorpos-1])
+  python bzr_complete(vim.eval('a:arglead'), vim.eval('a:cmdline'))
 
-  if '' == a:arglead
-    let argc = len(args) + 1
-  else
-    let argc = len(args)
-  endif
-
-  if 2 == argc
-
-    " Complete command.
-
-    let matches = []
-
-    let re = '^\V'.escape(a:arglead, '\')
-
-    for cmd in s:bzrstatus_commands
-      if cmd =~ re
-        let matches += [cmd]
-      endif
-    endfor
-
-    return matches
-
-  endif
-
-  " Complete file path.
-
-  let pattern = escape(a:arglead, '[]*?').'*'
-
-  return map(split(glob(pattern), "\n"), "isdirectory(v:val) ? v:val.'/' : v:val")
+  return matches
 
 endfunction
 
