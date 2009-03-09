@@ -90,6 +90,13 @@ for cmd in split(system(g:bzrstatus_bzr.' shell-complete'), "\n")
   endif
 endfor
 
+for alias in split(system(g:bzrstatus_bzr.' alias'), "\n")
+  let m = matchlist(alias, '^bzr alias \([_a-zA_Z][-_a-zA_Z0-9]*\)=.*')
+  if [] != m
+    let s:bzrstatus_commands += [m[1]]
+  endif
+endfor
+
 function! bzrstatus#tag_line(ln)
 
   if has_key(t:bzrstatus_tagged, a:ln)
