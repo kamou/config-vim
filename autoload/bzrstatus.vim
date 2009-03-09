@@ -509,10 +509,6 @@ function! bzrstatus#complete(arglead, cmdline, cursorpos)
     let argc = len(args)
   endif
 
-  " call Decho('cmdline :'.a:cmdline)
-  " call Decho('arglead :'.a:arglead)
-  " call Decho('argc :'.argc)
-
   if 2 == argc
 
     " Complete command.
