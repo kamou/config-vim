@@ -68,6 +68,9 @@ class BzrComplete():
 
     def complete_options(self):
 
+        if self.cmdobj is None:
+            return []
+
         opts = [ '--' + opt.name for opt in self.cmdobj.options().values() ]
 
         return self.filter(opts)
@@ -90,7 +93,7 @@ class BzrComplete():
         try:
             self.cmdobj = bzrlib.commands.get_cmd_object(self.cmdname)
         except bzrlib.errors.BzrCommandError:
-            return []
+            self.cmdobj = None
 
         if 0 < len(self.arglead):
 
