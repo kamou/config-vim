@@ -59,6 +59,8 @@ class BzrComplete():
             cmds.append(cmdname)
             if self.complete_command_aliases:
                 for alias in cmdclass.aliases:
+                    if cmdname.startswith(alias):
+                        continue
                     cmds.append(alias)
 
         for alias in bzrlib.config.GlobalConfig().get_aliases().keys():
