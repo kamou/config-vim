@@ -54,7 +54,7 @@ class BzrComplete():
         cmds = []
 
         for cmdname, cmdclass in bzrlib.commands.get_all_cmds():
-            if not self.complete_command_aliases and cmdclass.hidden:
+            if not self.complete_hidden_commands and cmdclass.hidden:
                 continue
             cmds.append(cmdname)
             if self.complete_command_aliases:
