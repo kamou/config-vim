@@ -16,7 +16,6 @@ class BzrComplete():
                  complete_command_aliases=False,
                  complete_hidden_commands=False):
 
-        self.arglead = arglead
         self.cmdline = cmdline
         self.complete_command_aliases = complete_command_aliases
         self.complete_hidden_commands = complete_hidden_commands
@@ -24,13 +23,20 @@ class BzrComplete():
         self.args = shlex.split(cmdline)
 
         if '' == arglead:
-            self.argc = len(self.args) + 1
+            self.argn = len(self.args)
         else:
-            self.argc = len(self.args)
+            args = shlex.split(arglead)
+            self.argn = len(self.args) - len(args)
+            if ' ' != arglead[0]:
+                arglead = args[0]
+            else:
+                arglead = ''
+
+        self.arglead = arglead
 
     def complete(self):
 
-        if 2 == self.argc:
+        if 1 == self.argn:
             matches = self.complete_cmdname()
         else:
             matches = self.complete_command()
