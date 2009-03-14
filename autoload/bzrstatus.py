@@ -80,7 +80,13 @@ class BzrComplete():
         if self.cmdobj is None:
             return []
 
-        opts = [ '--' + opt.name for opt in self.cmdobj.options().values() ]
+        opts = []
+
+        for name, opt in self.cmdobj.options().items():
+            opts.append('--' + opt.name)
+            short_name = opt.short_name()
+            if short_name:
+                opts.append('-' + short_name)
 
         return self.filter(opts)
 
