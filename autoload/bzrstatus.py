@@ -6,6 +6,7 @@ import bzrlib.plugin
 import os.path
 import shlex
 import glob
+import sys
 import vim
 
 bzrlib.plugin.load_plugins()
@@ -118,7 +119,12 @@ class BzrComplete():
 
 def bzr_complete(arglead, cmdline):
 
-    matches = BzrComplete(arglead, cmdline).complete()
+    try:
+        matches = BzrComplete(arglead, cmdline).complete()
+    except ValueError:
+        matches = []
+        e = sys.exc_info()[1]
+        print >>sys.stderr, 'parse error:', e.message
 
     vim.command("let matches = ['" + "', '".join(matches) + "']")
 
