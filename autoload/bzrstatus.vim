@@ -4,7 +4,8 @@ let s:bzrstatus_mappings =
       \ 'quit'     : [ 'q', ],
       \ 'update'   : [ 'u', ],
       \ 'diff_open': [ '<2-Leftmouse>', '<CR>' ],
-      \ 'exec'     : [ 'e' ],
+      \ 'exec'     : [ '!' ],
+      \ 'bzr'      : [ 'e' ],
       \ 'info'     : [ 'i' ],
       \ 'log'      : [ 'l' ],
       \ 'missing'  : [ 'm' ],
@@ -693,9 +694,14 @@ function! bzrstatus#start(...)
     endfor
   endfor
 
-  for map in s:bzrstatus_mappings['exec']
+  for map in s:bzrstatus_mappings['bzr']
     exe 'nnoremap <buffer> '.map.' :let t:bzrstatus_mode="l"<CR>:BzrStatusExec '
     exe 'vnoremap <buffer> '.map.' v:let t:bzrstatus_mode="v"<CR>:BzrStatusExec '
+  endfor
+
+  for map in s:bzrstatus_mappings['exec']
+    exe 'nnoremap <buffer> '.map.' :let t:bzrstatus_mode="l"<CR>:!'
+    exe 'vnoremap <buffer> '.map.' v:let t:bzrstatus_mode="v"<CR>:!'
   endfor
 
   cnoremap <buffer> <C-R><C-E> <C-R>=bzrstatus#get_entries(t:bzrstatus_mode)<CR>
