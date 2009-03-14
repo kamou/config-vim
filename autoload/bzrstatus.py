@@ -56,6 +56,10 @@ class BzrComplete():
 
         return matches
 
+    def add_extra_space(self, list):
+
+        return [ item + ' ' for item in list ]
+
     def complete_cmdname(self):
 
         cmds = []
@@ -73,7 +77,7 @@ class BzrComplete():
         for alias in bzrlib.config.GlobalConfig().get_aliases().keys():
             cmds.append(alias)
 
-        return self.filter(cmds)
+        return self.add_extra_space(self.filter(cmds))
 
     def complete_options(self):
 
@@ -88,7 +92,7 @@ class BzrComplete():
             if short_name:
                 opts.append('-' + short_name)
 
-        return self.filter(opts)
+        return self.add_extra_space(self.filter(opts))
 
     def fix_path(self, path):
 
