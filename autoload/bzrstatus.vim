@@ -17,7 +17,8 @@ let s:bzrstatus_mappings =
       \ 'shelve'  : [ 'S' ],
       \ 'uncommit': [ 'B' ],
       \ 'unshelve': [ 'U' ],
-      \ 'vimdiff':  [ 'V' ],
+      \
+      \ 'toggle_vimdiff': [ 'ov' ],
       \
       \ 'toggle_tag'  : [ '<Space>' ],
       \ 'tag_added'   : [ 'N' ],
@@ -253,7 +254,7 @@ function! bzrstatus#filter_entries(range, criterion)
 
 endfunction
 
-function! bzrstatus#showdiff(vimdiff)
+function! bzrstatus#showdiff()
 
   let ln = line('.')
 
@@ -263,10 +264,6 @@ function! bzrstatus#showdiff(vimdiff)
   endif
 
   let [renamed, unknown, modified, deleted, added, old_entry, new_entry] = s
-
-  if a:vimdiff && !modified
-    return
-  endif
 
   let old_entry_fullpath = t:bzrstatus_tree.'/'.old_entry
   let new_entry_fullpath = t:bzrstatus_tree.'/'.new_entry
@@ -281,7 +278,7 @@ function! bzrstatus#showdiff(vimdiff)
     wincmd k
   endif
 
-  let vimdiff = modified && a:vimdiff
+  let vimdiff = modified && t:bzrstatus_vimdiff
 
   if vimdiff || added || unknown
     " Open current tree version.
@@ -331,7 +328,7 @@ function! bzrstatus#showdiff(vimdiff)
 endfunction
 
 function! bzrstatus#diff_open()
-  call bzrstatus#showdiff(0)
+  call bzrstatus#showdiff()
 endfunction
 
 function! bzrstatus#exec_bzr(cmd, update)
@@ -468,8 +465,8 @@ function! bzrstatus#shelve(tagged) range
   call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'shelve')
 endfunction
 
-function! bzrstatus#vimdiff()
-  call bzrstatus#showdiff(1)
+function! bzrstatus#toggle_vimdiff()
+  let t:bzrstatus_vimdiff = !t:bzrstatus_vimdiff
 endfunction
 
 function! bzrstatus#uncommit()
@@ -651,6 +648,8 @@ function! bzrstatus#start(...)
     let path = '.'
   end
 
+  let t:bzrstatus_vimdiff = g:bzrstatus_vimdiff
+
   let t:bzrstatus_path = fnamemodify(path, ':p')
   let t:bzrstatus_tree = system(g:bzrstatus_bzr.' root '.shellescape(t:bzrstatus_path))[0:-2]
   let t:bzrstatus_selection = 0
@@ -673,7 +672,7 @@ function! bzrstatus#start(...)
 
   call bzrstatus#update_buffer(1)
 
-  for name in [ 'quit', 'update', 'diff_open', 'info', 'log', 'missing', 'uncommit', 'unshelve', 'vimdiff', 'toggle_tag' ]
+  for name in [ 'quit', 'update', 'diff_open', 'info', 'log', 'missing', 'uncommit', 'unshelve', 'toggle_vimdiff', 'toggle_tag' ]
     for map in s:bzrstatus_mappings[name]
       exe 'nnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'()<CR>'
     endfor
