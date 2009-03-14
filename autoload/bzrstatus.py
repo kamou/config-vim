@@ -8,16 +8,18 @@ import shlex
 import glob
 import sys
 import vim
+import os
 
 bzrlib.plugin.load_plugins()
 
 class BzrComplete():
 
-    def __init__(self, arglead, cmdline,
+    def __init__(self, arglead, cmdline, workdir,
                  complete_command_aliases=False,
                  complete_hidden_commands=False):
 
         self.cmdline = cmdline
+        self.workdir = workdir
         self.complete_command_aliases = complete_command_aliases
         self.complete_hidden_commands = complete_hidden_commands
 
@@ -122,15 +124,21 @@ class BzrComplete():
             if '~' == self.arglead[0]:
                 self.arglead = os.path.expanduser(self.arglead)
 
-        list = glob.iglob(self.arglead + '*')
-        list = [ self.fix_path(path) for path in list ]
+        dir = os.getcwd()
+        os.chdir(self.workdir)
+
+        try:
+            list = glob.iglob(self.arglead + '*')
+            list = [ self.fix_path(path) for path in list ]
+        finally:
+            os.chdir(dir)
 
         return list
 
-def bzr_complete(arglead, cmdline):
+def bzr_complete(arglead, cmdline, workdir):
 
     try:
-        matches = BzrComplete(arglead, cmdline).complete()
+        matches = BzrComplete(arglead, cmdline, workdir).complete()
     except ValueError:
         matches = []
         e = sys.exc_info()[1]

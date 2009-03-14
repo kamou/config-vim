@@ -492,7 +492,10 @@ endfunction
 
 function! bzrstatus#complete(arglead, cmdline, cursorpos)
 
-  python bzr_complete(vim.eval('a:arglead'), vim.eval('a:cmdline'))
+  python bzr_complete(
+        \ vim.eval('a:arglead'),
+        \ vim.eval('a:cmdline'),
+        \ vim.eval('t:bzrstatus_tree'))
 
   return matches
 
