@@ -38,11 +38,11 @@ if !exists("g:yasnippets_nlkey_insert")
 endif
 
 if !exists("g:yasnippets_file")
-    let g:yasnippets_file = expand('~/.vim/snippets.rb')
+    let g:yasnippets_file = expand($USERVIM.'/snippets.rb')
 endif
 
 if !exists("g:yasnippets_skeletons")
-    let g:yasnippets_skeletons = expand('~/.vim/skeletons')
+    let g:yasnippets_skeletons = expand($USERVIM.'/skeletons')
 endif
 
 let g:yasnippets_nl        = {}
