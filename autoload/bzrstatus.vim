@@ -4,7 +4,8 @@ let s:bzrstatus_mappings =
       \ 'quit'     : [ 'q', ],
       \ 'update'   : [ 'u', ],
       \ 'diff_open': [ '<2-Leftmouse>', '<CR>' ],
-      \ 'exec'     : [ 'e' ],
+      \ 'exec'     : [ '!' ],
+      \ 'bzr'      : [ 'e' ],
       \ 'info'     : [ 'i' ],
       \ 'log'      : [ 'l' ],
       \ 'missing'  : [ 'm' ],
@@ -17,7 +18,8 @@ let s:bzrstatus_mappings =
       \ 'shelve'  : [ 'S' ],
       \ 'uncommit': [ 'B' ],
       \ 'unshelve': [ 'U' ],
-      \ 'vimdiff':  [ 'V' ],
+      \
+      \ 'toggle_vimdiff': [ 'ov' ],
       \
       \ 'toggle_tag'  : [ '<Space>' ],
       \ 'tag_added'   : [ 'N' ],
@@ -63,18 +65,19 @@ let s:bzrstatus_op_confirm =
 
 let s:bzrstatus_op_update =
       \ {
-      \ 'add'     : 1,
-      \ 'commit'  : 1,
-      \ 'del'     : 1,
-      \ 'merge'   : 1,
-      \ 'pull'    : 1,
-      \ 'resolve' : 1,
-      \ 'revert'  : 1,
-      \ 'shelve'  : 1,
-      \ 'switch'  : 1,
-      \ 'uncommit': 1,
-      \ 'unshelve': 1,
-      \ 'update'  : 1,
+      \ 'add'        : 1,
+      \ 'commit'     : 1,
+      \ 'del'        : 1,
+      \ 'merge'      : 1,
+      \ 'pull'       : 1,
+      \ 'reconfigure': 2,
+      \ 'resolve'    : 1,
+      \ 'revert'     : 1,
+      \ 'shelve'     : 1,
+      \ 'switch'     : 2,
+      \ 'uncommit'   : 1,
+      \ 'unshelve'   : 1,
+      \ 'update'     : 1,
       \ }
 
 if exists('g:bzrstatus_op_confirm')
@@ -253,7 +256,7 @@ function! bzrstatus#filter_entries(range, criterion)
 
 endfunction
 
-function! bzrstatus#showdiff(vimdiff)
+function! bzrstatus#showdiff()
 
   let ln = line('.')
 
@@ -263,10 +266,6 @@ function! bzrstatus#showdiff(vimdiff)
   endif
 
   let [renamed, unknown, modified, deleted, added, old_entry, new_entry] = s
-
-  if a:vimdiff && !modified
-    return
-  endif
 
   let old_entry_fullpath = t:bzrstatus_tree.'/'.old_entry
   let new_entry_fullpath = t:bzrstatus_tree.'/'.new_entry
@@ -281,7 +280,7 @@ function! bzrstatus#showdiff(vimdiff)
     wincmd k
   endif
 
-  let vimdiff = modified && a:vimdiff
+  let vimdiff = modified && t:bzrstatus_vimdiff
 
   if vimdiff || added || unknown
     " Open current tree version.
@@ -331,7 +330,7 @@ function! bzrstatus#showdiff(vimdiff)
 endfunction
 
 function! bzrstatus#diff_open()
-  call bzrstatus#showdiff(0)
+  call bzrstatus#showdiff()
 endfunction
 
 function! bzrstatus#exec_bzr(cmd, update)
@@ -367,7 +366,7 @@ function! bzrstatus#exec_bzr(cmd, update)
   exe 'lcd '.fnameescape(oldpwd)
 
   if a:update
-    call bzrstatus#update_buffer(0)
+    call bzrstatus#update_buffer(a:update)
   endif
 
 endfunction
@@ -468,8 +467,8 @@ function! bzrstatus#shelve(tagged) range
   call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'shelve')
 endfunction
 
-function! bzrstatus#vimdiff()
-  call bzrstatus#showdiff(1)
+function! bzrstatus#toggle_vimdiff()
+  let t:bzrstatus_vimdiff = !t:bzrstatus_vimdiff
 endfunction
 
 function! bzrstatus#uncommit()
@@ -494,7 +493,10 @@ endfunction
 
 function! bzrstatus#complete(arglead, cmdline, cursorpos)
 
-  python bzr_complete(vim.eval('a:arglead'), vim.eval('a:cmdline'))
+  python bzr_complete(
+        \ vim.eval('a:arglead'),
+        \ vim.eval('a:cmdline'),
+        \ vim.eval('t:bzrstatus_tree'))
 
   return matches
 
@@ -607,7 +609,7 @@ function! bzrstatus#next_entry(from_top, wrap)
 
 endfunction
 
-function! bzrstatus#update_buffer(all)
+function! bzrstatus#update_buffer(type)
 
   call bzrstatus#clean_state(1)
 
@@ -615,7 +617,11 @@ function! bzrstatus#update_buffer(all)
 
   setlocal modifiable
 
-  if !a:all && exists('t:bzrstatus_msgline')
+  if 1 < a:type
+    call bzrstatus#update_file()
+  endif
+
+  if 3 > a:type && exists('t:bzrstatus_msgline')
     exe 'silent 1,'.(t:bzrstatus_msgline - 1).'delete'
   else
     silent %delete
@@ -639,8 +645,16 @@ function! bzrstatus#update_buffer(all)
 
 endfunction
 
+function! bzrstatus#update_file()
+
+  let nick = system(g:bzrstatus_bzr.' version-info --custom --template ''{branch_nick}'' '.shellescape(t:bzrstatus_tree))
+
+  exe 'silent file ['.fnameescape(nick).'] '.fnameescape(t:bzrstatus_tree)
+
+endfunction!
+
 function! bzrstatus#update()
-  call bzrstatus#update_buffer(1)
+  call bzrstatus#update_buffer(3)
 endfunction
 
 function! bzrstatus#start(...)
@@ -651,6 +665,8 @@ function! bzrstatus#start(...)
     let path = '.'
   end
 
+  let t:bzrstatus_vimdiff = g:bzrstatus_vimdiff
+
   let t:bzrstatus_path = fnamemodify(path, ':p')
   let t:bzrstatus_tree = system(g:bzrstatus_bzr.' root '.shellescape(t:bzrstatus_path))[0:-2]
   let t:bzrstatus_selection = 0
@@ -659,7 +675,6 @@ function! bzrstatus#start(...)
 
   silent botright split new
   setlocal buftype=nofile noswapfile ft=bzrstatus fenc=utf-8
-  exe 'silent file '.fnameescape(t:bzrstatus_tree)
 
   let t:bzrstatus_buffer = bufnr('')
 
@@ -671,9 +686,9 @@ function! bzrstatus#start(...)
     exe ':sign place 1 line=1 name=bzrstatus_sign_start buffer='.t:bzrstatus_buffer
   endif
 
-  call bzrstatus#update_buffer(1)
+  call bzrstatus#update_buffer(3)
 
-  for name in [ 'quit', 'update', 'diff_open', 'info', 'log', 'missing', 'uncommit', 'unshelve', 'vimdiff', 'toggle_tag' ]
+  for name in [ 'quit', 'update', 'diff_open', 'info', 'log', 'missing', 'uncommit', 'unshelve', 'toggle_vimdiff', 'toggle_tag' ]
     for map in s:bzrstatus_mappings[name]
       exe 'nnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'()<CR>'
     endfor
@@ -694,9 +709,14 @@ function! bzrstatus#start(...)
     endfor
   endfor
 
-  for map in s:bzrstatus_mappings['exec']
+  for map in s:bzrstatus_mappings['bzr']
     exe 'nnoremap <buffer> '.map.' :let t:bzrstatus_mode="l"<CR>:BzrStatusExec '
     exe 'vnoremap <buffer> '.map.' v:let t:bzrstatus_mode="v"<CR>:BzrStatusExec '
+  endfor
+
+  for map in s:bzrstatus_mappings['exec']
+    exe 'nnoremap <buffer> '.map.' :let t:bzrstatus_mode="l"<CR>:!'
+    exe 'vnoremap <buffer> '.map.' v:let t:bzrstatus_mode="v"<CR>:!'
   endfor
 
   cnoremap <buffer> <C-R><C-E> <C-R>=bzrstatus#get_entries(t:bzrstatus_mode)<CR>
