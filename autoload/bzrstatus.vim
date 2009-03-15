@@ -649,6 +649,11 @@ function! bzrstatus#update_file()
 
   let nick = system(g:bzrstatus_bzr.' version-info --custom --template ''{branch_nick}'' '.shellescape(t:bzrstatus_tree))
 
+  if v:shell_error
+    echoerr nick
+    let nick = '???'
+  endif
+
   exe 'silent file ['.fnameescape(nick).'] '.fnameescape(t:bzrstatus_tree)
 
 endfunction!
@@ -665,13 +670,18 @@ function! bzrstatus#start(...)
     let path = '.'
   end
 
-  let t:bzrstatus_vimdiff = g:bzrstatus_vimdiff
-
   let t:bzrstatus_path = fnamemodify(path, ':p')
-  let t:bzrstatus_tree = system(g:bzrstatus_bzr.' root '.shellescape(t:bzrstatus_path))[0:-2]
+  let t:bzrstatus_vimdiff = g:bzrstatus_vimdiff
   let t:bzrstatus_selection = 0
   let t:bzrstatus_tagged = {}
   let t:bzrstatus_mode = "l"
+
+  let t:bzrstatus_tree = system(g:bzrstatus_bzr.' root '.shellescape(t:bzrstatus_path))[0:-2]
+
+  if v:shell_error
+    echoerr t:bzrstatus_tree
+    let t:bzrstatus_tree = t:bzrstatus_path
+  endif
 
   silent botright split new
   setlocal buftype=nofile noswapfile ft=bzrstatus fenc=utf-8
