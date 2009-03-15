@@ -65,18 +65,19 @@ let s:bzrstatus_op_confirm =
 
 let s:bzrstatus_op_update =
       \ {
-      \ 'add'     : 1,
-      \ 'commit'  : 1,
-      \ 'del'     : 1,
-      \ 'merge'   : 1,
-      \ 'pull'    : 1,
-      \ 'resolve' : 1,
-      \ 'revert'  : 1,
-      \ 'shelve'  : 1,
-      \ 'switch'  : 1,
-      \ 'uncommit': 1,
-      \ 'unshelve': 1,
-      \ 'update'  : 1,
+      \ 'add'        : 1,
+      \ 'commit'     : 1,
+      \ 'del'        : 1,
+      \ 'merge'      : 1,
+      \ 'pull'       : 1,
+      \ 'reconfigure': 2,
+      \ 'resolve'    : 1,
+      \ 'revert'     : 1,
+      \ 'shelve'     : 1,
+      \ 'switch'     : 2,
+      \ 'uncommit'   : 1,
+      \ 'unshelve'   : 1,
+      \ 'update'     : 1,
       \ }
 
 if exists('g:bzrstatus_op_confirm')
@@ -365,7 +366,7 @@ function! bzrstatus#exec_bzr(cmd, update)
   exe 'lcd '.fnameescape(oldpwd)
 
   if a:update
-    call bzrstatus#update_buffer(0)
+    call bzrstatus#update_buffer(a:update)
   endif
 
 endfunction
@@ -608,7 +609,7 @@ function! bzrstatus#next_entry(from_top, wrap)
 
 endfunction
 
-function! bzrstatus#update_buffer(all)
+function! bzrstatus#update_buffer(type)
 
   call bzrstatus#clean_state(1)
 
@@ -616,7 +617,11 @@ function! bzrstatus#update_buffer(all)
 
   setlocal modifiable
 
-  if !a:all && exists('t:bzrstatus_msgline')
+  if 1 < a:type
+    call bzrstatus#update_file()
+  endif
+
+  if 3 > a:type && exists('t:bzrstatus_msgline')
     exe 'silent 1,'.(t:bzrstatus_msgline - 1).'delete'
   else
     silent %delete
@@ -640,8 +645,16 @@ function! bzrstatus#update_buffer(all)
 
 endfunction
 
+function! bzrstatus#update_file()
+
+  let nick = system(g:bzrstatus_bzr.' version-info --custom --template ''{branch_nick}'' '.shellescape(t:bzrstatus_tree))
+
+  exe 'silent file ['.fnameescape(nick).'] '.fnameescape(t:bzrstatus_tree)
+
+endfunction!
+
 function! bzrstatus#update()
-  call bzrstatus#update_buffer(1)
+  call bzrstatus#update_buffer(3)
 endfunction
 
 function! bzrstatus#start(...)
@@ -662,7 +675,6 @@ function! bzrstatus#start(...)
 
   silent botright split new
   setlocal buftype=nofile noswapfile ft=bzrstatus fenc=utf-8
-  exe 'silent file '.fnameescape(t:bzrstatus_tree)
 
   let t:bzrstatus_buffer = bufnr('')
 
@@ -674,7 +686,7 @@ function! bzrstatus#start(...)
     exe ':sign place 1 line=1 name=bzrstatus_sign_start buffer='.t:bzrstatus_buffer
   endif
 
-  call bzrstatus#update_buffer(1)
+  call bzrstatus#update_buffer(3)
 
   for name in [ 'quit', 'update', 'diff_open', 'info', 'log', 'missing', 'uncommit', 'unshelve', 'toggle_vimdiff', 'toggle_tag' ]
     for map in s:bzrstatus_mappings[name]
