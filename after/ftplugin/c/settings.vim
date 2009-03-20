@@ -19,3 +19,11 @@ setlocal dictionary+=$USERVIM/dictionaries/c.dic
 " Activate doxygen syntax highlighting.
 let g:load_doxygen_syntax=1
 
+" Make matchit work for:
+" # if foo
+" #  ifdef arg
+" #  elif defined(bar)
+" #  else
+" # endif
+let b:match_words .= ',#\s*if:^#\s*el\(se\|if\):#\s*endif'
+
