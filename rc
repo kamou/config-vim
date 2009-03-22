@@ -39,6 +39,9 @@ endif
 " Not VI compatible.
 set nocompatible
 
+" Shorten some messages.
+set shortmess+=aI
+
 " No wrapping, but use ^ and $ for incomplete lines.
 set nowrap
 set lcs=precedes:^,extends:$
