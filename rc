@@ -73,7 +73,7 @@ set showtabline=2
 set history=200
 
 " Save info file in the user VIM directory.
-let &viminfo = "!,'20,\"50,n".$USERVIM."/info"
+let &viminfo = "!,h,'20,\"50,n".$USERVIM."/info"
 
 " Change the select/visual mode behavior.
 behave xterm
