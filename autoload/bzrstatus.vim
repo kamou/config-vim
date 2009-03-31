@@ -341,7 +341,7 @@ function! bzrstatus#exec_bzr(cmd, update)
     exe 'silent '.(t:bzrstatus_msgline + 1).',$delete'
   endif
 
-  let cmd = g:bzrstatus_bzr.' '.a:cmd
+  let cmd = g:bzrstatus_bzr.' '.escape(a:cmd, '<>!#%')
 
   call append(t:bzrstatus_msgline, [cmd, ''])
   redraw
