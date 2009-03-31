@@ -176,11 +176,6 @@ function! bzrstatus#clean_state(clear_tagged)
     unlet t:bzrstatus_diffbuf
   endif
 
-  if exists('t:bzrstatus_tmpbuf')
-    exe 'silent bd '.t:bzrstatus_tmpbuf
-    unlet t:bzrstatus_tmpbuf
-  endif
-
   call bzrstatus#unselect_line()
 
   if a:clear_tagged
@@ -278,6 +273,12 @@ function! bzrstatus#showdiff()
     new
   else
     wincmd k
+    enew
+  endif
+
+  if exists('t:bzrstatus_tmpbuf')
+    exe 'silent bwipeout '.t:bzrstatus_tmpbuf
+    unlet t:bzrstatus_tmpbuf
   endif
 
   let vimdiff = modified && t:bzrstatus_vimdiff
@@ -551,6 +552,11 @@ function! bzrstatus#get_entries(mode)
 endfunction
 
 function! bzrstatus#quit()
+
+  if exists('t:bzrstatus_tmpbuf')
+    exe 'silent bwipeout '.t:bzrstatus_tmpbuf
+    unlet t:bzrstatus_tmpbuf
+  endif
 
   call bzrstatus#clean_state(1)
 
