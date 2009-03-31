@@ -69,6 +69,9 @@ set lazyredraw
 " Always show tabline.
 set showtabline=2
 
+" Increase command line history.
+set history=200
+
 " Save info file in the user VIM directory.
 let &viminfo = "!,'20,\"50,n".$USERVIM."/info"
 
