@@ -13,7 +13,7 @@ autocmd! BufNewFile *:* nested call tags_utils#TagsFindFile(bufname('%'), 3)
 
 command! -nargs=1 TagsFindInclude call tags_utils#TagsFindInclude('', <args>)
 
-nmap <silent> \li :call tags_utils#TagsFindInclude(v:register, '^'.expand('<cword>').'$')<CR>
+nmap <silent> <Leader>li :call tags_utils#TagsFindInclude(v:register, '^'.expand('<cword>').'$')<CR>
 
 command! -nargs=0 TagsRename call tags_utils#TagsRename()
 
