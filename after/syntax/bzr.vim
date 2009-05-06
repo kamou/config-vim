@@ -9,3 +9,6 @@ set list
 " Check for spelling errors.
 set spell
 
+" Don't limit textwidth.
+set tw=0
+
