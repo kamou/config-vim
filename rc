@@ -133,7 +133,7 @@ set laststatus=2
 "
 set statusline=
       \%<%f\ %h%y\ %{&ff}\ %{&fenc}
-      \%(\ %{&diff?'[d]':''}%)\ 
+      \%(\ %{&diff?'['.(&diffopt=~'\\<iwhite\\>'?'d':'D').']':''}%)\ 
       \%(\ %m%)%(\ %r%)%=%-24.
       \(\ %l,%c%V\ [%b,0x%B]\ %)\ %P
 
