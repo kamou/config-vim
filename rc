@@ -72,6 +72,9 @@ set showtabline=2
 " Increase command line history.
 set history=200
 
+" Needed so Bazaar hardlinked lightweight checkouts work ok.
+set backupcopy=breakhardlink,auto
+
 " Save info file in the user VIM directory.
 let &viminfo = "!,h,'20,\"50,n".$USERVIM."/info"
 
