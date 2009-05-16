@@ -307,10 +307,10 @@ function! bzrstatus#showdiff()
     redraw
     if vimdiff
       " Get original version from Bazaar.
-      exe 'silent read !'.g:bzrstatus_bzr.' cat '.shellescape(old_entry_fullpath)
+      python bzr_exec('cat ' + vim.eval('shellescape(old_entry_fullpath)'))
     else
       " Get diff.
-      exe 'silent read !'.g:bzrstatus_bzr.' diff '.shellescape(old_entry_fullpath)
+      python bzr_exec('diff ' + vim.eval('shellescape(old_entry_fullpath)'))
       set ft=diff
     endif
     exe 'normal 1Gdd'
@@ -342,29 +342,19 @@ function! bzrstatus#exec_bzr(cmd, update)
     exe 'silent '.(t:bzrstatus_msgline + 1).',$delete'
   endif
 
-  let cmd = g:bzrstatus_bzr.' '.escape(a:cmd, '<>!#%')
+  let cmd = 'bzr '.escape(a:cmd, '<>!#%')
 
   call append(t:bzrstatus_msgline, [cmd, ''])
+  exe ':'.(t:bzrstatus_msgline + 2)
   redraw
 
   let oldpwd = getcwd()
   exe 'lcd '.fnameescape(t:bzrstatus_tree)
-
-  exe ':'.(t:bzrstatus_msgline + 2)
-  let tf = tempname()
-  if has('gui_running')
-    let pre = ''
-  else
-    let pre = 'silent '
-  endif
-  exe pre.'!script -q -c '.shellescape(cmd).' '.tf
-  exe 'read !col -pbx <'.tf
-  exe 'silent! '.(t:bzrstatus_msgline + 3).'g/^Script started/d'
+  python bzr_exec(vim.eval('a:cmd'), to_terminal=True)
+  exe 'lcd '.fnameescape(oldpwd)
   redraw!
 
   setlocal nomodifiable
-
-  exe 'lcd '.fnameescape(oldpwd)
 
   if a:update
     call bzrstatus#update_buffer(a:update)
@@ -633,12 +623,12 @@ function! bzrstatus#update_buffer(type)
     silent %delete
   endif
 
-  let cmd = g:bzrstatus_bzr.' status -S -v '.shellescape(t:bzrstatus_path)
+  let cmd = 'bzr status -S -v '.shellescape(t:bzrstatus_path)
   call append(0, cmd)
   redraw
 
   :2
-  exe 'silent read !'.cmd
+  python bzr_exec('status -S -v ' + vim.eval('shellescape(t:bzrstatus_path)'))
 
   let l = line('.')
   call append(l, '')
@@ -653,14 +643,13 @@ endfunction
 
 function! bzrstatus#update_file()
 
-  let nick = system(g:bzrstatus_bzr.' version-info --custom --template ''{branch_nick}'' '.shellescape(t:bzrstatus_tree))
+  python <<EOF
+tree = vim.eval('shellescape(t:bzrstatus_tree)')
+nick = bzr_exec("version-info --custom --template '{branch_nick}' " + tree, False)
+vim.command("let nick = '" + nick + "'")
+EOF
 
-  if v:shell_error
-    echoerr nick
-    let nick = '???'
-  endif
-
-  exe 'silent file ['.fnameescape(nick).'] '.fnameescape(t:bzrstatus_tree)
+  exe 'silent file '.fnameescape('['.nick.'] '.t:bzrstatus_tree)
 
 endfunction!
 
@@ -682,7 +671,11 @@ function! bzrstatus#start(...)
   let t:bzrstatus_tagged = {}
   let t:bzrstatus_mode = "l"
 
-  let t:bzrstatus_tree = system(g:bzrstatus_bzr.' root '.shellescape(t:bzrstatus_path))[0:-2]
+  python <<EOF
+path = vim.eval('shellescape(t:bzrstatus_path)')
+tree = bzr_exec("root " + path, False).split('\n')[0]
+vim.command("let t:bzrstatus_tree = '" + tree + "'")
+EOF
 
   if v:shell_error
     echoerr t:bzrstatus_tree
