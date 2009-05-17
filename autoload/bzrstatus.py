@@ -262,6 +262,7 @@ def bzr_exec(cmdline, to_buffer=True, to_terminal=False):
         sys.stdout = output
         sys.stderr = output
 
+        bzrlib.trace.enable_default_logging()
         bzrlib.ui.ui_factory = UI(output)
 
         # Is this a final release version? If so, we should suppress warnings
