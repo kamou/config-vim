@@ -269,14 +269,21 @@ def bzr_exec(cmdline, to_buffer=True, to_terminal=False):
         if bzrlib.version_info[3] == 'final':
             from bzrlib import symbol_versioning
             symbol_versioning.suppress_deprecation_warnings(override=False)
+
+        new_argv = []
         try:
-            user_encoding = bzrlib.osutils.get_user_encoding()
-            argv = [a.decode(user_encoding) for a in argv[1:]]
+            # ensure all arguments are unicode strings
+            for a in argv[1:]:
+                if isinstance(a, unicode):
+                    new_argv.append(a)
+                else:
+                    new_argv.append(a.decode('ascii'))
         except UnicodeDecodeError:
-            raise bzrlib.errors.BzrError(("Parameter '%r' is unsupported by the current "
-                                                                "encoding." % a))
+            raise errors.BzrError("argv should be list of unicode strings.")
+        argv = new_argv
+
         try:
-            ret = bzrlib.commands.run_bzr(argv)
+            ret = bzrlib.commands.run_bzr_catch_errors(argv)
             output = output.getvalue()
         except:
             output = '\n'.join(traceback.format_exc().splitlines())
