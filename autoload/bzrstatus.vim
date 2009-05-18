@@ -84,7 +84,13 @@ if exists('g:bzrstatus_op_confirm')
   call extend(s:bzrstatus_op_confirm, g:bzrstatus_op_confirm)
 endif
 
-pyfile $USERVIM/autoload/bzrstatus.py
+python <<EOF
+
+import vim
+
+from bzrstatus.bzr import Bzr, bzr
+
+EOF
 
 function! bzrstatus#tag_line(ln)
 
@@ -307,10 +313,10 @@ function! bzrstatus#showdiff()
     redraw
     if vimdiff
       " Get original version from Bazaar.
-      python bzr_exec('cat ' + vim.eval('shellescape(old_entry_fullpath)'))
+      python bzr().run('cat ' + vim.eval('shellescape(old_entry_fullpath)'))
     else
       " Get diff.
-      python bzr_exec('diff ' + vim.eval('shellescape(old_entry_fullpath)'))
+      python bzr().run('diff ' + vim.eval('shellescape(old_entry_fullpath)'))
       set ft=diff
     endif
     exe 'normal 1Gdd'
@@ -350,7 +356,7 @@ function! bzrstatus#exec_bzr(cmd, update)
 
   let oldpwd = getcwd()
   exe 'lcd '.fnameescape(t:bzrstatus_tree)
-  python bzr_exec(vim.eval('a:cmd'), to_terminal=True)
+  python bzr().run(vim.eval('a:cmd'), to_terminal=True)
   exe 'lcd '.fnameescape(oldpwd)
   redraw!
 
@@ -484,7 +490,7 @@ endfunction
 
 function! bzrstatus#complete(arglead, cmdline, cursorpos)
 
-  python bzr_complete(
+  python bzr().complete(
         \ vim.eval('a:arglead'),
         \ vim.eval('a:cmdline'),
         \ vim.eval('t:bzrstatus_tree'))
@@ -628,7 +634,7 @@ function! bzrstatus#update_buffer(type)
   redraw
 
   :2
-  python bzr_exec('status -S -v ' + vim.eval('shellescape(t:bzrstatus_path)'))
+  python bzr().run('status -S -v ' + vim.eval('shellescape(t:bzrstatus_path)'))
 
   let l = line('.')
   call append(l, '')
@@ -645,7 +651,7 @@ function! bzrstatus#update_file()
 
   python <<EOF
 tree = vim.eval('shellescape(t:bzrstatus_tree)')
-nick = bzr_exec("version-info --custom --template '{branch_nick}' " + tree, False)
+nick = bzr().run("version-info --custom --template '{branch_nick}' " + tree, False)
 vim.command("let nick = '" + nick + "'")
 EOF
 
@@ -672,9 +678,13 @@ function! bzrstatus#start(...)
   let t:bzrstatus_mode = "l"
 
   python <<EOF
+
+Bzr(vim.eval("fnamemodify(path, ':p')"))
+
 path = vim.eval('shellescape(t:bzrstatus_path)')
-tree = bzr_exec("root " + path, False).split('\n')[0]
+tree = bzr().run("root " + path, False).split('\n')[0]
 vim.command("let t:bzrstatus_tree = '" + tree + "'")
+
 EOF
 
   if v:shell_error
