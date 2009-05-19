@@ -94,6 +94,8 @@ class Bzr:
             except:
                 output = '\n'.join(traceback.format_exc().splitlines())
 
+            bzrlib.ui.ui_factory._progress_all_finished()
+
             if not to_buffer:
                 return output
 
