@@ -19,6 +19,7 @@
 import bzrlib.plugin
 import bzrlib
 import vim
+import sys
 
 
 def getchar():
