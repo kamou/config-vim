@@ -687,11 +687,6 @@ vim.command("let t:bzrstatus_tree = '" + tree + "'")
 
 EOF
 
-  if v:shell_error
-    echoerr t:bzrstatus_tree
-    let t:bzrstatus_tree = t:bzrstatus_path
-  endif
-
   silent botright split new
   setlocal buftype=nofile noswapfile ft=bzrstatus fenc=utf-8
 
