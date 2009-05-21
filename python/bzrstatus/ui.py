@@ -55,8 +55,6 @@ class UI(bzrlib.ui.UIFactory):
         vim.command('let &l:statusline = &g:statusline')
         vim.command('let &more = l:old_more')
         vim.command('redrawstatus')
-        # hack to make sure term is reseted to raw
-        # vim.command('let &term=&term')
 
     def _update_statusline(self):
         status = self.last_progress_msg + '%=' + self.last_transport_msg

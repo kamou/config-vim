@@ -354,7 +354,8 @@ function! bzrstatus#exec_bzr(cmd, update)
   redraw
 
   python bzr().run(vim.eval('a:cmd'), to_terminal=True)
-  redraw!
+  " Hack to make sure term is reseted to raw (and force a full redraw).
+  let &term = &term
 
   setlocal nomodifiable
 
