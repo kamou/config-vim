@@ -19,6 +19,11 @@
 import bzrlib
 import time
 import vim
+import re
+
+
+def escape(str):
+    return re.sub("'", "''", str)
 
 
 class UI(bzrlib.ui.UIFactory):
@@ -58,7 +63,7 @@ class UI(bzrlib.ui.UIFactory):
 
     def _update_statusline(self):
         status = self.last_progress_msg + '%=' + self.last_transport_msg
-        vim.command('let &l:statusline = \' ' + status + '\' ')
+        vim.command('let &l:statusline = \' ' + escape(status) + '\' ')
         vim.command('redrawstatus')
 
     def _progress_updated(self, task):
@@ -100,15 +105,24 @@ class UI(bzrlib.ui.UIFactory):
             self.last_transport_msg = self.transport + ' ' + self._format_activity()
             self._update_statusline()
 
+    def get_username(self, prompt, **kwargs):
+        if kwargs:
+            prompt = prompt % kwargs
+        ret = vim.eval('input(\'' + escape(prompt) + ': \')')
+        self.output.write(prompt + '\n', silent=True)
+        return ret
+
     def get_password(self, prompt='', **kwargs):
-        ret = vim.eval('inputsecret(\'' + prompt + ': \')')
-        self.output.write(prompt + '\n')
+        if kwargs:
+            prompt = prompt % kwargs
+        ret = vim.eval('inputsecret(\'' + escape(prompt) + ': \')')
+        self.output.write(prompt + '\n', silent=True)
         return ret
 
     def get_boolean(self, prompt):
         msg = prompt + ' [y/N]: '
-        ret = vim.eval('input(\'' + msg + '\')')
-        self.output.write(msg + ret + '\n')
+        ret = vim.eval('input(\'' + escape(msg) + '\')')
+        self.output.write(msg + ret + '\n', silent=True)
         if 'y' == ret:
             return True
         return False

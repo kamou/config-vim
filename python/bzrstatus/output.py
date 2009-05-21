@@ -31,8 +31,9 @@ class Output(StringIO):
         vim_stdout.write('\n')
         return StringIO.flush(self)
 
-    def write(self, str):
-        vim_stdout.write(str)
+    def write(self, str, silent=False):
+        if not silent:
+            vim_stdout.write(str)
         return StringIO.write(self, str)
 
 
