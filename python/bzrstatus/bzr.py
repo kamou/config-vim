@@ -28,6 +28,7 @@ from bzrlib.workingtree import WorkingTree
 from bzrlib.bzrdir import BzrDir
 import bzrlib
 
+import traceback
 import shlex
 import vim
 import sys
