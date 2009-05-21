@@ -155,7 +155,7 @@ class Bzr:
         if self.branch is not None:
             file += '[' + self.branch.nick + '] '
         file += self.root
-        vim.command('silent file ' + file)
+        vim.command("exe 'silent file '.fnameescape('" + file + "')")
 
 
 def bzr():
