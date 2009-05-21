@@ -20,6 +20,7 @@ import bzrlib.plugin
 import bzrlib
 import vim
 import sys
+import os
 
 
 def getchar():
@@ -30,7 +31,8 @@ def raw_input(prompt=''):
     sys.stdout.flush()
     return vim.eval('input(\'' + prompt + '\')')
 
-
+if vim.eval("has('gui')"):
+    os.environ['BZR_EDITOR'] = 'gvim -f'
 bzrlib.osutils.getchar = getchar
 bzrlib.plugin.load_plugins()
 
