@@ -347,7 +347,12 @@ function! bzrstatus#exec_bzr(cmd, update)
     exe 'silent '.(t:bzrstatus_msgline + 1).',$delete'
   endif
 
-  let cmd = 'bzr '.escape(join(a:cmd, ' '), '<>!#%')
+  let cmd = 'bzr '
+  if 3 == type(a:cmd)
+    let cmd .= join(a:cmd, ' ')
+  else
+    let cmd .= a:cmd
+  endif
 
   call append(t:bzrstatus_msgline, [cmd, ''])
   exe ':'.(t:bzrstatus_msgline + 2)
@@ -493,7 +498,7 @@ function! bzrstatus#exec(...)
 
   let update = get(s:bzrstatus_op_update, a:000[0], 0)
 
-  call bzrstatus#exec_bzr(a:000, update)
+  call bzrstatus#exec_bzr(join(a:000, ' '), update)
 
 endfunction
 

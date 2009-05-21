@@ -28,6 +28,7 @@ from bzrlib.workingtree import WorkingTree
 from bzrlib.bzrdir import BzrDir
 import bzrlib
 
+import shlex
 import vim
 import sys
 import os
@@ -84,7 +85,12 @@ class Bzr:
 
         vim.command("let matches = ['" + "', '".join(matches) + "']")
 
-    def run(self, argv, to_buffer=True, to_terminal=False):
+    def run(self, cmd, to_buffer=True, to_terminal=False):
+
+        if type(cmd) is str:
+            argv = shlex.split(cmd)
+        else:
+            argv = cmd
 
         if to_terminal:
             output = Output()
