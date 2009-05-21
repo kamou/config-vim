@@ -409,7 +409,7 @@ function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
 
   endif
 
-  let options = get(s:bzrstatus_op_options, a:op, '')
+  let options = get(s:bzrstatus_op_options, a:op, [])
   let confirm = get(s:bzrstatus_op_confirm, a:op, 0)
   let update = get(s:bzrstatus_op_update, a:op, 0)
 
