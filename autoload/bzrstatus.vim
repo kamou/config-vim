@@ -354,10 +354,7 @@ function! bzrstatus#exec_bzr(cmd, update)
   exe ':'.(t:bzrstatus_msgline + 2)
   redraw
 
-  let oldpwd = getcwd()
-  exe 'lcd '.fnameescape(t:bzrstatus_tree)
   python bzr().run(vim.eval('a:cmd'), to_terminal=True)
-  exe 'lcd '.fnameescape(oldpwd)
   redraw!
 
   setlocal nomodifiable
@@ -492,8 +489,7 @@ function! bzrstatus#complete(arglead, cmdline, cursorpos)
 
   python bzr().complete(
         \ vim.eval('a:arglead'),
-        \ vim.eval('a:cmdline'),
-        \ vim.eval('t:bzrstatus_tree'))
+        \ vim.eval('a:cmdline'))
 
   return matches
 
@@ -620,7 +616,7 @@ function! bzrstatus#update_buffer(type)
   setlocal modifiable
 
   if 1 < a:type
-    call bzrstatus#update_file()
+    python bzr().update_file()
   endif
 
   if 3 > a:type && exists('t:bzrstatus_msgline')
@@ -646,18 +642,6 @@ function! bzrstatus#update_buffer(type)
   setlocal nomodifiable
 
 endfunction
-
-function! bzrstatus#update_file()
-
-  python <<EOF
-tree = vim.eval('shellescape(t:bzrstatus_tree)')
-nick = bzr().run("version-info --custom --template '{branch_nick}' " + tree, False)
-vim.command("let nick = '" + nick + "'")
-EOF
-
-  exe 'silent file '.fnameescape('['.nick.'] '.t:bzrstatus_tree)
-
-endfunction!
 
 function! bzrstatus#update()
   call bzrstatus#update_buffer(3)

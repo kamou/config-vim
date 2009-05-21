@@ -22,10 +22,16 @@ from bzrstatus.ui import UI
 
 from StringIO import StringIO
 
+from bzrlib.errors import (NoWorkingTree, NotBranchError,
+                           NoRepositoryPresent, NotLocalUrl)
+from bzrlib.workingtree import WorkingTree
+from bzrlib.bzrdir import BzrDir
 import bzrlib
+
 import shlex
 import vim
 import sys
+import os
 
 
 vim_stdout = sys.stdout
@@ -38,14 +44,40 @@ bzr_instances = {}
 class Bzr:
 
     def __init__(self, path):
-        self.path = path
+
+        if '/' == path[-1]:
+            self.path = path[0:-1]
+        else:
+            self.path = path
+
+        self.root = self.path
+
+        self.tree = None
+        self.branch = None
+
+        try:
+            bzrdir = BzrDir.open_containing(self.path)[0]
+            try:
+                self.tree = bzrdir.open_workingtree(recommend_upgrade=False)
+                self.branch = self.tree.branch
+            except (NoWorkingTree, NotLocalUrl):
+                try:
+                    self.branch = bzrdir.open_branch()
+                except NotBranchError:
+                    pass
+        except NotBranchError:
+            pass
+
+        if self.tree is not None:
+            self.root = self.tree.basedir
+
         self.tab = vim.eval('tabpagenr()')
         bzr_instances[self.tab] = self
 
-    def complete(self, arglead, cmdline, workdir):
+    def complete(self, arglead, cmdline):
 
         try:
-            matches = Complete(arglead, cmdline, workdir).complete()
+            matches = Complete(arglead, cmdline, self.root).complete()
         except ValueError:
             matches = []
             e = sys.exc_info()[1]
@@ -62,6 +94,9 @@ class Bzr:
             output = Output()
         else:
             output = StringIO()
+
+        dir = os.getcwd()
+        os.chdir(self.root)
 
         try:
 
@@ -94,7 +129,7 @@ class Bzr:
             except:
                 output = '\n'.join(traceback.format_exc().splitlines())
 
-            bzrlib.ui.ui_factory._progress_all_finished()
+            bzrlib.ui.ui_factory.finish()
 
             if not to_buffer:
                 return output
@@ -114,8 +149,17 @@ class Bzr:
 
         finally:
 
+            os.chdir(dir)
+
             sys.stdout = vim_stdout
             sys.stderr = vim_stderr
+
+    def update_file(self):
+        file = ''
+        if self.branch is not None:
+            file += '[' + self.branch.nick + '] '
+        file += self.root
+        vim.command('silent file ' + file)
 
 
 def bzr():

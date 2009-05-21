@@ -24,10 +24,9 @@ import vim
 class UI(bzrlib.ui.UIFactory):
 
     def __init__(self, output):
-        vim.command('let l:old_statusline = &l:statusline')
+        bzrlib.ui.UIFactory.__init__(self)
         vim.command('let l:old_more = &more')
         vim.command('set nomore')
-        bzrlib.ui.UIFactory.__init__(self)
         self.output = output
         self.task = None
         self.transport = None
@@ -40,7 +39,6 @@ class UI(bzrlib.ui.UIFactory):
         self.last_progress_msg = ''
         self.last_transport_msg = ''
         self.last_task = None
-        self.need_restore = True
 
     def _format_activity(self):
         msg = ''
@@ -53,17 +51,17 @@ class UI(bzrlib.ui.UIFactory):
         msg += '%6dKB/s' % (int(self.rate) >> 10)
         return msg
 
-    def _update_statusline(self, restore=False):
-        if restore:
-            vim.command('let &l:statusline = l:old_statusline')
-            vim.command('let &more = l:old_more')
-            vim.command('redrawstatus')
-            # hack to make sure term is reseted to raw
-            vim.command('let &term=&term')
-        else:
-            status = self.last_progress_msg + '%=' + self.last_transport_msg
-            vim.command('let &l:statusline = \' ' + status + '\' ')
-            vim.command('redrawstatus')
+    def finish(self):
+        vim.command('let &l:statusline = &g:statusline')
+        vim.command('let &more = l:old_more')
+        vim.command('redrawstatus')
+        # hack to make sure term is reseted to raw
+        # vim.command('let &term=&term')
+
+    def _update_statusline(self):
+        status = self.last_progress_msg + '%=' + self.last_transport_msg
+        vim.command('let &l:statusline = \' ' + status + '\' ')
+        vim.command('redrawstatus')
 
     def _progress_updated(self, task):
         now = time.time()
@@ -90,9 +88,7 @@ class UI(bzrlib.ui.UIFactory):
             self._update_statusline()
 
     def _progress_all_finished(self):
-        if self.need_restore:
-            self.need_restore = False
-            self._update_statusline(restore=True)
+        self._update_statusline()
 
     def report_transport_activity(self, transport, byte_count, direction):
         self.transport = getattr(transport, '_scheme', None) or repr(transport)
