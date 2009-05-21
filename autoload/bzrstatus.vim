@@ -48,9 +48,9 @@ let s:bzrstatus_op_criterion =
 
 let s:bzrstatus_op_options =
       \ {
-      \ 'commit'  : '--show-diff',
-      \ 'log'     : '--line',
-      \ 'missing' : '--line',
+      \ 'commit'  : [ '--show-diff' ],
+      \ 'log'     : [ '--line' ],
+      \ 'missing' : [ '--line' ],
       \ }
 
 if exists('g:bzrstatus_op_options')
@@ -268,7 +268,6 @@ function! bzrstatus#showdiff()
 
   let [renamed, unknown, modified, deleted, added, old_entry, new_entry] = s
 
-  let old_entry_fullpath = t:bzrstatus_tree.'/'.old_entry
   let new_entry_fullpath = t:bzrstatus_tree.'/'.new_entry
 
   call bzrstatus#clean_state(0)
@@ -313,10 +312,10 @@ function! bzrstatus#showdiff()
     redraw
     if vimdiff
       " Get original version from Bazaar.
-      python bzr().run('cat ' + vim.eval('shellescape(old_entry_fullpath)'))
+      python bzr().run(('cat', vim.eval('old_entry')))
     else
       " Get diff.
-      python bzr().run('diff ' + vim.eval('shellescape(old_entry_fullpath)'))
+      python bzr().run(('diff', vim.eval('old_entry')))
       set ft=diff
     endif
     exe 'normal 1Gdd'
@@ -348,7 +347,7 @@ function! bzrstatus#exec_bzr(cmd, update)
     exe 'silent '.(t:bzrstatus_msgline + 1).',$delete'
   endif
 
-  let cmd = 'bzr '.escape(a:cmd, '<>!#%')
+  let cmd = 'bzr '.escape(join(a:cmd, ' '), '<>!#%')
 
   call append(t:bzrstatus_msgline, [cmd, ''])
   exe ':'.(t:bzrstatus_msgline + 2)
@@ -424,17 +423,7 @@ function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
     return
   endif
 
-  let cmd = a:op
-
-  if '' != options
-    let cmd .= ' '.options
-  endif
-
-  if [] != files
-    let cmd .= ' '.join(map(files, 'shellescape(v:val)'), ' ')
-  endif
-
-  call bzrstatus#exec_bzr(cmd, update)
+  call bzrstatus#exec_bzr([a:op] + options + files, update)
 
 endfunction
 
@@ -501,13 +490,9 @@ function! bzrstatus#exec(...)
     return
   endif
 
-  let [cmd; args] = a:000
+  let update = get(s:bzrstatus_op_update, a:000[0], 0)
 
-  let update = get(s:bzrstatus_op_update, cmd, 0)
-
-  let cmd .= ' '.join(args, ' ')
-
-  call bzrstatus#exec_bzr(cmd, update)
+  call bzrstatus#exec_bzr(a:000, update)
 
 endfunction
 
@@ -625,12 +610,12 @@ function! bzrstatus#update_buffer(type)
     silent %delete
   endif
 
-  let cmd = 'bzr status -S -v '.shellescape(t:bzrstatus_path)
-  call append(0, cmd)
+  let cmd = ['status', '-S', '-v', t:bzrstatus_path]
+  call append(0, 'bzr '.join(cmd, ' '))
   redraw
 
   :2
-  python bzr().run('status -S -v ' + vim.eval('shellescape(t:bzrstatus_path)'))
+  python bzr().run(vim.eval('cmd'))
 
   let l = line('.')
   call append(l, '')
@@ -655,7 +640,6 @@ function! bzrstatus#start(...)
     let path = '.'
   end
 
-  let t:bzrstatus_path = fnamemodify(path, ':p')
   let t:bzrstatus_vimdiff = g:bzrstatus_vimdiff
   let t:bzrstatus_selection = 0
   let t:bzrstatus_tagged = {}
@@ -663,11 +647,10 @@ function! bzrstatus#start(...)
 
   python <<EOF
 
-Bzr(vim.eval("fnamemodify(path, ':p')"))
+b = Bzr(vim.eval("fnamemodify(path, ':p')"))
 
-path = vim.eval('shellescape(t:bzrstatus_path)')
-tree = bzr().run("root " + path, False).split('\n')[0]
-vim.command("let t:bzrstatus_tree = '" + tree + "'")
+vim.command("let t:bzrstatus_path = '" + b.path + "'")
+vim.command("let t:bzrstatus_tree = '" + b.root + "'")
 
 EOF
 

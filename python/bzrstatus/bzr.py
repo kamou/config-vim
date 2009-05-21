@@ -28,7 +28,6 @@ from bzrlib.workingtree import WorkingTree
 from bzrlib.bzrdir import BzrDir
 import bzrlib
 
-import shlex
 import vim
 import sys
 import os
@@ -85,10 +84,7 @@ class Bzr:
 
         vim.command("let matches = ['" + "', '".join(matches) + "']")
 
-    def run(self, cmdline, to_buffer=True, to_terminal=False):
-
-        argv = ['bzr']
-        argv.extend(shlex.split(cmdline))
+    def run(self, argv, to_buffer=True, to_terminal=False):
 
         if to_terminal:
             output = Output()
@@ -114,7 +110,7 @@ class Bzr:
             new_argv = []
             try:
                 # ensure all arguments are unicode strings
-                for a in argv[1:]:
+                for a in argv:
                     if isinstance(a, unicode):
                         new_argv.append(a)
                     else:
