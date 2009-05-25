@@ -1,18 +1,30 @@
-#! /usr/bin/env python
+#
+# Copyright (C) 2009 Benoit Pierre <benoit.pierre@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
 
-import bzrlib.commands
-import bzrlib.config
-import bzrlib.plugin
-import os.path
+
+from bzrstatus.ui import UI
+
+import bzrlib
 import shlex
 import glob
-import sys
-import vim
 import os
 
-bzrlib.plugin.load_plugins()
 
-class BzrComplete():
+class Complete():
 
     def __init__(self, arglead, cmdline, workdir,
                  complete_command_aliases=False,
@@ -135,14 +147,4 @@ class BzrComplete():
 
         return list
 
-def bzr_complete(arglead, cmdline, workdir):
-
-    try:
-        matches = BzrComplete(arglead, cmdline, workdir).complete()
-    except ValueError:
-        matches = []
-        e = sys.exc_info()[1]
-        print >>sys.stderr, 'parse error:', e.message
-
-    vim.command("let matches = ['" + "', '".join(matches) + "']")
 

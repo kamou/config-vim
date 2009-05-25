@@ -48,9 +48,9 @@ let s:bzrstatus_op_criterion =
 
 let s:bzrstatus_op_options =
       \ {
-      \ 'commit'  : '--show-diff',
-      \ 'log'     : '--line',
-      \ 'missing' : '--line',
+      \ 'commit'  : [ '--show-diff' ],
+      \ 'log'     : [ '--line' ],
+      \ 'missing' : [ '--line' ],
       \ }
 
 if exists('g:bzrstatus_op_options')
@@ -84,7 +84,13 @@ if exists('g:bzrstatus_op_confirm')
   call extend(s:bzrstatus_op_confirm, g:bzrstatus_op_confirm)
 endif
 
-pyfile $USERVIM/autoload/bzrstatus.py
+python <<EOF
+
+import vim
+
+from bzrstatus.bzr import Bzr, bzr
+
+EOF
 
 function! bzrstatus#tag_line(ln)
 
@@ -262,7 +268,6 @@ function! bzrstatus#showdiff()
 
   let [renamed, unknown, modified, deleted, added, old_entry, new_entry] = s
 
-  let old_entry_fullpath = t:bzrstatus_tree.'/'.old_entry
   let new_entry_fullpath = t:bzrstatus_tree.'/'.new_entry
 
   call bzrstatus#clean_state(0)
@@ -307,10 +312,10 @@ function! bzrstatus#showdiff()
     redraw
     if vimdiff
       " Get original version from Bazaar.
-      exe 'silent read !'.g:bzrstatus_bzr.' cat '.shellescape(old_entry_fullpath)
+      python bzr().run(('cat', vim.eval('old_entry')))
     else
       " Get diff.
-      exe 'silent read !'.g:bzrstatus_bzr.' diff '.shellescape(old_entry_fullpath)
+      python bzr().run(('diff', vim.eval('old_entry')))
       set ft=diff
     endif
     exe 'normal 1Gdd'
@@ -342,29 +347,22 @@ function! bzrstatus#exec_bzr(cmd, update)
     exe 'silent '.(t:bzrstatus_msgline + 1).',$delete'
   endif
 
-  let cmd = g:bzrstatus_bzr.' '.escape(a:cmd, '<>!#%')
+  let cmd = 'bzr '
+  if 3 == type(a:cmd)
+    let cmd .= join(a:cmd, ' ')
+  else
+    let cmd .= a:cmd
+  endif
 
   call append(t:bzrstatus_msgline, [cmd, ''])
+  exe ':'.(t:bzrstatus_msgline + 2)
   redraw
 
-  let oldpwd = getcwd()
-  exe 'lcd '.fnameescape(t:bzrstatus_tree)
-
-  exe ':'.(t:bzrstatus_msgline + 2)
-  let tf = tempname()
-  if has('gui_running')
-    let pre = ''
-  else
-    let pre = 'silent '
-  endif
-  exe pre.'!script -q -c '.shellescape(cmd).' '.tf
-  exe 'read !col -pbx <'.tf
-  exe 'silent! '.(t:bzrstatus_msgline + 3).'g/^Script started/d'
-  redraw!
+  python bzr().run(vim.eval('a:cmd'), to_terminal=True)
+  " Hack to make sure term is reseted to raw (and force a full redraw).
+  let &term = &term
 
   setlocal nomodifiable
-
-  exe 'lcd '.fnameescape(oldpwd)
 
   if a:update
     call bzrstatus#update_buffer(a:update)
@@ -416,7 +414,7 @@ function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
 
   endif
 
-  let options = get(s:bzrstatus_op_options, a:op, '')
+  let options = get(s:bzrstatus_op_options, a:op, [])
   let confirm = get(s:bzrstatus_op_confirm, a:op, 0)
   let update = get(s:bzrstatus_op_update, a:op, 0)
 
@@ -431,17 +429,7 @@ function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
     return
   endif
 
-  let cmd = a:op
-
-  if '' != options
-    let cmd .= ' '.options
-  endif
-
-  if [] != files
-    let cmd .= ' '.join(map(files, 'shellescape(v:val)'), ' ')
-  endif
-
-  call bzrstatus#exec_bzr(cmd, update)
+  call bzrstatus#exec_bzr([a:op] + options + files, update)
 
 endfunction
 
@@ -494,10 +482,9 @@ endfunction
 
 function! bzrstatus#complete(arglead, cmdline, cursorpos)
 
-  python bzr_complete(
+  python bzr().complete(
         \ vim.eval('a:arglead'),
-        \ vim.eval('a:cmdline'),
-        \ vim.eval('t:bzrstatus_tree'))
+        \ vim.eval('a:cmdline'))
 
   return matches
 
@@ -509,13 +496,9 @@ function! bzrstatus#exec(...)
     return
   endif
 
-  let [cmd; args] = a:000
+  let update = get(s:bzrstatus_op_update, a:000[0], 0)
 
-  let update = get(s:bzrstatus_op_update, cmd, 0)
-
-  let cmd .= ' '.join(args, ' ')
-
-  call bzrstatus#exec_bzr(cmd, update)
+  call bzrstatus#exec_bzr(join(a:000, ' '), update)
 
 endfunction
 
@@ -624,7 +607,7 @@ function! bzrstatus#update_buffer(type)
   setlocal modifiable
 
   if 1 < a:type
-    call bzrstatus#update_file()
+    python bzr().update_file()
   endif
 
   if 3 > a:type && exists('t:bzrstatus_msgline')
@@ -633,12 +616,12 @@ function! bzrstatus#update_buffer(type)
     silent %delete
   endif
 
-  let cmd = g:bzrstatus_bzr.' status -S -v '.shellescape(t:bzrstatus_path)
-  call append(0, cmd)
+  let cmd = ['status', '-S', '-v', t:bzrstatus_path]
+  call append(0, 'bzr '.join(cmd, ' '))
   redraw
 
   :2
-  exe 'silent read !'.cmd
+  python bzr().run(vim.eval('cmd'))
 
   let l = line('.')
   call append(l, '')
@@ -650,19 +633,6 @@ function! bzrstatus#update_buffer(type)
   setlocal nomodifiable
 
 endfunction
-
-function! bzrstatus#update_file()
-
-  let nick = system(g:bzrstatus_bzr.' version-info --custom --template ''{branch_nick}'' '.shellescape(t:bzrstatus_tree))
-
-  if v:shell_error
-    echoerr nick
-    let nick = '???'
-  endif
-
-  exe 'silent file ['.fnameescape(nick).'] '.fnameescape(t:bzrstatus_tree)
-
-endfunction!
 
 function! bzrstatus#update()
   call bzrstatus#update_buffer(3)
@@ -676,18 +646,19 @@ function! bzrstatus#start(...)
     let path = '.'
   end
 
-  let t:bzrstatus_path = fnamemodify(path, ':p')
   let t:bzrstatus_vimdiff = g:bzrstatus_vimdiff
   let t:bzrstatus_selection = 0
   let t:bzrstatus_tagged = {}
   let t:bzrstatus_mode = "l"
 
-  let t:bzrstatus_tree = system(g:bzrstatus_bzr.' root '.shellescape(t:bzrstatus_path))[0:-2]
+  python <<EOF
 
-  if v:shell_error
-    echoerr t:bzrstatus_tree
-    let t:bzrstatus_tree = t:bzrstatus_path
-  endif
+b = Bzr(vim.eval("fnamemodify(path, ':p')"))
+
+vim.command("let t:bzrstatus_path = '" + b.path + "'")
+vim.command("let t:bzrstatus_tree = '" + b.root + "'")
+
+EOF
 
   silent botright split new
   setlocal buftype=nofile noswapfile ft=bzrstatus fenc=utf-8

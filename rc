@@ -622,4 +622,21 @@ set foldlevelstart=99
 
 " }}}
 
+" Python. {{{
+
+if has('python')
+
+python <<EOF
+
+from sys import path
+from os import environ
+
+path.insert(0, environ['USERVIM'] + '/python')
+
+EOF
+
+endif
+
+" }}}
+
 " vim: ft=vim sw=2 foldmethod=marker
