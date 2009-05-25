@@ -200,9 +200,9 @@ let s:DirDiffBLine = 2
 " -- Variables used in various utilities
 if has("unix") || g:DirDiffUnix
     let s:DirDiffCopyCmd = "cp"
-    let s:DirDiffCopyFlags = ""
+    let s:DirDiffCopyFlags = "--remove-destination"
     let s:DirDiffCopyDirCmd = "cp"
-    let s:DirDiffCopyDirFlags = "-rf"
+    let s:DirDiffCopyDirFlags = "--remove-destination -r"
     let s:DirDiffCopyInteractiveFlag = "-i"
 
     let s:DirDiffDeleteCmd = "rm"
