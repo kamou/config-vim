@@ -120,12 +120,11 @@ class UI(bzrlib.ui.UIFactory):
         return ret
 
     def get_boolean(self, prompt):
-        msg = prompt + ' [y/N]: '
-        ret = vim.eval('input(\'' + escape(msg) + '\')')
-        self.output.write(msg + ret + '\n', silent=True)
-        if 'y' == ret:
-            return True
-        return False
+        ret = int(vim.eval('confirm(\'' + escape(prompt) + '\', "&Yes\n&No", 2)'))
+        if 1 != ret:
+            ret = 0
+        self.output.write(prompt + '? ' + ['no', 'yes'][ret] + '\n', silent=True)
+        return 1 == ret
 
     def prompt(self, prompt, **kwargs):
         if kwargs:
