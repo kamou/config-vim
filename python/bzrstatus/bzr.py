@@ -86,15 +86,17 @@ class Bzr:
 
         vim.command("let matches = ['" + "', '".join(matches) + "']")
 
-    def run(self, cmd, to_buffer=True, to_terminal=False):
+    def run(self, cmd, to_buffer=True):
 
         if type(cmd) is str:
             argv = shlex.split(cmd)
         else:
             argv = cmd
 
-        if to_terminal:
-            output = Output()
+        if to_buffer:
+            b = vim.current.buffer
+            w = vim.current.window
+            output = Output(b, w)
         else:
             output = StringIO()
 
@@ -102,7 +104,6 @@ class Bzr:
         os.chdir(self.root)
 
         try:
-
             sys.stdout = output
             sys.stderr = output
 
@@ -128,27 +129,15 @@ class Bzr:
 
             try:
                 ret = bzrlib.commands.run_bzr_catch_errors(argv)
-                output = output.getvalue()
             except:
-                output = '\n'.join(traceback.format_exc().splitlines())
+                output = StringIO(traceback.format_exc())
 
             bzrlib.ui.ui_factory.finish()
 
             if not to_buffer:
-                return output
+                return output.getvalue()
 
-            lines = output.splitlines()
-            l = len(lines)
-            if 0 == l:
-                return
-
-            b = vim.current.buffer
-            w = vim.current.window
-
-            row, col = w.cursor
-
-            b[row:row] = lines
-            w.cursor = (row + l, col)
+            output.flush(redraw=False, final=True)
 
         finally:
 
