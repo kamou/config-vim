@@ -20,6 +20,7 @@ from bzrlib import user_encoding
 
 from StringIO import StringIO
 
+import time
 import sys
 import vim
 
@@ -30,16 +31,20 @@ vim_stderr = sys.stderr
 
 class Output(StringIO):
 
-    def __init__(self, buffer, window=None):
+    def __init__(self, progress_updates, buffer, window=None):
         StringIO.__init__(self)
+        self.progress_updates = progress_updates
         self.buffer = buffer
         self.read_pos = 0
         self.window = window
+        self.update_time = time.time()
         if self.window is not None:
             self.window.cursor = (len(self.buffer), 1)
 
     def flush(self, redraw=True, final=False):
         ret = StringIO.flush(self)
+        if not self.progress_updates and not final:
+            return ret
         write_pos, self.pos = self.pos, self.read_pos
         if final:
             lines = self.readlines()
@@ -72,7 +77,12 @@ class Output(StringIO):
 
     def write(self, str):
         ret = StringIO.write(self, str)
-        if (self.pos - self.read_pos) > 2048:
+        if not self.progress_updates:
+            return ret
+        now = time.time()
+        if now >= self.update_time + 0.5:
+            self.update_time = now
             self.flush()
+        return ret
 
 

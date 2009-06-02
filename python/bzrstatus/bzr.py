@@ -86,7 +86,7 @@ class Bzr:
 
         vim.command("let matches = ['" + "', '".join(matches) + "']")
 
-    def run(self, cmd, to_buffer=True):
+    def run(self, cmd, to_buffer=True, progress_updates=False):
 
         if type(cmd) is str:
             argv = shlex.split(cmd)
@@ -96,7 +96,7 @@ class Bzr:
         if to_buffer:
             b = vim.current.buffer
             w = vim.current.window
-            output = Output(b, w)
+            output = Output(progress_updates, b, w)
         else:
             output = StringIO()
 

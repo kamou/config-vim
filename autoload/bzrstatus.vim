@@ -363,7 +363,7 @@ function! bzrstatus#exec_bzr(cmd, update)
   let cursorcolumn = &l:cursorcolumn
   setl nocursorline nocursorcolumn
 
-  python bzr().run(vim.eval('a:cmd'), to_buffer=True)
+  python bzr().run(vim.eval('a:cmd'), to_buffer=True, progress_updates=True)
 
   " Restore cursor line/column.
   let &l:cursorline = cursorline
