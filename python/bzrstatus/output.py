@@ -37,9 +37,10 @@ class Output(StringIO):
         self.buffer = buffer
         self.read_pos = 0
         self.window = window
-        self.update_time = time.time()
+        if self.progress_updates:
+            self.update_time = time.time()
         if self.window is not None:
-            self.window.cursor = (len(self.buffer), 1)
+            self.row = self.window.cursor[0]
 
     def flush(self, redraw=True, final=False):
         ret = StringIO.flush(self)
@@ -57,19 +58,18 @@ class Output(StringIO):
                     break
                 lines.append(line)
         if 0 != len(lines):
-            byte_lines = []
+            unicode_lines = []
             for line in lines:
                 if type(line) is unicode:
-                    byte_lines.append(line.encode(user_encoding))
+                    unicode_lines.append(line.encode(user_encoding))
                 else:
-                    byte_lines.append(line)
-            lines = byte_lines
-            # lines = [line.encode('utf-8', 'backslashreplace')
-                     # for line in lines]
-            # lines = [line.encode('utf-8') for line in lines]
-            self.buffer.append(lines)
-            if self.window is not None:
-                self.window.cursor = (len(self.buffer), 1)
+                    unicode_lines.append(line)
+            if self.window is None:
+                self.buffer.append(unicode_lines)
+            else:
+                self.buffer[self.row:self.row] = unicode_lines
+                self.row += len(unicode_lines)
+                self.window.cursor = (self.row, 1)
                 if redraw:
                     vim.command('redraw')
         self.read_pos, self.pos = self.pos, write_pos
@@ -77,12 +77,11 @@ class Output(StringIO):
 
     def write(self, str):
         ret = StringIO.write(self, str)
-        if not self.progress_updates:
-            return ret
-        now = time.time()
-        if now >= self.update_time + 0.5:
-            self.update_time = now
-            self.flush()
+        if self.progress_updates:
+            now = time.time()
+            if now >= self.update_time + 0.5:
+                self.update_time = now
+                self.flush()
         return ret
 
 
