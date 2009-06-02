@@ -358,7 +358,16 @@ function! bzrstatus#exec_bzr(cmd, update)
   exe ':'.(t:bzrstatus_msgline + 2)
   redraw
 
-  python bzr().run(vim.eval('a:cmd'), to_terminal=True)
+  " Deactivate cursor line/column during command execution.
+  let cursorline = &l:cursorline
+  let cursorcolumn = &l:cursorcolumn
+  setl nocursorline nocursorcolumn
+
+  python bzr().run(vim.eval('a:cmd'), to_buffer=True, progress_updates=True)
+
+  " Restore cursor line/column.
+  let &l:cursorline = cursorline
+  let &l:cursorcolumn = cursorcolumn
   " Hack to make sure term is reseted to raw (and force a full redraw).
   let &term = &term
 

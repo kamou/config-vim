@@ -106,33 +106,37 @@ class UI(bzrlib.ui.UIFactory):
             self._update_statusline()
 
     def get_username(self, prompt, **kwargs):
+        self.output.flush()
         if kwargs:
             prompt = prompt % kwargs
         ret = vim.eval('input(\'' + escape(prompt) + ': \')')
-        self.output.write(prompt + '\n', silent=True)
+        self.output.write(prompt + '\n')
         return ret
 
     def get_password(self, prompt='', **kwargs):
+        self.output.flush()
         if kwargs:
             prompt = prompt % kwargs
         ret = vim.eval('inputsecret(\'' + escape(prompt) + ': \')')
-        self.output.write(prompt + '\n', silent=True)
+        self.output.write(prompt + '\n')
         return ret
 
     def get_boolean(self, prompt):
-        msg = prompt + ' [y/N]: '
-        ret = vim.eval('input(\'' + escape(msg) + '\')')
-        self.output.write(msg + ret + '\n', silent=True)
-        if 'y' == ret:
-            return True
-        return False
+        self.output.flush()
+        ret = int(vim.eval('confirm(\'' + escape(prompt) + '\', "&Yes\n&No", 2)'))
+        if 1 != ret:
+            ret = 0
+        self.output.write(prompt + '? ' + ['no', 'yes'][ret] + '\n')
+        return 1 == ret
 
     def prompt(self, prompt, **kwargs):
+        self.output.flush()
         if kwargs:
             prompt = prompt % kwargs
         self.output.write(prompt)
 
     def note(self, msg):
         self.output.write(msg + '\n')
+        self.output.flush()
 
 
