@@ -141,6 +141,12 @@ class Bzr:
 
         finally:
 
+            for handler in bzrlib.trace._bzr_logger.handlers:
+                handler.close()
+            if bzrlib.trace._trace_file is not None:
+                bzrlib.trace._trace_file.close()
+                bzrlib.trace._trace_file = None
+
             os.chdir(dir)
 
             sys.stdout = vim_stdout
