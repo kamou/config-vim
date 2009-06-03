@@ -16,24 +16,38 @@
 #
 
 
-from bzrstatus.ui import UI
+from bzrlib import commands, config
+from bzrlib.errors import BzrCommandError
 
-import bzrlib
 import shlex
 import glob
 import os
 
 
+complete_command_aliases = False
+complete_hidden_commands = False
+
+
+def add_extra_space(items):
+
+    return [ item + ' ' for item in items ]
+
+def fix_path(path):
+
+    if os.path.isdir(path):
+        return path + '/'
+
+    return path
+
+
 class Complete():
 
-    def __init__(self, arglead, cmdline, workdir,
-                 complete_command_aliases=False,
-                 complete_hidden_commands=False):
+    def __init__(self, arglead, cmdline, workdir):
 
         self.cmdline = cmdline
         self.workdir = workdir
-        self.complete_command_aliases = complete_command_aliases
-        self.complete_hidden_commands = complete_hidden_commands
+        self.cmdname = None
+        self.cmdobj = None
 
         self.args = shlex.split(cmdline)
 
@@ -60,38 +74,34 @@ class Complete():
 
         return matches
 
-    def filter(self, list):
+    def filter(self, items):
 
         matches = []
 
-        for item in list:
+        for item in items:
             if item.startswith(self.arglead):
                 matches.append(item)
 
         return matches
 
-    def add_extra_space(self, list):
-
-        return [ item + ' ' for item in list ]
-
     def complete_cmdname(self):
 
         cmds = []
 
-        for cmdname, cmdclass in bzrlib.commands.get_all_cmds():
-            if not self.complete_hidden_commands and cmdclass.hidden:
+        for cmdname, cmdclass in commands.get_all_cmds():
+            if not complete_hidden_commands and cmdclass.hidden:
                 continue
             cmds.append(cmdname)
-            if self.complete_command_aliases:
+            if complete_command_aliases:
                 for alias in cmdclass.aliases:
                     if cmdname.startswith(alias):
                         continue
                     cmds.append(alias)
 
-        for alias in bzrlib.config.GlobalConfig().get_aliases().keys():
+        for alias in config.GlobalConfig().get_aliases().keys():
             cmds.append(alias)
 
-        return self.add_extra_space(self.filter(cmds))
+        return add_extra_space(self.filter(cmds))
 
     def complete_options(self):
 
@@ -101,31 +111,25 @@ class Complete():
         opts = []
 
         for name, opt in self.cmdobj.options().items():
+            # print name
             opts.append('--' + opt.name)
             short_name = opt.short_name()
             if short_name:
                 opts.append('-' + short_name)
 
-        return self.add_extra_space(self.filter(opts))
-
-    def fix_path(self, path):
-
-        if os.path.isdir(path):
-            return path + '/'
-
-        return path
+        return add_extra_space(self.filter(opts))
 
     def complete_command(self):
 
         self.cmdname = self.args[1]
 
-        alias_args = bzrlib.commands.get_alias(self.cmdname)
+        alias_args = commands.get_alias(self.cmdname)
         if alias_args is not None:
             self.cmdname = alias_args.pop(0)
 
         try:
-            self.cmdobj = bzrlib.commands.get_cmd_object(self.cmdname)
-        except bzrlib.errors.BzrCommandError:
+            self.cmdobj = commands.get_cmd_object(self.cmdname)
+        except BzrCommandError:
             self.cmdobj = None
 
         if 0 < len(self.arglead):
@@ -136,15 +140,15 @@ class Complete():
             if '~' == self.arglead[0]:
                 self.arglead = os.path.expanduser(self.arglead)
 
-        dir = os.getcwd()
+        olddir = os.getcwd()
         os.chdir(self.workdir)
 
         try:
-            list = glob.iglob(self.arglead + '*')
-            list = [ self.fix_path(path) for path in list ]
+            paths = glob.iglob(self.arglead + '*')
+            paths = [ fix_path(path) for path in paths ]
         finally:
-            os.chdir(dir)
+            os.chdir(olddir)
 
-        return list
+        return paths
 
 

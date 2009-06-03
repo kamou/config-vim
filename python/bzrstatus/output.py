@@ -31,16 +31,16 @@ vim_stderr = sys.stderr
 
 class Output(StringIO):
 
-    def __init__(self, progress_updates, buffer, window=None):
+    def __init__(self, progress_updates, vimbuf, vimwin=None):
         StringIO.__init__(self)
         self.progress_updates = progress_updates
-        self.buffer = buffer
+        self.vimbuf = vimbuf
         self.read_pos = 0
-        self.window = window
+        self.vimwin = vimwin
         if self.progress_updates:
             self.update_time = time.time()
-        if self.window is not None:
-            self.row = self.window.cursor[0]
+        if self.vimwin is not None:
+            self.row = self.vimwin.cursor[0]
 
     def flush(self, redraw=True, final=False):
         ret = StringIO.flush(self)
@@ -60,23 +60,23 @@ class Output(StringIO):
         if 0 != len(lines):
             unicode_lines = []
             for line in lines:
-                if type(line) is unicode:
+                if isinstance(line, unicode):
                     unicode_lines.append(line.encode(user_encoding))
                 else:
                     unicode_lines.append(line)
-            if self.window is None:
-                self.buffer.append(unicode_lines)
+            if self.vimwin is None:
+                self.vimbuf.append(unicode_lines)
             else:
-                self.buffer[self.row:self.row] = unicode_lines
+                self.vimbuf[self.row:self.row] = unicode_lines
                 self.row += len(unicode_lines)
-                self.window.cursor = (self.row, 1)
+                self.vimwin.cursor = (self.row, 1)
                 if redraw:
                     vim.command('redraw')
         self.read_pos, self.pos = self.pos, write_pos
         return ret
 
-    def write(self, str):
-        ret = StringIO.write(self, str)
+    def write(self, date):
+        ret = StringIO.write(self, date)
         if self.progress_updates:
             now = time.time()
             if now >= self.update_time + 0.5:

@@ -22,11 +22,10 @@ from bzrstatus.ui import UI
 
 from StringIO import StringIO
 
-from bzrlib.errors import (NoWorkingTree, NotBranchError,
-                           NoRepositoryPresent, NotLocalUrl)
-from bzrlib.workingtree import WorkingTree
+from bzrlib import commands, trace, ui, user_encoding, version_info
+from bzrlib.errors import (BzrError, NoWorkingTree,
+                           NotBranchError, NotLocalUrl)
 from bzrlib.bzrdir import BzrDir
-import bzrlib
 
 import traceback
 import shlex
@@ -82,7 +81,7 @@ class Bzr:
         except ValueError:
             matches = []
             e = sys.exc_info()[1]
-            print >>sys.stderr, 'parse error:', e.message
+            print >> sys.stderr, 'parse error:', e.message
 
         vim.command("let matches = ['" + "', '".join(matches) + "']")
 
@@ -94,64 +93,73 @@ class Bzr:
             argv = cmd
 
         if to_buffer:
-            b = vim.current.buffer
-            w = vim.current.window
-            output = Output(progress_updates, b, w)
+            output = Output(progress_updates,
+                            vim.current.buffer,
+                            vim.current.window)
         else:
             output = StringIO()
 
-        dir = os.getcwd()
+        olddir = os.getcwd()
         os.chdir(self.root)
 
         try:
             sys.stdout = output
             sys.stderr = output
 
-            bzrlib.trace.enable_default_logging()
-            bzrlib.ui.ui_factory = UI(output)
+            trace.enable_default_logging()
+            ui.ui_factory = UI(output)
 
             # Is this a final release version? If so, we should suppress warnings
-            if bzrlib.version_info[3] == 'final':
+            if version_info[3] == 'final':
                 from bzrlib import symbol_versioning
                 symbol_versioning.suppress_deprecation_warnings(override=False)
 
             new_argv = []
             try:
                 # ensure all arguments are unicode strings
-                for a in argv:
-                    if isinstance(a, unicode):
-                        new_argv.append(a)
+                for arg in argv:
+                    if isinstance(arg, unicode):
+                        new_argv.append(arg)
                     else:
-                        new_argv.append(a.decode('ascii'))
+                        new_argv.append(arg.decode(user_encoding))
             except UnicodeDecodeError:
-                raise errors.BzrError("argv should be list of unicode strings.")
+                raise BzrError("argv should be list of unicode strings.")
             argv = new_argv
 
             try:
-                ret = bzrlib.commands.run_bzr_catch_errors(argv)
+                ret = commands.run_bzr_catch_errors(argv)
             except:
                 output = StringIO(traceback.format_exc())
+                ret = -1
 
-            bzrlib.ui.ui_factory.finish()
+            ui.ui_factory.finish()
 
             if not to_buffer:
                 return output.getvalue()
 
             output.flush(redraw=False, final=True)
 
+            return ret
+
         finally:
 
-            os.chdir(dir)
+            for handler in trace._bzr_logger.handlers:
+                handler.close()
+            if trace._trace_file is not None:
+                trace._trace_file.close()
+                trace._trace_file = None
+
+            os.chdir(olddir)
 
             sys.stdout = vim_stdout
             sys.stderr = vim_stderr
 
     def update_file(self):
-        file = ''
+        filename = ''
         if self.branch is not None:
-            file += '[' + self.branch.nick + '] '
-        file += self.root
-        vim.command("exe 'silent file '.fnameescape('" + file + "')")
+            filename += '[' + self.branch.nick + '] '
+        filename += self.root
+        vim.command("exe 'silent file '.fnameescape('" + filename + "')")
 
 
 def bzr():
