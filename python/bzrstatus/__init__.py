@@ -16,7 +16,7 @@
 #
 
 
-import bzrlib.plugin
+from bzrlib import osutils, plugin
 import bzrlib
 import vim
 import sys
@@ -33,7 +33,8 @@ def raw_input(prompt=''):
 
 if '1' == vim.eval("has('gui_running')"):
     os.environ['BZR_EDITOR'] = 'gvim -f'
-bzrlib.osutils.getchar = getchar
-bzrlib.plugin.load_plugins()
+
+osutils.getchar = getchar
+plugin.load_plugins()
 
 
