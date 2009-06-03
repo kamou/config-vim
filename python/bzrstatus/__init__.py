@@ -17,7 +17,7 @@
 
 
 from bzrlib import osutils, plugin
-import bzrlib
+
 import vim
 import sys
 import os
