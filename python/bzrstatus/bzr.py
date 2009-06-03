@@ -100,7 +100,7 @@ class Bzr:
         else:
             output = StringIO()
 
-        dir = os.getcwd()
+        olddir = os.getcwd()
         os.chdir(self.root)
 
         try:
@@ -147,7 +147,7 @@ class Bzr:
                 bzrlib.trace._trace_file.close()
                 bzrlib.trace._trace_file = None
 
-            os.chdir(dir)
+            os.chdir(olddir)
 
             sys.stdout = vim_stdout
             sys.stderr = vim_stderr
