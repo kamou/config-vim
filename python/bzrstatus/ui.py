@@ -16,20 +16,21 @@
 #
 
 
-import bzrlib
+from bzrlib import ui
+
 import time
 import vim
 import re
 
 
-def escape(str):
-    return re.sub("'", "''", str)
+def escape(string):
+    return re.sub("'", "''", string)
 
 
-class UI(bzrlib.ui.UIFactory):
+class UI(ui.UIFactory):
 
     def __init__(self, output):
-        bzrlib.ui.UIFactory.__init__(self)
+        ui.UIFactory.__init__(self)
         vim.command('let l:old_more = &more')
         vim.command('set nomore')
         self.output = output
