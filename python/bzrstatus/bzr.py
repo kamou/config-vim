@@ -25,6 +25,7 @@ from StringIO import StringIO
 from bzrlib.errors import (BzrError, NoWorkingTree,
                            NotBranchError, NotLocalUrl)
 from bzrlib.bzrdir import BzrDir
+from bzrlib import user_encoding
 import bzrlib
 
 import traceback
@@ -117,11 +118,11 @@ class Bzr:
             new_argv = []
             try:
                 # ensure all arguments are unicode strings
-                for a in argv:
-                    if isinstance(a, unicode):
-                        new_argv.append(a)
+                for arg in argv:
+                    if isinstance(arg, unicode):
+                        new_argv.append(arg)
                     else:
-                        new_argv.append(a.decode('ascii'))
+                        new_argv.append(arg.decode(user_encoding))
             except UnicodeDecodeError:
                 raise BzrError("argv should be list of unicode strings.")
             argv = new_argv
