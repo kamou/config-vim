@@ -82,7 +82,7 @@ class Bzr:
         except ValueError:
             matches = []
             e = sys.exc_info()[1]
-            print >>sys.stderr, 'parse error:', e.message
+            print >> sys.stderr, 'parse error:', e.message
 
         vim.command("let matches = ['" + "', '".join(matches) + "']")
 
