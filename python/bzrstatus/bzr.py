@@ -130,6 +130,7 @@ class Bzr:
                 ret = bzrlib.commands.run_bzr_catch_errors(argv)
             except:
                 output = StringIO(traceback.format_exc())
+                ret = -1
 
             bzrlib.ui.ui_factory.finish()
 
@@ -137,6 +138,8 @@ class Bzr:
                 return output.getvalue()
 
             output.flush(redraw=False, final=True)
+
+            return ret
 
         finally:
 
