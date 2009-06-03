@@ -22,11 +22,10 @@ from bzrstatus.ui import UI
 
 from StringIO import StringIO
 
+from bzrlib import commands, trace, ui, user_encoding, version_info
 from bzrlib.errors import (BzrError, NoWorkingTree,
                            NotBranchError, NotLocalUrl)
 from bzrlib.bzrdir import BzrDir
-from bzrlib import user_encoding
-import bzrlib
 
 import traceback
 import shlex
@@ -107,11 +106,11 @@ class Bzr:
             sys.stdout = output
             sys.stderr = output
 
-            bzrlib.trace.enable_default_logging()
-            bzrlib.ui.ui_factory = UI(output)
+            trace.enable_default_logging()
+            ui.ui_factory = UI(output)
 
             # Is this a final release version? If so, we should suppress warnings
-            if bzrlib.version_info[3] == 'final':
+            if version_info[3] == 'final':
                 from bzrlib import symbol_versioning
                 symbol_versioning.suppress_deprecation_warnings(override=False)
 
@@ -128,12 +127,12 @@ class Bzr:
             argv = new_argv
 
             try:
-                ret = bzrlib.commands.run_bzr_catch_errors(argv)
+                ret = commands.run_bzr_catch_errors(argv)
             except:
                 output = StringIO(traceback.format_exc())
                 ret = -1
 
-            bzrlib.ui.ui_factory.finish()
+            ui.ui_factory.finish()
 
             if not to_buffer:
                 return output.getvalue()
@@ -144,11 +143,11 @@ class Bzr:
 
         finally:
 
-            for handler in bzrlib.trace._bzr_logger.handlers:
+            for handler in trace._bzr_logger.handlers:
                 handler.close()
-            if bzrlib.trace._trace_file is not None:
-                bzrlib.trace._trace_file.close()
-                bzrlib.trace._trace_file = None
+            if trace._trace_file is not None:
+                trace._trace_file.close()
+                trace._trace_file = None
 
             os.chdir(olddir)
 
