@@ -94,9 +94,9 @@ class Bzr:
             argv = cmd
 
         if to_buffer:
-            b = vim.current.buffer
-            w = vim.current.window
-            output = Output(progress_updates, b, w)
+            output = Output(progress_updates,
+                            vim.current.buffer,
+                            vim.current.window)
         else:
             output = StringIO()
 
