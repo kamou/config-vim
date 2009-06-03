@@ -22,9 +22,8 @@ from bzrstatus.ui import UI
 
 from StringIO import StringIO
 
-from bzrlib.errors import (NoWorkingTree, NotBranchError,
-                           NoRepositoryPresent, NotLocalUrl)
-from bzrlib.workingtree import WorkingTree
+from bzrlib.errors import (BzrError, NoWorkingTree,
+                           NotBranchError, NotLocalUrl)
 from bzrlib.bzrdir import BzrDir
 import bzrlib
 
@@ -124,7 +123,7 @@ class Bzr:
                     else:
                         new_argv.append(a.decode('ascii'))
             except UnicodeDecodeError:
-                raise errors.BzrError("argv should be list of unicode strings.")
+                raise BzrError("argv should be list of unicode strings.")
             argv = new_argv
 
             try:
