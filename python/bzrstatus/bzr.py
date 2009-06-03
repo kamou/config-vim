@@ -155,11 +155,11 @@ class Bzr:
             sys.stderr = vim_stderr
 
     def update_file(self):
-        file = ''
+        filename = ''
         if self.branch is not None:
-            file += '[' + self.branch.nick + '] '
-        file += self.root
-        vim.command("exe 'silent file '.fnameescape('" + file + "')")
+            filename += '[' + self.branch.nick + '] '
+        filename += self.root
+        vim.command("exe 'silent file '.fnameescape('" + filename + "')")
 
 
 def bzr():
