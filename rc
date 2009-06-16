@@ -31,9 +31,9 @@ let &runtimepath = join(newrl, ',')
 " }}}
 
 " Load user config (username, email, ...).
-let user = $USERVIM."/user"
+let user = $USERVIM.'/user'
 if filereadable(user)
-  execute "source ".user
+  execute 'source '.user
 endif
 
 " Not VI compatible.
@@ -76,7 +76,7 @@ set history=200
 set backupcopy=breakhardlink,auto
 
 " Save info file in the user VIM directory.
-let &viminfo = "!,h,'20,\"50,n".$USERVIM."/info"
+let &viminfo = "!,h,'20,\"50,n".$USERVIM.'/info'
 
 " Change the select/visual mode behavior.
 behave xterm
@@ -144,7 +144,7 @@ set makeprg=make\ -w
 
 " Put swap files in $USERVIM/swap or ~/tmp
 " (fallback to current dir if not possible).
-let swap = $USERVIM."/swap"
+let swap = $USERVIM.'/swap'
 if !isdirectory(swap)
   call mkdir(swap)
 endif
@@ -152,13 +152,13 @@ let &directory = swap.'//,~/tmp//,.'
 
 " Terminal only settings. {{{
 
-if !has("gui_running")
+if !has('gui_running')
 
   " Load specific term keys setting.
   " Needed for some mappings to work properly.
-  let keys = $USERVIM."/keys/".$TERM
+  let keys = $USERVIM.'/keys/'.$TERM
   if filereadable(keys)
-    execute "source " . keys
+    execute 'source ' . keys
   endif
 
   " Fast escape key.
@@ -192,7 +192,7 @@ map <BS> X
 
 " Cscope support. {{{
 
-if has("cscope")
+if has('cscope')
 
   set cscopequickfix=s-,g-,d-,c-,t-,e-,f-,i-
   set cspc=3
@@ -247,10 +247,10 @@ nmap <unique> <Leader>tU :
 
 " Ctags list plugin config.
 let Tlist_Enable_Fold_Column = 0
-let Tlist_Sort_Type = "name"
+let Tlist_Sort_Type = 'name'
 let Tlist_Show_One_File = 1
 let Tlist_Show_Menu = 0
-nmap <silent> <unique> <Leader>tl :exe "Tlist"\|wincmd p<CR>
+nmap <silent> <unique> <Leader>tl :exe 'Tlist'\|wincmd p<CR>
 
 " }}}
 
@@ -524,26 +524,26 @@ map <silent> <F6> :call ToggleSearchHighlighting()<CR>
 
 " Launch various commands. {{{
 
-let cmd_1 = "make"
-let cmd_2 = "make clean"
-let cmd_3 = "make -C %:p:h"
-let cmd_4 = "make -C %:p:h clean"
+let cmd_1 = 'make'
+let cmd_2 = 'make clean'
+let cmd_3 = 'make -C %:p:h'
+let cmd_4 = 'make -C %:p:h clean'
 
 function! Launch_Command(name)
-  if exists("b:".a:name)
-    execute "let l:cmd=b:".a:name
-  elseif exists("g:".a:name)
-    execute "let l:cmd=g:".a:name
+  if exists('b:'.a:name)
+    execute 'let l:cmd=b:'.a:name
+  elseif exists('g:'.a:name)
+    execute 'let l:cmd=g:'.a:name
   else
     return
   endif
-  execute "echo \"" . cmd . "\" \| " . cmd
+  execute 'echo "' . cmd . '" | ' . cmd
 endfunction
 
-noremap <F9>  :call Launch_Command("cmd_1")<CR>
-noremap <F10> :call Launch_Command("cmd_2")<CR>
-noremap <F11> :call Launch_Command("cmd_3")<CR>
-noremap <F12> :call Launch_Command("cmd_4")<CR>
+noremap <F9>  :call Launch_Command('cmd_1')<CR>
+noremap <F10> :call Launch_Command('cmd_2')<CR>
+noremap <F11> :call Launch_Command('cmd_3')<CR>
+noremap <F12> :call Launch_Command('cmd_4')<CR>
 
 " }}}
 
@@ -551,10 +551,10 @@ noremap <F12> :call Launch_Command("cmd_4")<CR>
 
 function! Indent_and_Retab() range
   if &list
-    silent! execute a:firstline.",".a:lastline.'s/\s*\r\?$'
+    silent! execute a:firstline.','.a:lastline.'s/\s*\r\?$'
   end
-  execute a:firstline.",".a:lastline.'retab'
-  execute "normal ".a:firstline."G=".a:lastline . 'G'
+  execute a:firstline.','.a:lastline.'retab'
+  execute 'normal '.a:firstline.'G='.a:lastline . 'G'
 endfunction
 
 function! Indent_and_Retab_operator(type)
