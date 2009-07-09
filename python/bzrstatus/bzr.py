@@ -129,7 +129,7 @@ class Bzr:
             try:
                 ret = commands.run_bzr_catch_errors(argv)
             except:
-                output = StringIO(traceback.format_exc())
+                print >>vim_stderr, StringIO(traceback.format_exc())
                 ret = -1
 
             ui.ui_factory.finish()
