@@ -110,6 +110,9 @@ END
 
 " <<<1 yasnippets#LoadSkeletonByFileType(filetype) - load skeleton file by filetype
 function! yasnippets#LoadSkeletonByFileType(filetype)
+  if '' == a:filetype
+    return
+  endif
 ruby <<END
     filename = VIM::evaluate("expand('%:p')")
     filetype = VIM::evaluate("a:filetype")
