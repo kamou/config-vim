@@ -51,8 +51,8 @@ class Bzr:
 
         self.update()
 
-        self.tab = vim.eval('tabpagenr()')
-        bzr_instances[self.tab] = self
+        vim.command("let t:bzr_id='" + str(id(self)) + "'")
+        bzr_instances[id(self)] = self
 
     def complete(self, arglead, cmdline):
 
@@ -157,6 +157,6 @@ class Bzr:
 
 
 def bzr():
-    return bzr_instances[vim.eval('tabpagenr()')]
+    return bzr_instances[int(vim.eval('t:bzr_id'))]
 
 
