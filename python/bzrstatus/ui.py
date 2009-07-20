@@ -36,7 +36,7 @@ class UI(ui.UIFactory):
         self.output = output
         self.task = None
         self.transport = None
-        self.activity = { 'read': 0, 'write': 0 }
+        self.activity = { 'read': 0, 'write': 0, None: 0 }
         now = time.time()
         self.transport_update_time = now
         self.progress_update_time = now

@@ -23,9 +23,8 @@ from bzrstatus.ui import UI
 from StringIO import StringIO
 
 from bzrlib import commands, trace, ui, user_encoding, version_info
-from bzrlib.errors import (BzrError, NoWorkingTree,
-                           NotBranchError, NotLocalUrl)
-from bzrlib.bzrdir import BzrDir
+from bzrlib.errors import (BzrError, NoWorkingTree)
+from bzrlib.workingtree import WorkingTree
 
 import traceback
 import shlex
@@ -50,29 +49,10 @@ class Bzr:
         else:
             self.path = path
 
-        self.root = self.path
+        self.update()
 
-        self.tree = None
-        self.branch = None
-
-        try:
-            bzrdir = BzrDir.open_containing(self.path)[0]
-            try:
-                self.tree = bzrdir.open_workingtree(recommend_upgrade=False)
-                self.branch = self.tree.branch
-            except (NoWorkingTree, NotLocalUrl):
-                try:
-                    self.branch = bzrdir.open_branch()
-                except NotBranchError:
-                    pass
-        except NotBranchError:
-            pass
-
-        if self.tree is not None:
-            self.root = self.tree.basedir
-
-        self.tab = vim.eval('tabpagenr()')
-        bzr_instances[self.tab] = self
+        vim.command("let t:bzr_id='" + str(id(self)) + "'")
+        bzr_instances[id(self)] = self
 
     def complete(self, arglead, cmdline):
 
@@ -129,7 +109,7 @@ class Bzr:
             try:
                 ret = commands.run_bzr_catch_errors(argv)
             except:
-                output = StringIO(traceback.format_exc())
+                print >>vim_stderr, StringIO(traceback.format_exc())
                 ret = -1
 
             ui.ui_factory.finish()
@@ -154,15 +134,29 @@ class Bzr:
             sys.stdout = vim_stdout
             sys.stderr = vim_stderr
 
+    def update(self, update_file=False):
+
+        self.tree = None
+        self.root = self.path
+
+        try:
+            self.tree = WorkingTree.open_containing(self.path)[0]
+            self.root = self.tree.basedir
+        except NoWorkingTree:
+            pass
+
+        if update_file:
+            self.update_file()
+
     def update_file(self):
         filename = ''
-        if self.branch is not None:
-            filename += '[' + self.branch.nick + '] '
+        if self.tree is not None:
+            filename += '[' + self.tree.branch.nick + '] '
         filename += self.root
-        vim.command("exe 'silent file '.fnameescape('" + filename + "')")
+        vim.command("exe 'file '.fnameescape('" + filename + "')")
 
 
 def bzr():
-    return bzr_instances[vim.eval('tabpagenr()')]
+    return bzr_instances[int(vim.eval('t:bzr_id'))]
 
 

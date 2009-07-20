@@ -616,7 +616,7 @@ function! bzrstatus#update_buffer(type)
   setlocal modifiable
 
   if 1 < a:type
-    python bzr().update_file()
+    python bzr().update(update_file=True)
   endif
 
   if 3 > a:type && exists('t:bzrstatus_msgline')
