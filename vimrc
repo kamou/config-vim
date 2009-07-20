@@ -1,4 +1,11 @@
 
+" Profiling. {{{
+
+" profile start vim.prof
+" profile! file *
+
+" }}}
+
 let $USERVIM=$HOME.'/.vim'
 
 if has('win32') && !strlen($CYGPATH)
