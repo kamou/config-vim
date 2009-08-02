@@ -108,7 +108,7 @@ load $snippets_file
 for snippet in $snippets
     keyword = snippet.shift
     keyword.gsub!("'", "''")
-    text = snippet.pop
+    text = snippet.pop.dup
     text.strip!
     text.gsub!("\n", '\<cr>')
     text.gsub!(/\^\^\^\\<cr>/, "\\<C-R>=yasnippets#FreezeIndent()\\<CR>\\<CR>\\<C-R>=yasnippets#UnfreezeIndent()\\<CR>")
@@ -132,7 +132,7 @@ end
 for snippet in $sksnippets
     keyword = snippet.shift
     keyword.gsub!("'", "''")
-    text = snippet.pop
+    text = snippet.pop.dup
     text.strip!
     text.gsub!("\n", '\<cr>')
     text.gsub!(/\^\^\^\\<cr>/, "\\<C-R>=yasnippets#FreezeIndent()\\<CR>\\<CR>\\<C-R>=yasnippets#UnfreezeIndent()\\<CR>")
