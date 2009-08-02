@@ -19,7 +19,6 @@ ScriptID SourceID Filename
 2100 11027 :AutoInstall: textobj/user.vim
 2484 10410 :AutoInstall: textobj/indent.vim
 2619 10453 :AutoInstall: textobj/function.vim
-1849 10873 :AutoInstall: autoclose.vim
 2542 10936 :AutoInstall: starrange.vim
 1464 8765 moria.vim
 2555 10690 jellybeans.vim
