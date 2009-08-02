@@ -259,13 +259,13 @@ endif
 
 function CtagsUpdate()
 
-  let cmd = '!ctags '.g:ctags_flags.' -o tags'
+  let cmd = '!ctags '.g:ctags_flags.' -o tags -R '
   let files = 'tags.files'
 
   if filereadable(files)
-    let cmd .= ' -L '.files
+    let cmd .= '-L '.files
   else
-    let cmd .= ' -R .'
+    let cmd .= '.'
   endif
 
   exe cmd
