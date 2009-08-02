@@ -194,6 +194,8 @@ map <BS> X
 
 if has('cscope')
 
+  let g:cscopedb = './cscope.out'
+
   set cscopequickfix=s-,g-,d-,c-,t-,e-,f-,i-
   set cspc=3
   set csverb
@@ -209,8 +211,8 @@ if has('cscope')
   endif
 
   " Add any database in current directory.
-  if filereadable("cscope.out")
-    silent cs add cscope.out
+  if filereadable(g:cscopedb)
+    exe 'silent cs add '.g:cscopedb
     " Add database pointed to by environment.
   elseif strlen($CSCOPE_DB)
     silent cs add $CSCOPE_DB
@@ -221,6 +223,24 @@ if has('cscope')
   " Search the tags database before the scope database...
   set csto=1
 
+  function CscopeUpdate()
+
+    exe 'silent! cs kill '.g:cscopedb
+
+    let cmd = '!'.&cscopeprg.' -q -b -f '.g:cscopedb
+    let files = 'cscope.files'
+
+    if filereadable(files)
+      let cmd .= ' -i '.files
+    else
+      let cmd .= ' -R -s .'
+    endif
+
+    exe cmd
+    exe 'silent cs add '.g:cscopedb
+
+  endfunction
+
   " Mappings.
   nmap <unique> <silent> <Leader>tg <C-]>
   nmap <unique> <silent> <Leader>ts :exe 'cscope find s <cword>'<CR>
@@ -229,10 +249,7 @@ if has('cscope')
   nmap <unique> <silent> <Leader>ta :exe 'cscope find t <cword>'<CR>
   nmap <unique> <silent> <Leader>tf :exe 'cscope find f <cfile>'<CR>
   nmap <unique> <silent> <Leader>ti :exe 'cscope find i %:t'<CR>
-  nmap <unique> <silent> <Leader>tu :
-        \ exe 'silent! cscope k 0' <Bar>
-        \ exe '!'.&cscopeprg.' -q -R -b -s .' <Bar>
-        \ exe 'silent cscope add cscope.out' <CR>
+  nmap <unique> <silent> <Leader>tu :call CscopeUpdate()<CR>
 
 endif
 
@@ -240,10 +257,24 @@ endif
 
 " Ctags support. {{{
 
+function CtagsUpdate()
+
+  let cmd = '!ctags '.g:ctags_flags.' -o tags'
+  let files = 'tags.files'
+
+  if filereadable(files)
+    let cmd .= ' -L '.files
+  else
+    let cmd .= ' -R .'
+  endif
+
+  exe cmd
+
+endfunction
+
 " To update a ctags database.
 let g:ctags_flags = '--c-kinds=+cdefgmnpstuvx --fields=+S'
-nmap <unique> <Leader>tU :
-      \ exe '!ctags '.g:ctags_flags.' -R -o tags .' <CR>
+nmap <unique> <Leader>tU :call CtagsUpdate()<CR>
 
 " Ctags list plugin config.
 let Tlist_Enable_Fold_Column = 0
