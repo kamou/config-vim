@@ -314,9 +314,11 @@ let g:DirDiffAddArgs = '--strip-trailing-cr'
 
 " }}}
 
-" ManPageView plugin. {{{
+" Man/info pages support. {{{
 
 let g:manpageview_multimanpage = 0
+
+autocmd FileType man set buftype=nofile
 
 " }}}
 
