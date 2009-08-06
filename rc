@@ -312,7 +312,23 @@ vmap <unique> <silent> <Leader>d2 :call BlockDiff_GetBlock2()<CR>
 let g:DirDiffExcludes = 'CVS,.svn,.bzr,cscope*out,tags,*_debug,*.~[0-9]~,*.~[0-9][0-9]~,*.orig'
 let g:DirDiffAddArgs = '--strip-trailing-cr'
 
-" }}}
+" Support for automatically using DirDiff when calling 'vim -d dir1 dir2'. {{{
+
+function VimDirDiff()
+
+  let dir1 = argv(0)
+  let dir2 = argv(1)
+  silent! exe 'bd '.dir1
+  silent! exe 'bd '.dir2
+  silent exe 'DirDiff '.dir1.' '.dir2
+
+endfunction
+
+if &diff && 2 == argc() && isdirectory(argv(0)) && isdirectory(argv(1))
+  autocmd VimEnter * call VimDirDiff()
+endif
+
+" }}}}}}
 
 " Man/info pages support. {{{
 
