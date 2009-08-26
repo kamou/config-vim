@@ -114,6 +114,9 @@ if has('win32')
     set shellxquote=\"
   endif
 
+else
+
+  set shellpipe=\|&\ tee\ %s;\ exit\ $pipestatus\[1\]
 
 endif
 
