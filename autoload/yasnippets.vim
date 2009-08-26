@@ -147,28 +147,6 @@ ruby <<END
 END
 endfunction
 
-
-" <<<1 yasnippets#NLexpand() - insert newline snippet
-function! yasnippets#NLexpand()
-    let left_part = strpart(getline('.'), 0, col('.') - 1)
-    let right_part = strpart(getline('.'), col('.') - 1, strlen(getline('.')))
-    if has_key(g:yasnippets_nl, &ft)
-        for item in g:yasnippets_nl[&ft]
-            if match(left_part, item[0]) >= 0 && match(right_part, item[1]) >= 0
-                "return item[2]
-                return "\<C-O>o\<C-R>=IMAP_PutTextWithMovement('" . item[2] . "', '<+', '+>')\<CR>"
-            endif
-        endfor
-    endif
-    for item in g:yasnippets_nl['all']
-        if match(left_part, item[0]) >= 0 && match(right_part, item[1]) >= 0
-            "return item[2]
-            return "\<C-O>o\<C-R>=IMAP_PutTextWithMovement('" . item[2] . "', '<+', '+>')\<CR>"
-        endif
-    endfor
-    return g:yasnippets_nlkey_insert
-endfunction
-
 function! yasnippets#CompleteSkeleton(findstart, base)
 
   if a:findstart

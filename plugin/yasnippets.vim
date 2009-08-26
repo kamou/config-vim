@@ -29,14 +29,6 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " <<<1 Variables
-if !exists("g:yasnippets_nlkey")
-    let g:yasnippets_nlkey = "<cr>"
-endif
-
-if !exists("g:yasnippets_nlkey_insert")
-    let g:yasnippets_nlkey_insert = "\<cr>"
-endif
-
 if !exists("g:yasnippets_file")
     let g:yasnippets_file = expand($USERVIM.'/snippets.rb')
 endif
@@ -45,12 +37,8 @@ if !exists("g:yasnippets_skeletons")
     let g:yasnippets_skeletons = expand($USERVIM.'/skeletons')
 endif
 
-let g:yasnippets_nl        = {}
-let g:yasnippets_nl['all'] = []
-
 
 " <<<1 Mappings and autocommands
-exec "inoremap ".g:yasnippets_nlkey." <c-r>=yasnippets#NLexpand()<cr>"
 exec "autocmd Syntax * syntax region Todo display oneline keepend"
     \ "start=/" . IMAP_GetPlaceHolderStart() . "/"
     \ "end=/" . IMAP_GetPlaceHolderEnd() . "/"
@@ -67,7 +55,6 @@ command! -nargs=? -complete=custom,yasnippets#SelectSkeleton LoadSkeleton
 ruby <<END
 $delimeter      = '___'
 $snippets       = []
-$nlsnippets     = []
 $sksnippets     = []
 $expand_pattern = 'keywordss'
 $snippets_file  = VIM::evaluate("g:yasnippets_file")
@@ -94,10 +81,6 @@ def defsnippet(*args)
     $snippets << [keyword] + args
 end
 
-def defnlsnippet(*args)
-    $nlsnippets << args
-end
-
 def defsksnippet(*args)
     keyword = $expand_pattern.sub('keyword', args.shift)
     $sksnippets << [keyword] + args
@@ -115,17 +98,6 @@ for snippet in $snippets
     for filetype in snippet
         filetype = '' if filetype.to_s == 'all'
         VIM::command("call IMAP('#{keyword}', \"#{text}\", '#{filetype}', '<+', '+>')")
-    end
-end
-
-for snippet in $nlsnippets
-    left, right = snippet.first.split($delimeter)
-    text = snippet.last
-    for filetype in snippet[1..-2]
-        if VIM::evaluate("has_key(g:yasnippets_nl, '#{filetype}')").to_i == 0
-            VIM::command("let g:yasnippets_nl['#{filetype}'] = []")
-        end
-        VIM::command("let g:yasnippets_nl['#{filetype}'] += [['#{left}', '#{right}', \"#{text}\"]]")
     end
 end
 
