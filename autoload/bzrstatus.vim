@@ -690,6 +690,10 @@ EOF
     endfor
   endfor
 
+  for map in s:bzrstatus_mappings['toggle_tag']
+    exe 'vnoremap <silent> <buffer> '.map.' :call bzrstatus#toggle_tag()<CR>'
+  endfor
+
   for name in [ 'add', 'commit', 'del', 'extmerge', 'revert', 'shelve' ]
     for map in s:bzrstatus_mappings[name]
       exe 'nnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'(0)<CR>'
@@ -712,7 +716,7 @@ EOF
 
   for map in s:bzrstatus_mappings['exec']
     exe 'nnoremap <buffer> '.map.' :let t:bzrstatus_mode="l"<CR>:!'
-    exe 'vnoremap <buffer> '.map.' v:let t:bzrstatus_mode="v"<CR>:!'
+    exe 'vnoremap <buffer> '.map.' <Esc>:let t:bzrstatus_mode="v"<CR>:!'
   endfor
 
   cnoremap <buffer> <C-R><C-E> <C-R>=bzrstatus#get_entries(t:bzrstatus_mode)<CR>
