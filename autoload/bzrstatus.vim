@@ -715,7 +715,7 @@ EOF
 
   for map in s:bzrstatus_mappings['bzr']
     exe 'nnoremap <buffer> '.map.' :let t:bzrstatus_mode="l"<CR>:BzrStatusExec '
-    exe 'vnoremap <buffer> '.map.' v:let t:bzrstatus_mode="v"<CR>:BzrStatusExec '
+    exe 'vnoremap <buffer> '.map.' <Esc>:let t:bzrstatus_mode="v"<CR>:BzrStatusExec '
   endfor
 
   for map in s:bzrstatus_mappings['exec']
