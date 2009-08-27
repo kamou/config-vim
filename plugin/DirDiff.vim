@@ -38,6 +38,9 @@ endif
 if !exists("g:DirDiffIgnoreCase")
     let g:DirDiffIgnoreCase = 0
 endif
+if !exists("g:DirDiffVerboseSync")
+    let g:DirDiffVerboseSync = 1
+endif
 if !exists("g:DirDiffUnix")
     let g:DirDiffUnix = 0
 endif
