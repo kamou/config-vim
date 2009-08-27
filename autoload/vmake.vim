@@ -24,6 +24,7 @@ function! vmake#VMake(...)
 
   if has_errors
     copen
+    redraw!
   else
     quit
   end
