@@ -37,6 +37,7 @@ class Output(StringIO):
         self.vimbuf = vimbuf
         self.read_pos = 0
         self.vimwin = vimwin
+        self.fileformat = 'dos'
         if self.progress_updates:
             self.update_time = time.time()
         if self.vimwin is not None:
@@ -60,6 +61,8 @@ class Output(StringIO):
         if 0 != len(lines):
             unicode_lines = []
             for line in lines:
+                if 2 > len(line) or '\r' != line[-2]:
+                    self.fileformat = 'unix'
                 if isinstance(line, unicode):
                     unicode_lines.append(line.encode(user_encoding))
                 else:

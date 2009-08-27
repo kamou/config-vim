@@ -313,6 +313,10 @@ function! bzrstatus#showdiff()
     if vimdiff
       " Get original version from Bazaar.
       python bzr().run(('cat', vim.eval('old_entry')))
+      if 'dos' == b:bzrstatus_fileformat
+        silent! %s/\r$/
+        setl ff=dos
+      endif
     else
       " Get diff.
       python bzr().run(('diff', vim.eval('old_entry')))
