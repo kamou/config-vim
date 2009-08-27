@@ -343,7 +343,7 @@ function! bzrstatus#diff_open()
   call bzrstatus#showdiff()
 endfunction
 
-function! bzrstatus#exec_bzr(cmd, update)
+function! bzrstatus#bzr_run(cmd, update)
 
   setlocal modifiable
 
@@ -442,7 +442,7 @@ function! bzrstatus#bzr_op(tagged, firstl, lastl, op)
     return
   endif
 
-  call bzrstatus#exec_bzr([a:op] + options + files, update)
+  call bzrstatus#bzr_run([a:op] + options + files, update)
 
 endfunction
 
@@ -503,7 +503,7 @@ function! bzrstatus#complete(arglead, cmdline, cursorpos)
 
 endfunction
 
-function! bzrstatus#exec(...)
+function! bzrstatus#bzr(...)
 
   if [] == a:000
     return
@@ -511,7 +511,7 @@ function! bzrstatus#exec(...)
 
   let update = get(s:bzrstatus_op_update, a:000[0], 0)
 
-  call bzrstatus#exec_bzr(join(a:000, ' '), update)
+  call bzrstatus#bzr_run(join(a:000, ' '), update)
 
 endfunction
 
@@ -714,8 +714,8 @@ EOF
   endfor
 
   for map in s:bzrstatus_mappings['bzr']
-    exe 'nnoremap <buffer> '.map.' :let t:bzrstatus_mode="l"<CR>:BzrStatusExec '
-    exe 'vnoremap <buffer> '.map.' <Esc>:let t:bzrstatus_mode="v"<CR>:BzrStatusExec '
+    exe 'nnoremap <buffer> '.map.' :let t:bzrstatus_mode="l"<CR>:BzrStatusBzr '
+    exe 'vnoremap <buffer> '.map.' <Esc>:let t:bzrstatus_mode="v"<CR>:BzrStatusBzr '
   endfor
 
   for map in s:bzrstatus_mappings['exec']
@@ -728,5 +728,5 @@ EOF
 
 endfunction
 
-command! -nargs=* -complete=customlist,bzrstatus#complete BzrStatusExec call bzrstatus#exec(<f-args>)
+command! -nargs=* -complete=customlist,bzrstatus#complete BzrStatusBzr call bzrstatus#bzr(<f-args>)
 
