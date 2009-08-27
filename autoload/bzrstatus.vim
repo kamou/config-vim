@@ -676,6 +676,8 @@ EOF
   silent botright split new
   setlocal buftype=nofile noswapfile ft=bzrstatus fenc=utf-8
 
+  exe 'lchdir '.fnameescape(t:bzrstatus_tree)
+
   let t:bzrstatus_buffer = bufnr('')
 
   if has('signs')
