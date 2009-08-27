@@ -119,6 +119,9 @@ class Bzr:
 
             output.flush(redraw=False, final=True)
 
+            vim.command("let b:bzrstatus_fileformat = '%s'" %
+                        (output.fileformat))
+
             return ret
 
         finally:
