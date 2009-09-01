@@ -92,6 +92,8 @@
 <Plug>(textobj-function-i)	textobj-function.txt	/*<Plug>(textobj-function-i)*
 <Plug>(textobj-indent-a)	textobj-indent.txt	/*<Plug>(textobj-indent-a)*
 <Plug>(textobj-indent-i)	textobj-indent.txt	/*<Plug>(textobj-indent-i)*
+<Plug>(textobj-indent-same-a)	textobj-indent.txt	/*<Plug>(textobj-indent-same-a)*
+<Plug>(textobj-indent-same-i)	textobj-indent.txt	/*<Plug>(textobj-indent-same-i)*
 Decho.vim	Decho.txt	/*Decho.vim*
 DechoMsgOff	Decho.txt	/*DechoMsgOff*
 DechoMsgOn	Decho.txt	/*DechoMsgOn*
@@ -406,6 +408,10 @@ textobj-function.txt	textobj-function.txt	/*textobj-function.txt*
 textobj-indent	textobj-indent.txt	/*textobj-indent*
 textobj-indent-bugs	textobj-indent.txt	/*textobj-indent-bugs*
 textobj-indent-changelog	textobj-indent.txt	/*textobj-indent-changelog*
+textobj-indent-changelog-0.0.0	textobj-indent.txt	/*textobj-indent-changelog-0.0.0*
+textobj-indent-changelog-0.0.1	textobj-indent.txt	/*textobj-indent-changelog-0.0.1*
+textobj-indent-changelog-0.0.2	textobj-indent.txt	/*textobj-indent-changelog-0.0.2*
+textobj-indent-changelog-0.0.3	textobj-indent.txt	/*textobj-indent-changelog-0.0.3*
 textobj-indent-contents	textobj-indent.txt	/*textobj-indent-contents*
 textobj-indent-customizing	textobj-indent.txt	/*textobj-indent-customizing*
 textobj-indent-interface	textobj-indent.txt	/*textobj-indent-interface*
