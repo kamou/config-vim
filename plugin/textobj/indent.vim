@@ -35,6 +35,10 @@ endif
 " Interface  "{{{1
 
 call textobj#user#plugin('indent', {
+\      '=': {
+\        'select-a': 'a=',  '*select-a-function*': 'textobj#indent#select_a',
+\        'select-i': 'i=',  '*select-i-function*': 'textobj#indent#select_i',
+\      },
 \      '-': {
 \        'select-a': 'ai',  '*select-a-function*': 'textobj#indent#select_a',
 \        'select-i': 'ii',  '*select-i-function*': 'textobj#indent#select_i',
