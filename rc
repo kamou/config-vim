@@ -336,6 +336,11 @@ endif
 
 " Custom text-objects. {{{
 
+" textobj-indent
+let g:textobj_indent_no_default_key_mappings = 1
+map a= <Plug>(textobj-indent-a)
+map i= <Plug>(textobj-indent-i)
+
 " textobj-entire
 let g:textobj_entire_no_default_key_mappings = 1
 map a% <Plug>(textobj-entire-a)
