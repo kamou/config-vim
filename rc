@@ -332,7 +332,7 @@ if &diff && 2 == argc() && isdirectory(argv(0)) && isdirectory(argv(1))
   autocmd VimEnter * call VimDirDiff()
 endif
 
-" }}}}}}
+" }}}
 
 " Man/info pages support. {{{
 
