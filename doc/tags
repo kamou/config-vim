@@ -51,6 +51,7 @@
 :MatchDebug	matchit.txt	/*:MatchDebug*
 :MkVimball	pi_vimball.txt	/*:MkVimball*
 :RmVimball	pi_vimball.txt	/*:RmVimball*
+:TextobjEntireDefaultKeyMappings	textobj-entire.txt	/*:TextobjEntireDefaultKeyMappings*
 :TextobjFunctionDefaultKeyMappings	textobj-function.txt	/*:TextobjFunctionDefaultKeyMappings*
 :TextobjIndentDefaultKeyMappings	textobj-indent.txt	/*:TextobjIndentDefaultKeyMappings*
 :TlistAddFiles	taglist.txt	/*:TlistAddFiles*
@@ -88,6 +89,8 @@
 :VCSUpdate	vcscommand.txt	/*:VCSUpdate*
 :VCSVimDiff	vcscommand.txt	/*:VCSVimDiff*
 :VimballList	pi_vimball.txt	/*:VimballList*
+<Plug>(textobj-entire-a)	textobj-entire.txt	/*<Plug>(textobj-entire-a)*
+<Plug>(textobj-entire-i)	textobj-entire.txt	/*<Plug>(textobj-entire-i)*
 <Plug>(textobj-function-a)	textobj-function.txt	/*<Plug>(textobj-function-a)*
 <Plug>(textobj-function-i)	textobj-function.txt	/*<Plug>(textobj-function-i)*
 <Plug>(textobj-indent-a)	textobj-indent.txt	/*<Plug>(textobj-indent-a)*
@@ -280,6 +283,7 @@ g:manpageview_sfx_EXT	manpageview.txt	/*g:manpageview_sfx_EXT*
 g:manpageview_syntax_EXT	manpageview.txt	/*g:manpageview_syntax_EXT*
 g:manpageview_winopen	manpageview.txt	/*g:manpageview_winopen*
 g:manpgeview_user	manpageview.txt	/*g:manpgeview_user*
+g:textobj_entire_no_default_key_mappings	textobj-entire.txt	/*g:textobj_entire_no_default_key_mappings*
 g:textobj_function_no_default_key_mappings	textobj-function.txt	/*g:textobj_function_no_default_key_mappings*
 g:textobj_indent_no_default_key_mappings	textobj-indent.txt	/*g:textobj_indent_no_default_key_mappings*
 g:vimball_home	pi_vimball.txt	/*g:vimball_home*
@@ -380,6 +384,15 @@ textobj#user#move()	textobj-user.txt	/*textobj#user#move()*
 textobj#user#plugin()	textobj-user.txt	/*textobj#user#plugin()*
 textobj#user#select()	textobj-user.txt	/*textobj#user#select()*
 textobj#user#select_pair()	textobj-user.txt	/*textobj#user#select_pair()*
+textobj-entire	textobj-entire.txt	/*textobj-entire*
+textobj-entire-bugs	textobj-entire.txt	/*textobj-entire-bugs*
+textobj-entire-changelog	textobj-entire.txt	/*textobj-entire-changelog*
+textobj-entire-contents	textobj-entire.txt	/*textobj-entire-contents*
+textobj-entire-customizing	textobj-entire.txt	/*textobj-entire-customizing*
+textobj-entire-interface	textobj-entire.txt	/*textobj-entire-interface*
+textobj-entire-introduction	textobj-entire.txt	/*textobj-entire-introduction*
+textobj-entire-mappings	textobj-entire.txt	/*textobj-entire-mappings*
+textobj-entire.txt	textobj-entire.txt	/*textobj-entire.txt*
 textobj-function	textobj-function.txt	/*textobj-function*
 textobj-function-api	textobj-function.txt	/*textobj-function-api*
 textobj-function-bugs	textobj-function.txt	/*textobj-function-bugs*

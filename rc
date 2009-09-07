@@ -334,6 +334,15 @@ endif
 
 " }}}
 
+" Custom text-objects. {{{
+
+" textobj-entire
+let g:textobj_entire_no_default_key_mappings = 1
+map a% <Plug>(textobj-entire-a)
+map i% <Plug>(textobj-entire-i)
+
+" }}}
+
 " Man/info pages support. {{{
 
 let g:manpageview_multimanpage = 0
