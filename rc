@@ -336,15 +336,20 @@ endif
 
 " Custom text-objects. {{{
 
-" textobj-indent
-let g:textobj_indent_no_default_key_mappings = 1
-map a= <Plug>(textobj-indent-a)
-map i= <Plug>(textobj-indent-i)
+for mapping in [ ['=', 'indent'], ['%', 'entire'] ]
 
-" textobj-entire
-let g:textobj_entire_no_default_key_mappings = 1
-map a% <Plug>(textobj-entire-a)
-map i% <Plug>(textobj-entire-i)
+  let key = mapping[0]
+  let obj = mapping[1]
+
+  exe 'let g:textobj_'.obj.'_no_default_key_mappings = 1'
+
+  for type in ['i', 'a']
+    for mode in ['v', 'o']
+      exe mode.'map '.type.key.' <Plug>(textobj-'.obj.'-'.type.')'
+    endfor
+  endfor
+
+endfor
 
 " }}}
 
