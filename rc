@@ -325,6 +325,7 @@ function VimDirDiff()
   silent! exe 'bd '.dir1
   silent! exe 'bd '.dir2
   silent exe 'DirDiff '.dir1.' '.dir2
+  windo filetype detect
 
 endfunction
 
