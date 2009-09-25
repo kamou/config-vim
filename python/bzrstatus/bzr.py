@@ -22,7 +22,7 @@ from bzrstatus.ui import UI
 
 from StringIO import StringIO
 
-from bzrlib import commands, trace, ui, user_encoding, version_info
+from bzrlib import commands, trace, ui, osutils, version_info
 from bzrlib.errors import (BzrError, NoWorkingTree)
 from bzrlib.workingtree import WorkingTree
 
@@ -35,6 +35,7 @@ import os
 
 vim_stdout = sys.stdout
 vim_stderr = sys.stderr
+user_encoding = osutils.get_user_encoding()
 
 
 bzr_instances = {}
