@@ -16,7 +16,7 @@
 #
 
 
-from bzrlib import user_encoding
+from bzrlib import osutils
 
 from StringIO import StringIO
 
@@ -27,6 +27,7 @@ import vim
 
 vim_stdout = sys.stdout
 vim_stderr = sys.stderr
+user_encoding = osutils.get_user_encoding()
 
 
 class Output(StringIO):
