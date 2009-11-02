@@ -118,6 +118,10 @@ else
 
   set shellpipe=\|&\ tee\ %s;\ exit\ $pipestatus\[1\]
 
+  " Bad, bad Windows... Force encoding to UTF-8
+  " and fix detection of file encodings.
+  set encoding=utf-8 fileencodings=ucs-bom,utf-8,default,latin1
+
 endif
 
 " }}}
