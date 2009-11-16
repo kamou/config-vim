@@ -88,7 +88,8 @@ class Complete():
 
         cmds = []
 
-        for cmdname, cmdclass in commands.get_all_cmds():
+        for cmdname in commands.all_command_names():
+            cmdclass = commands.get_cmd_object(cmdname)
             if not complete_hidden_commands and cmdclass.hidden:
                 continue
             cmds.append(cmdname)
