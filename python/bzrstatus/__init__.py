@@ -16,7 +16,7 @@
 #
 
 
-from bzrlib import osutils, plugin
+from bzrlib import commands, osutils, plugin, trace
 
 import vim
 import sys
@@ -35,6 +35,8 @@ if '1' == vim.eval("has('gui_running')"):
     os.environ['BZR_EDITOR'] = 'gvim -f'
 
 osutils.getchar = getchar
+trace.enable_default_logging()
+commands.install_bzr_command_hooks()
 plugin.load_plugins()
 
 
