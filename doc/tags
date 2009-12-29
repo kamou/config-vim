@@ -290,7 +290,6 @@ g:textobj_function_no_default_key_mappings	textobj-function.txt	/*g:textobj_func
 g:textobj_indent_no_default_key_mappings	textobj-indent.txt	/*g:textobj_indent_no_default_key_mappings*
 g:vimball_home	pi_vimball.txt	/*g:vimball_home*
 g:vimball_mkdir	pi_vimball.txt	/*g:vimball_mkdir*
-g:vimball_path_escape	pi_vimball.txt	/*g:vimball_path_escape*
 getlatestvimscripts-install	pi_getscript.txt	/*getlatestvimscripts-install*
 getscript	pi_getscript.txt	/*getscript*
 getscript-autoinstall	pi_getscript.txt	/*getscript-autoinstall*
