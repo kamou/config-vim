@@ -25,10 +25,6 @@ import sys
 import vim
 
 
-vim_stdout = sys.stdout
-vim_stderr = sys.stderr
-
-
 class Output(StringIO):
 
     def __init__(self, progress_updates, vimbuf, vimwin=None):
