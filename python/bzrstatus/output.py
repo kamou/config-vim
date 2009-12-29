@@ -27,7 +27,6 @@ import vim
 
 vim_stdout = sys.stdout
 vim_stderr = sys.stderr
-user_encoding = osutils.get_user_encoding()
 
 
 class Output(StringIO):
@@ -39,6 +38,7 @@ class Output(StringIO):
         self.read_pos = 0
         self.vimwin = vimwin
         self.fileformat = 'dos'
+        self.encoding = osutils.get_user_encoding()
         if self.progress_updates:
             self.update_time = time.time()
         if self.vimwin is not None:
@@ -65,7 +65,7 @@ class Output(StringIO):
                 if 2 > len(line) or '\r' != line[-2]:
                     self.fileformat = 'unix'
                 if isinstance(line, unicode):
-                    unicode_lines.append(line.encode(user_encoding))
+                    unicode_lines.append(line.encode(self.encoding))
                 else:
                     unicode_lines.append(line)
             if self.vimwin is None:
