@@ -46,6 +46,9 @@ class UI(ui.UIFactory):
         self.last_transport_msg = ''
         self.last_task = None
 
+    def make_output_stream(self, encoding=None, encoding_type=None):
+        return self.output
+
     def _format_activity(self):
         msg = ''
         for direction in ('read', 'write'):
