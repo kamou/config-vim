@@ -82,6 +82,11 @@ end
 
 if ARGV.empty?
 
+  if STDIN.isatty
+    STDERR.puts 'Missing filename'
+    exit 0
+  end
+
   rd, wr = IO.pipe
 
   unless fork
