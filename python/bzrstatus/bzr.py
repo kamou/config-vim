@@ -55,10 +55,10 @@ class Bzr:
         vim.command("let t:bzr_id='" + str(id(self)) + "'")
         bzr_instances[id(self)] = self
 
-    def complete(self, arglead, cmdline):
+    def complete(self, cmdline, cursorpos):
 
         try:
-            matches = Complete(arglead, cmdline, self.root).complete()
+            matches = Complete(cmdline, cursorpos, self.root).complete()
         except ValueError:
             matches = []
             e = sys.exc_info()[1]
