@@ -516,25 +516,21 @@ function! bzrstatus#complete(arglead, cmdline, cursorpos)
 
 endfunction
 
-function! bzrstatus#bzr(...)
+function! bzrstatus#input()
+  return input('bzr ', '', 'customlist,bzrstatus#complete')
+endfunction
 
-  if !g:bzrstatus_use_input
-    if [] == a:000
-      return
-    endif
-    let cmdline = join(a:000, ' ')
-    let cmd = a:000[0]
-  else
-    let cmdline = input('bzr ', '', 'customlist,bzrstatus#complete')
-    if '' == cmdline
-      return
-    endif
-    let cmd = split(cmdline)[0]
+function! bzrstatus#bzr(cmdline)
+
+  let args = split(a:cmdline)
+
+  if empty(args)
+    return
   endif
 
-  let update = get(s:bzrstatus_op_update, cmd, 0)
+  let update = get(s:bzrstatus_op_update, args[0], 0)
 
-  call bzrstatus#bzr_run(cmdline, update)
+  call bzrstatus#bzr_run(a:cmdline, update)
 
 endfunction
 
@@ -745,8 +741,8 @@ EOF
     endfor
   else
     for map in s:bzrstatus_mappings['bzr']
-      exe 'nnoremap <buffer> '.map.' :let t:bzrstatus_mode="l"<Bar>call bzrstatus#bzr()<CR>'
-      exe 'vnoremap <buffer> '.map.' v:let t:bzrstatus_mode="v"<Bar>call bzrstatus#bzr()<CR>'
+      exe 'nnoremap <buffer> '.map.' :let t:bzrstatus_mode="l"<Bar>call bzrstatus#bzr(bzrstatus#input())<CR>'
+      exe 'vnoremap <buffer> '.map.' v:let t:bzrstatus_mode="v"<Bar>call bzrstatus#bzr(bzrstatus#input())<CR>'
     endfor
   endif
 
@@ -761,6 +757,6 @@ EOF
 endfunction
 
 if !g:bzrstatus_use_input
-  command! -nargs=* -complete=customlist,bzrstatus#complete BzrStatusBzr call bzrstatus#bzr(<f-args>)
+  command! -nargs=* -complete=customlist,bzrstatus#complete BzrStatusBzr call bzrstatus#bzr(<q-args>)
 endif
 
