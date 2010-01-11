@@ -5,7 +5,7 @@ ScriptID SourceID Filename
 1066 7618 :AutoInstall: cecutil.vim
 273 7701 :AutoInstall: taglist.vim
 1218 10318 :AutoInstall: NERD_commenter.vim
-90 12031 :AutoInstall: vcscommand.vim
+90 12073 :AutoInstall: vcscommand.vim
 2241 8691 :AutoInstall: vcsbzr.vim
 42 11905 :AutoInstall: bufexplorer.vim
 120 9388 :AutoInstall: Decho.vim
