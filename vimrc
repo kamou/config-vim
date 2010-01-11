@@ -1,8 +1,7 @@
 
 " Profiling. {{{
 
-" profile start vim.prof
-" profile! file *
+" profile start vim.prof | profile! file *
 
 " }}}
 
