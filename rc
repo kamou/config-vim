@@ -707,8 +707,9 @@ python <<EOF
 
 from sys import path
 from os import environ
+import vim
 
-path.insert(0, environ['USERVIM'] + '/python')
+path.insert(0, vim.eval('$USERVIM') + '/python')
 
 EOF
 
