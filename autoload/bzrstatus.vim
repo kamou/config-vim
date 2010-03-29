@@ -67,9 +67,14 @@ let s:bzrstatus_op_confirm =
 let s:bzrstatus_op_update =
       \ {
       \ 'add'        : 1,
+      \ 'clean-tree' : 1,
       \ 'commit'     : 1,
       \ 'del'        : 1,
+      \ 'ignore'     : 1,
       \ 'merge'      : 1,
+      \ 'mkdir'      : 1,
+      \ 'mv'         : 1,
+      \ 'patch'      : 1,
       \ 'pull'       : 1,
       \ 'reconfigure': 2,
       \ 'resolve'    : 1,
