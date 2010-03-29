@@ -19,6 +19,7 @@ let s:bzrstatus_mappings =
       \ 'uncommit': [ 'B' ],
       \ 'unshelve': [ 'U' ],
       \
+      \ 'toggle_unknowns': [ 'o?' ],
       \ 'toggle_vimdiff': [ 'ov' ],
       \
       \ 'toggle_tag'  : [ '<Space>' ],
@@ -66,9 +67,14 @@ let s:bzrstatus_op_confirm =
 let s:bzrstatus_op_update =
       \ {
       \ 'add'        : 1,
+      \ 'clean-tree' : 1,
       \ 'commit'     : 1,
       \ 'del'        : 1,
+      \ 'ignore'     : 1,
       \ 'merge'      : 1,
+      \ 'mkdir'      : 1,
+      \ 'mv'         : 1,
+      \ 'patch'      : 1,
       \ 'pull'       : 1,
       \ 'reconfigure': 2,
       \ 'resolve'    : 1,
@@ -473,6 +479,11 @@ function! bzrstatus#shelve(tagged) range
   call bzrstatus#bzr_op(a:tagged, a:firstline, a:lastline, 'shelve')
 endfunction
 
+function! bzrstatus#toggle_unknowns()
+  let t:bzrstatus_unknowns = !t:bzrstatus_unknowns
+  call bzrstatus#update()
+endfunction
+
 function! bzrstatus#toggle_vimdiff()
   let t:bzrstatus_vimdiff = !t:bzrstatus_vimdiff
 endfunction
@@ -648,7 +659,11 @@ function! bzrstatus#update_buffer(type)
     silent %delete
   endif
 
-  let cmd = ['status', '-S', '-v', t:bzrstatus_path]
+  let cmd = ['status', '-S', '-v']
+  if !t:bzrstatus_unknowns
+    let cmd += ['-V']
+  endif
+  let cmd += [t:bzrstatus_path]
   call append(0, 'bzr '.join(cmd, ' '))
   redraw
 
@@ -678,6 +693,7 @@ function! bzrstatus#start(...)
     let path = '.'
   end
 
+  let t:bzrstatus_unknowns = g:bzrstatus_unknowns
   let t:bzrstatus_vimdiff = g:bzrstatus_vimdiff
   let t:bzrstatus_selection = 0
   let t:bzrstatus_tagged = {}
@@ -709,7 +725,7 @@ EOF
 
   call bzrstatus#update_buffer(3)
 
-  for name in [ 'quit', 'update', 'diff_open', 'info', 'log', 'missing', 'uncommit', 'unshelve', 'toggle_vimdiff', 'toggle_tag' ]
+  for name in [ 'quit', 'update', 'diff_open', 'info', 'log', 'missing', 'uncommit', 'unshelve', 'toggle_unknowns', 'toggle_vimdiff', 'toggle_tag' ]
     for map in s:bzrstatus_mappings[name]
       exe 'nnoremap <silent> <buffer> '.map.' :call bzrstatus#'.name.'()<CR>'
     endfor
