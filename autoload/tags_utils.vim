@@ -11,7 +11,7 @@ let g:loaded_tags_utils_autoload = 1
 " goto_line is >2, delete old buffer.
 function! tags_utils#TagsFindFile(file_expr, goto_line)
 
-  let line = 0
+  let line = 1
 
   let bufname = bufname('%')
 
@@ -56,27 +56,47 @@ function! tags_utils#TagsFindFile(file_expr, goto_line)
 
   endif
 
-  let file = findfile(fname)
+  let oldqflist = getqflist()
 
-  if empty(file)
-    if !cscope_connection()
-      return
-    endif
+  let matches = findfile(fname, '', -1)
+
+  if cscope_connection()
     silent! exe ':csc f f '.fname
-  else
-    silent! exe ':e '.file
   endif
 
-  " Did it work, i.e. the buffer changed?
-  if bufname !=# bufname('%')
-    if a:goto_line > 2 && !empty(bufname)
-      exec ":bdelete ".bufnr(bufname)
-    endif
-    file
-    if line
-      call cursor(line, 1)
-    endif
+  let qflist = getqflist()
+  if qflist == oldqflist
+    if 0 == len(matches)
+      return
+    end
+    let qflist = []
+    let qflist_action = ' '
+  else
+    for qfe in qflist
+      let qfe['lnum'] = line
+    endfor
+    let qflist_action = 'r'
   endif
+
+  for m in matches
+    call insert(qflist, {
+          \ 'bufnr': 0, 'filename': m,
+          \ 'lnum': line, 'col': 0, 'vcol': 0,
+          \ 'valid': 1, 'nr': -1,
+          \ 'type': '', 'pattern': '',
+          \ 'text': '<<<unknown>>>'
+          \ })
+  endfor
+
+  if 0 == len(qflist)
+    return
+  endif
+
+  call setqflist(qflist, qflist_action)
+
+  " TODO: sort list, remove duplicate entries.
+
+  cc 1
 
 endfunction
 
