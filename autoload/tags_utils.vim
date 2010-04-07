@@ -4,11 +4,11 @@ if exists('g:loaded_tags_utils_autoload') || &cp
 endif
 let g:loaded_tags_utils_autoload = 1
 
-" Find a file, first using findfile(), and if no results is found and a cscope
-" connection is available, using 'cscope find file'. If goto_line is not 0,
-" then jump to line if its present (:xxx after the filename). If file_expr is
-" not empty and goto_line is >1, then the :xxx directive must be present. If
-" goto_line is >2, delete old buffer.
+" Find a file, first using findfile(), and cscope "find file" if connection is
+" available. All matches are collected in a new quickfix list. If goto_line is
+" not 0, then jump to line if its present (:xxx after the filename). If
+" file_expr is not empty and goto_line is >1, then the :xxx directive must be
+" present. If goto_line is >2, delete old buffer.
 function! tags_utils#TagsFindFile(file_expr, goto_line)
 
   let line = 1
