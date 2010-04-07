@@ -9,7 +9,8 @@ nmap <silent> gF :call tags_utils#TagsFindFile('', 1)<CR>
 
 command! -nargs=1 GF call tags_utils#TagsFindFile(<f-args>, 1)
 
-autocmd! BufNewFile *:* nested call tags_utils#TagsFindFile(bufname('%'), 3)
+autocmd! BufNewFile *:[0-9]*:[0-9]* nested call tags_utils#TagsFindFile(bufname('%'), 3)
+autocmd! BufNewFile *:[0-9]* nested call tags_utils#TagsFindFile(bufname('%'), 3)
 
 command! -nargs=1 TagsFindInclude call tags_utils#TagsFindInclude('', <args>)
 
