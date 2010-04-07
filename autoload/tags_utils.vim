@@ -135,7 +135,7 @@ function! tags_utils#TagsFindInclude(reg, tag_pattern)
 
 endfunction
 
-" Remane all reference to a symbol using cscope. Based on:
+" Rename all reference to a symbol using cscope. Based on:
 " http://www.vim.org/scripts/script.php?script_id=2164
 function! tags_utils#TagsRename()
   " store old buffer and restore later
