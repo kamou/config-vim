@@ -4,6 +4,14 @@ if exists('g:loaded_tags_utils_autoload') || &cp
 endif
 let g:loaded_tags_utils_autoload = 1
 
+" Compare QuickFix List entries based on filenames,
+" using bufname(bufnr) when filename is not set.
+function s:QFListCompareFnames(e1, e2)
+  let f1 = get(a:e1, 'filename', bufname(a:e1.bufnr))
+  let f2 = get(a:e2, 'filename', bufname(a:e2.bufnr))
+  return f1 == f2 ? 0 : f1 > f2 ? 1 : -1
+endfunction
+
 " Find a file, first using findfile(), and cscope "find file" if connection is
 " available. All matches are collected in a new quickfix list. If goto_line is
 " not 0, then jump to line[:col] if its present (:xxx after the filename). If
@@ -80,8 +88,8 @@ function! tags_utils#TagsFindFile(file_expr, goto_line)
     let qflist_action = ' '
   else
     for qfe in qflist
-      let qfe['lnum'] = line
-      let qfe['col'] = col
+      let qfe.lnum = line
+      let qfe.col = col
     endfor
     let qflist_action = 'r'
   endif
@@ -100,11 +108,27 @@ function! tags_utils#TagsFindFile(file_expr, goto_line)
     return
   endif
 
-  " TODO: remove duplicate entries.
-  call sort(qflist)
+  " Sort based on filenames.
+  call sort(qflist, 'QFListCompareFnames')
+
+  " And remove dupplicates (keeping valid buffer numbers).
+  let n = 1
+  while n < len(qflist)
+    let e1 = qflist[n - 1]
+    let e2 = qflist[n]
+    if 0 == QFListCompare(e1, e2)
+      if 0 == e1.bufnr
+        let e1.bufnr = e2.bufnr
+      endif
+      call remove(qflist, n)
+    else
+      let n += 1
+    endif
+  endwhile
 
   call setqflist(qflist, qflist_action)
 
+  " Jump to first entry.
   cc 1
 
 endfunction
@@ -135,7 +159,7 @@ function! tags_utils#TagsFindInclude(reg, tag_pattern)
 
 endfunction
 
-" Remane all reference to a symbol using cscope. Based on:
+" Rename all reference to a symbol using cscope. Based on:
 " http://www.vim.org/scripts/script.php?script_id=2164
 function! tags_utils#TagsRename()
   " store old buffer and restore later
