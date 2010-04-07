@@ -100,6 +100,8 @@ function! tags_utils#TagsFindFile(file_expr, goto_line)
     return
   endif
 
+  call sort(qflist)
+
   call setqflist(qflist, qflist_action)
 
   " TODO: sort list, remove duplicate entries.
