@@ -80,8 +80,8 @@ function! tags_utils#TagsFindFile(file_expr, goto_line)
     let qflist_action = ' '
   else
     for qfe in qflist
-      let qfe['lnum'] = line
-      let qfe['col'] = col
+      let qfe.lnum = line
+      let qfe.col = col
     endfor
     let qflist_action = 'r'
   endif
@@ -105,6 +105,7 @@ function! tags_utils#TagsFindFile(file_expr, goto_line)
 
   call setqflist(qflist, qflist_action)
 
+  " Jump to first entry.
   cc 1
 
 endfunction
