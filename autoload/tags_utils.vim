@@ -109,14 +109,14 @@ function! tags_utils#TagsFindFile(file_expr, goto_line)
   endif
 
   " Sort based on filenames.
-  call sort(qflist, 'QFListCompareFnames')
+  call sort(qflist, 's:QFListCompareFnames')
 
   " And remove dupplicates (keeping valid buffer numbers).
   let n = 1
   while n < len(qflist)
     let e1 = qflist[n - 1]
     let e2 = qflist[n]
-    if 0 == QFListCompare(e1, e2)
+    if 0 == s:QFListCompareFnames(e1, e2)
       if 0 == e1.bufnr
         let e1.bufnr = e2.bufnr
       endif
