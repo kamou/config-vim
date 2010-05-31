@@ -1,6 +1,7 @@
 __FILE__
 __FUNCTION__
 __LINE__
+__PRETTY_FUNCTION__
 __attribute__
 asm
 auto
