@@ -71,6 +71,7 @@ let s:bzrstatus_op_update =
       \ 'commit'     : 1,
       \ 'del'        : 1,
       \ 'ignore'     : 1,
+      \ 'import'     : 1,
       \ 'merge'      : 1,
       \ 'mkdir'      : 1,
       \ 'mv'         : 1,
