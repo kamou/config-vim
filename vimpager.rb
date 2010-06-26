@@ -1,11 +1,12 @@
 #! /usr/bin/env ruby
 
-$DEBUG = false
+require 'tempfile'
 
-# def exec(*args) end
+$DEBUG = false
 
 squeeze_blank_lines = false
 quit_if_one_screen = false
+edit_stdin = false
 man_page = false
 
 ARGV.collect! do |arg|
@@ -22,6 +23,9 @@ ARGV.collect! do |arg|
     nil
   when '--'
     break
+  when '-'
+    edit_stdin = true
+    '-'
   when /^-/
     raise "unsupported option #{arg}"
   else
@@ -80,41 +84,59 @@ if quit_if_one_screen
   ENV['VLESS_OPT'] = '-F'
 end
 
-if ARGV.empty?
+args = ARGV
+
+if args.empty?
 
   if STDIN.isatty
     STDERR.puts 'Missing filename'
     exit 0
   end
 
-  rd, wr = IO.pipe
-
-  unless fork
-
-    rd.close
-    STDOUT.reopen(wr)
-
-    child_cmd = %w{ col -x -b }
-
-    STDERR.write "#{child_cmd} | " if $DEBUG
-
-    exec(*child_cmd)
-    exit 255
-
-  end
-
-  wr.close
-  STDIN.reopen(rd)
-
-  cmd << '-'
-
-else
-
-  cmd.concat(ARGV)
+  edit_stdin = true
+  args = ['-']
 
 end
 
+stdin_file = nil
+
+if edit_stdin
+
+  args.collect! do |arg|
+
+    next arg unless arg == '-'
+
+    stdin_file = Tempfile.open('stdin-')
+
+    unless fork
+
+      STDOUT.reopen(stdin_file)
+
+      child_cmd = %w{ col -x -b }
+
+      STDERR.write "#{child_cmd} | " if $DEBUG
+
+      exec(*child_cmd)
+      exit 255
+
+    end
+
+    STDIN.reopen('/dev/tty')
+
+    stdin_file.close
+    stdin_file.path
+
+  end
+
+end
+
+cmd.concat(args)
+
 STDERR.puts cmd if $DEBUG
 
-exec(*cmd)
-exit 255
+system(*cmd)
+
+stdin_file.unlink if edit_stdin
+
+exit $?
+
