@@ -5,6 +5,8 @@
 " Use it as a manpager by setting MANPAGER: export MANPAGER='pager --man'.
 "
 
+let g:vless=1
+
 source ~/.vimrc
 
 " Key bindings. {{{
