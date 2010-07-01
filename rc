@@ -385,7 +385,7 @@ function! CleverTab()
   end
   let to_pos = strpart(getline('.'), 0, col('.') - 1 )
   let from_pos = strpart(getline('.'), col('.') - 2, col('$'))
-  if has('ruby')
+  if has('ruby') && !exists('g:vless')
     if to_pos =~ '<%=\f*$'
       set completefunc=yasnippets#CompleteSkeleton
       set completeopt+=longest
@@ -453,7 +453,7 @@ let g:tskelUserEmail = useremail
 let g:netrw_http_cmd = 'wget -O'
 
 " Configure yasnippets.
-if has('ruby')
+if has('ruby') && !exists('g:vless')
   ruby $AUTHOR = VIM::evaluate('g:tskelUserName')
   ruby $EMAIL = VIM::evaluate('g:tskelUserEmail')
 else
