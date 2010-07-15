@@ -759,7 +759,7 @@ EOF
   else
     for map in s:bzrstatus_mappings['bzr']
       exe 'nnoremap <buffer> '.map.' :let t:bzrstatus_mode="l"<Bar>call bzrstatus#bzr(bzrstatus#input())<CR>'
-      exe 'vnoremap <buffer> '.map.' v:let t:bzrstatus_mode="v"<Bar>call bzrstatus#bzr(bzrstatus#input())<CR>'
+      exe 'vnoremap <buffer> '.map.' <Esc>:let t:bzrstatus_mode="v"<Bar>call bzrstatus#bzr(bzrstatus#input())<CR>'
     endfor
   endif
 
