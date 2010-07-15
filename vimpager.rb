@@ -108,7 +108,7 @@ if edit_stdin
 
     stdin_file = Tempfile.open('stdin-')
 
-    unless fork
+    pid = fork {
 
       STDOUT.reopen(stdin_file)
 
@@ -118,8 +118,9 @@ if edit_stdin
 
       exec(*child_cmd)
       exit 255
+    }
 
-    end
+    Process.waitpid(pid)
 
     STDIN.reopen('/dev/tty')
 
