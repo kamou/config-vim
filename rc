@@ -322,6 +322,7 @@ vmap <unique> <silent> <Leader>d2 :call BlockDiff_GetBlock2()<CR>
 let g:DirDiffExcludes = 'CVS,.svn,.bzr,cscope*.out*,tags,*_debug,*.~[0-9]~,*.~[0-9][0-9]~,*.orig'
 let g:DirDiffAddArgs = '--strip-trailing-cr'
 let g:DirDiffVerboseSync = 0
+let g:DirDiffDynamicDiffText = 1
 
 " Support for automatically using DirDiff when calling 'vim -d dir1 dir2'. {{{
 

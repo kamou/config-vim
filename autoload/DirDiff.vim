@@ -214,8 +214,6 @@ if has("unix") || g:DirDiffUnix
 
     let s:sep = "/"
 
-    let s:DirDiffMakeDirCmd  = "!mkdir "
-
 elseif has("win32")
     let s:DirDiffCopyCmd = "copy"
     let s:DirDiffCopyFlags = ""
@@ -237,7 +235,6 @@ elseif has("win32")
 
     let s:sep = "\\"
 
-    let s:DirDiffMakeDirCmd  = "!mkdir "
 else
     " Platforms not supported
     let s:DirDiffCopyCmd = ""
@@ -918,66 +915,44 @@ function! <SID>GetDiffStrings()
     " Check if we have the dynamic text string turned on.  If not, just return
     " what's set in the global variables
 
-    if (g:DirDiffDynamicDiffText == 0)
-        let s:DirDiffDiffOnlyLine = g:DirDiffTextOnlyIn
-        let s:DirDiffDifferLine = g:DirDiffTextFiles
-        let s:DirDiffDifferAndLine = g:DirDiffTextAnd
-        let s:DirDiffDifferEndLine = g:DirDiffTextDiffer
-        return
+    if 0 != g:DirDiffDynamicDiffText
+
+        let tmp1 = tempname()
+        let tmp2 = tempname()
+
+        call mkdir(tmp1)
+        call mkdir(tmp2)
+
+        let tmp1f1 = tmp1.s:sep.'1'
+        let tmp1f2 = tmp1.s:sep.'2'
+        let tmp2f1 = tmp2.s:sep.'1'
+
+        silent exe '!echo 11 >'.shellescape(tmp1f1)
+        silent exe '!echo 12 >'.shellescape(tmp1f2)
+        silent exe '!echo 21 >'.shellescape(tmp2f1)
+
+        let diff_output = system('diff -r --brief '.shellescape(tmp1).' '.shellescape(tmp2))
+        let diff_lines = split(diff_output, "\n")
+
+        let diff_differ = split(diff_lines[0], <SID>EscapeDirForRegex(tmp1f1))
+        let diff_differ = [diff_differ[0]] + split(diff_differ[1], <SID>EscapeDirForRegex(tmp2f1))
+        let diff_only = split(diff_lines[1], <SID>EscapeDirForRegex(tmp1))
+
+        let g:DirDiffTextOnlyIn = diff_only[0]
+        let g:DirDiffTextFiles = diff_differ[0]
+        let g:DirDiffTextAnd = diff_differ[1]
+        let g:DirDiffTextDiffer = diff_differ[2]
+
+        call <SID>Delete(tmp1)
+        call <SID>Delete(tmp2)
+
+        let g:DirDiffDynamicDiffText = 0
+
     endif
 
-	let tmp1 = tempname()
-	let tmp2 = tempname()
-	let tmpdiff = tempname()
-
-    " We need to pad the backslashes in order to make it match
-    let tmp1rx = <SID>EscapeDirForRegex(tmp1)
-    let tmp2rx = <SID>EscapeDirForRegex(tmp2)
-    let tmpdiffrx = <SID>EscapeDirForRegex(tmpdiff)
-
-	silent exe s:DirDiffMakeDirCmd . "\"" . tmp1 . "\""
-	silent exe s:DirDiffMakeDirCmd . "\"" . tmp2 . "\""
-	silent exe "!echo test > \"" . tmp1 . s:sep . "test" . "\""
-	silent exe "!diff -r --brief \"" . tmp1 . "\" \"" . tmp2 . "\" > \"" . tmpdiff . "\""
-
-	" Now get the result of that diff cmd
-	silent exe "split ". tmpdiff
-    "echo "First line: " . getline(1)
-    "echo "tmp1: " . tmp1
-    "echo "tmp1rx: " . tmp1rx
-	let s:DirDiffDiffOnlyLine = substitute( getline(1), tmp1rx . ".*$", "", '') 
-    "echo "DirDiff Only: " . s:DirDiffDiffOnlyLine
-	
-	q
-
-	" Now let's get the Differ string
-    "echo "Getting the diff in GetDiffStrings"
-	
-	silent exe "!echo testdifferent > \"" . tmp2 . s:sep . "test" . "\""
-	silent exe "!diff -r --brief \"" . tmp1 . "\" \"" . tmp2 . "\" > \"" . tmpdiff . "\""
-	
-	silent exe "split ". tmpdiff
-	let s:DirDiffDifferLine = substitute( getline(1), tmp1rx . ".*$", "", '') 
-    " Note that the diff on cygwin may output '/' instead of '\' for the
-    " separator, so we need to accomodate for both cases
-    let andrx = "^.*" . tmp1rx . "[\\\/]test\\(.*\\)" . tmp2rx . "[\\\/]test.*$"
-    let endrx = "^.*" . tmp1rx . "[\\\/]test.*" . tmp2rx . "[\\\/]test\\(.*$\\)"
-    "echo "andrx : " . andrx
-    "echo "endrx : " . endrx
-	let s:DirDiffDifferAndLine = substitute( getline(1), andrx , "\\1", '') 
-    let s:DirDiffDifferEndLine = substitute( getline(1), endrx, "\\1", '') 
-
-	"echo "s:DirDiffDifferLine = " . s:DirDiffDifferLine
-	"echo "s:DirDiffDifferAndLine = " . s:DirDiffDifferAndLine
-	"echo "s:DirDiffDifferEndLine = " . s:DirDiffDifferEndLine
-
-	q
-
-	" Delete tmp files
-    "echo "Deleting tmp files."
-
-	call <SID>Delete(tmp1)
-	call <SID>Delete(tmp2)
-	call <SID>Delete(tmpdiff)
+    let s:DirDiffDiffOnlyLine = g:DirDiffTextOnlyIn
+    let s:DirDiffDifferLine = g:DirDiffTextFiles
+    let s:DirDiffDifferAndLine = g:DirDiffTextAnd
+    let s:DirDiffDifferEndLine = g:DirDiffTextDiffer
 
 endfunction
