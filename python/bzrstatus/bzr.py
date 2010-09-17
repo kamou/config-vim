@@ -22,20 +22,15 @@ from bzrstatus.ui import UI
 
 from StringIO import StringIO
 
-from bzrlib import commands, trace, ui, osutils, plugin, version_info
+from bzrlib import commands, trace, ui, osutils, version_info
 from bzrlib.errors import (BzrError, NoWorkingTree)
 from bzrlib.workingtree import WorkingTree
-import bzrlib
 
 import traceback
 import shlex
 import vim
 import sys
 import os
-
-
-commands._register_builtin_commands()
-plugin.load_plugins()
 
 
 vim_stdout = sys.stdout

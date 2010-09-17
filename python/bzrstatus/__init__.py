@@ -16,7 +16,8 @@
 #
 
 
-from bzrlib import commands, osutils, plugin, trace
+from bzrlib import commands, osutils, trace, ui
+from bzrlib import api_minimum_version
 
 import vim
 import sys
@@ -27,16 +28,29 @@ def getchar():
     sys.stdout.flush()
     return vim.eval('nr2char(getchar())')
 
-def raw_input(prompt=''):
-    sys.stdout.flush()
-    return vim.eval('input(\'' + prompt + '\')')
-
 if '1' == vim.eval("has('gui_running')"):
     os.environ['BZR_EDITOR'] = 'gvim -f'
 
+print 'bzrstatus/__init__.py'
+
+if api_minimum_version >= (2, 2, 0):
+
+    from bzrlib import library_state
+
+    class FakeUI:
+        def __enter__(self):
+            return self
+
+    tracer = trace.DefaultConfig()
+    state = library_state.BzrLibraryState(ui=FakeUI(), trace=tracer)
+    state.__enter__()
+
+    commands._register_builtin_commands()
+
+else:
+
+    commands.install_bzr_command_hooks()
+
 osutils.getchar = getchar
-trace.enable_default_logging()
-commands.install_bzr_command_hooks()
-plugin.load_plugins()
 
 
