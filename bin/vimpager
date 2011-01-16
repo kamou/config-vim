@@ -2,6 +2,8 @@
 
 require 'tempfile'
 
+$VERSION = '0.8.0'
+
 $DEBUG = false
 
 squeeze_blank_lines = false
@@ -18,6 +20,9 @@ ARGV.collect! do |arg|
   when '-F'
     quit_if_one_screen = true
     nil
+  when '--version'
+    puts "vimpager #{$VERSION}"
+    exit 0
   when '--man'
     man_page = true
     nil
