@@ -54,6 +54,7 @@ class Bzr:
 
         vim.command("let t:bzr_id='" + str(id(self)) + "'")
         bzr_instances[id(self)] = self
+        vim.command("let t:bzr_num=" + str(len(bzr_instances)))
 
     def complete(self, cmdline, cursorpos):
 
@@ -153,10 +154,9 @@ class Bzr:
             self.update_file()
 
     def update_file(self):
-        filename = ''
+        filename = '[BZR' + str(vim.eval('t:bzr_num')) + '] ' + self.root
         if self.tree is not None:
-            filename += '[' + self.tree.branch.nick + '] '
-        filename += self.root
+            filename += ' [' + self.tree.branch.nick + ']'
         vim.command("exe 'file '.fnameescape('" + filename + "')")
 
 

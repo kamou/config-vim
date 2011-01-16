@@ -319,7 +319,7 @@ function! bzrstatus#showdiff()
   if vimdiff || modified || deleted
     setlocal buftype=nofile noswapfile
     let t:bzrstatus_tmpbuf = bufnr('')
-    exe 'file [BZR] '.fnameescape(old_entry)
+    exe 'file [BZR'.t:bzr_num.'] '.fnameescape(old_entry)
     redraw
     if vimdiff
       " Get original version from Bazaar.
