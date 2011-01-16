@@ -464,6 +464,26 @@ end
 " Configure NERD_commenter plugin.
 let g:NERDShutUp = 1
 let g:NERDSpaceDelims = 1
+let g:NERDCreateDefaultMappings = 0
+let g:NERDMappings =
+      \ {
+      \ 'AlignBoth': 'b',
+      \ 'AlignLeft': 'l',
+      \ 'Append'   : 'A',
+      \ 'Comment'  : 'c',
+      \ 'Invert'   : 'i',
+      \ 'Minimal'  : 'm',
+      \ 'Nest'     : 'n',
+      \ 'Sexy'     : 's',
+      \ 'ToEOL'    : '$',
+      \ 'Toggle'   : '<space>',
+      \ 'Uncomment': 'u',
+      \ 'Yank'     : 'y',
+      \ }
+for action in keys(g:NERDMappings)
+  exec 'nmap ,c' . g:NERDMappings[action] . ' <plug>NERDCommenter' . action
+  exec 'vmap ,c' . g:NERDMappings[action] . ' <plug>NERDCommenter' . action
+endfor
 
 " Do not switch tab/window when selecting an already opened buffer with
 " bufexplorer.
