@@ -14,7 +14,7 @@ ScriptID SourceID Filename
 1545 0 :AutoInstall: parenquote.vim
 2164 8341 :AutoInstall: renamec.vim
 974 4316 :AutoInstall: python.vim
-489 9573 :AutoInstall: manpageviewPlugin
+489 14117 :AutoInstall: manpageviewPlugin
 39 8196 :AutoInstall: matchit.vim
 2100 12866 :AutoInstall: textobj/user.vim
 2610 11182 :AutoInstall: textobj/entire.vim
