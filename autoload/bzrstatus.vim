@@ -323,14 +323,14 @@ function! bzrstatus#showdiff()
     redraw
     if vimdiff
       " Get original version from Bazaar.
-      python bzr().run(('cat', vim.eval('old_entry')))
+      python bzr().run(('cat', '-r', vim.eval('t:bzrstatus_revision'), vim.eval('old_entry')))
       if 'dos' == b:bzrstatus_fileformat
         silent! %s/\r$/
         setl ff=dos
       endif
     else
       " Get diff.
-      python bzr().run(('diff', vim.eval('old_entry')))
+      python bzr().run(('diff', '-r', vim.eval('t:bzrstatus_revision'), vim.eval('old_entry')))
       set ft=diff
     endif
     exe 'normal 1Gdd'
@@ -660,7 +660,7 @@ function! bzrstatus#update_buffer(type)
     silent %delete
   endif
 
-  let cmd = ['status', '-S', '-v']
+  let cmd = ['status', '-r', t:bzrstatus_revision, '-S', '-v']
   if !t:bzrstatus_unknowns
     let cmd += ['-V']
   endif
@@ -688,14 +688,45 @@ endfunction
 
 function! bzrstatus#start(...)
 
-  if a:0
-    let path = a:1
-  else
+  let path = 0
+  let revision = '-1'
+
+  let n = 0
+  while 1
+    if n >= len(a:000)
+      break
+    end
+    let a = a:000[n]
+    let n += 1
+    if a =~ "^-"
+      " option.
+      if a =~ "^-[r]"
+        if 'r' == a[1]
+          let revision = a:000[n]
+          let n += 1
+          continue
+        end
+      end
+      echoerr 'invalid option: '.a
+      return
+    else
+      " argument.
+      if 0 == path
+        let path = a
+        continue
+      end
+      echoerr 'invalid argument: '.a
+      return
+    end
+  endwhile
+
+  if 0 == path
     let path = '.'
   end
 
   let t:bzrstatus_unknowns = g:bzrstatus_unknowns
   let t:bzrstatus_vimdiff = g:bzrstatus_vimdiff
+  let t:bzrstatus_revision = revision
   let t:bzrstatus_selection = 0
   let t:bzrstatus_tagged = {}
   let t:bzrstatus_mode = "l"
