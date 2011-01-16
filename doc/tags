@@ -255,9 +255,11 @@ dret	Decho.txt	/*dret*
 expand-command	yasnippets.txt	/*expand-command*
 file-skeletons	yasnippets.txt	/*file-skeletons*
 g%	matchit.txt	/*g%*
+g:bufExplorerChgWin	bufexplorer.txt	/*g:bufExplorerChgWin*
 g:bufExplorerDefaultHelp	bufexplorer.txt	/*g:bufExplorerDefaultHelp*
 g:bufExplorerDetailedHelp	bufexplorer.txt	/*g:bufExplorerDetailedHelp*
 g:bufExplorerFindActive	bufexplorer.txt	/*g:bufExplorerFindActive*
+g:bufExplorerFuncRef	bufexplorer.txt	/*g:bufExplorerFuncRef*
 g:bufExplorerReverseSort	bufexplorer.txt	/*g:bufExplorerReverseSort*
 g:bufExplorerShowDirectories	bufexplorer.txt	/*g:bufExplorerShowDirectories*
 g:bufExplorerShowRelativePath	bufexplorer.txt	/*g:bufExplorerShowRelativePath*
