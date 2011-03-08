@@ -31,8 +31,6 @@ def getchar():
 if '1' == vim.eval("has('gui_running')"):
     os.environ['BZR_EDITOR'] = 'gvim -f'
 
-print 'bzrstatus/__init__.py'
-
 if api_minimum_version >= (2, 2, 0):
 
     from bzrlib import library_state
