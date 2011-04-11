@@ -495,6 +495,7 @@ vimball-extract	pi_vimball.txt	/*vimball-extract*
 vimball-history	pi_vimball.txt	/*vimball-history*
 vimball-intro	pi_vimball.txt	/*vimball-intro*
 vimball-manual	pi_vimball.txt	/*vimball-manual*
+vimball-windows	pi_vimball.txt	/*vimball-windows*
 yasnippets	yasnippets.txt	/*yasnippets*
 yasnippets-file	yasnippets.txt	/*yasnippets-file*
 yasnippets-jump	yasnippets.txt	/*yasnippets-jump*
