@@ -730,7 +730,6 @@ if has('python')
 python <<EOF
 
 from sys import path
-from os import environ
 import vim
 
 path.insert(0, vim.eval('$USERVIM') + '/python')
