@@ -740,4 +740,18 @@ endif
 
 " }}}
 
+" Ruby. {{{
+
+if has('ruby')
+
+ruby <<EOF
+
+$:.insert(0, VIM::evaluate('$USERVIM') + '/ruby')
+
+EOF
+
+endif
+
+" }}}
+
 " vim: ft=vim sw=2 foldmethod=marker
