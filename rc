@@ -192,8 +192,12 @@ endif
 set backspace=2
 
 " Backward delete word and delete word in insert and command mode.
-imap <C-BS> <C-w>
 cmap <C-BS> <C-w>
+imap <C-BS> <C-w>
+nmap <C-BS> db
+cmap <C-Del> <C-Right><C-BS>
+imap <C-Del> <C-o>de
+nmap <C-Del> de
 
 " Make backspace backward delete a char even in normal mode.
 map <BS> X
