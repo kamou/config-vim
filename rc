@@ -166,6 +166,61 @@ if !has('gui_running')
   let keys = $USERVIM.'/keys/'.$TERM
   if filereadable(keys)
     execute 'source ' . keys
+    if exists('g:term_keys')
+      let s:term_keys =
+            \ {
+            \ 'C-BS'       : 'cin',
+            \ 'C-Del'      : 'cin',
+            \ 'C-End'      : 'ci ',
+            \ 'C-Home'     : 'ci ',
+            \ 'C-Left'     : 'ci ',
+            \ 'C-PageDown' : 'ci ',
+            \ 'C-PageUp'   : 'ci ',
+            \ 'C-Right'    : 'ci ',
+            \ 'F1'         : 'n',
+            \ 'F2'         : 'n',
+            \ 'F3'         : 'n',
+            \ 'F4'         : 'n',
+            \ 'F5'         : 'n',
+            \ 'F6'         : 'n',
+            \ 'F7'         : 'n',
+            \ 'F8'         : 'n',
+            \ 'F9'         : 'n',
+            \ 'F10'        : 'n',
+            \ 'F11'        : 'n',
+            \ 'F12'        : 'n',
+            \ 'M-0'        : 'n',
+            \ 'M-1'        : 'n',
+            \ 'M-2'        : 'n',
+            \ 'M-3'        : 'n',
+            \ 'M-4'        : 'n',
+            \ 'M-5'        : 'n',
+            \ 'M-6'        : 'n',
+            \ 'M-7'        : 'n',
+            \ 'M-8'        : 'n',
+            \ 'M-9'        : 'n',
+            \ 'M-Down'     : 'n',
+            \ 'M-Left'     : 'n',
+            \ 'M-Right'    : 'n',
+            \ 'M-Up'       : 'n',
+            \ 'S-Down'     : 'i ',
+            \ 'S-Left'     : 'i ',
+            \ 'S-Right'    : 'i ',
+            \ 'S-Up'       : 'i ',
+            \ }
+      for key_name in keys(s:term_keys)
+        if !has_key(g:term_keys, key_name)
+          continue
+        endif
+        let key_code = g:term_keys[key_name]
+        let key_modes = s:term_keys[key_name]
+        for n in range(strlen(key_modes))
+          let mode = key_modes[n]
+          let map = mode.'map '.key_code.' <'.key_name.'>'
+          exe map
+        endfor
+      endfor
+    endif
   endif
 
   " Fast escape key.
