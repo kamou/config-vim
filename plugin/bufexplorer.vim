@@ -129,12 +129,17 @@ function! s:BESetup()
   augroup END
 endfunction
 
+" BEGrowTabSpace {{{1
+function! s:BEGrowTabSpace()
+  while empty(s:tabSpace) || len(s:tabSpace) < (tabpagenr() + 1)
+    call add(s:tabSpace, [-1])
+  endwhile
+endfunction
+
 " BETabEnter {{{1
 function! s:BETabEnter()
   " Make s:tabSpace 1-based
-  if empty(s:tabSpace) || len(s:tabSpace) < (tabpagenr() + 1)
-    call add(s:tabSpace, [-1])
-  endif
+  call s:BEGrowTabSpace()
 endfunction
 
 " BEAddBuffer {{{1
@@ -172,6 +177,8 @@ function! s:BEActivateBuffer()
   if s:BEIgnoreBuffer(b) == 1
     return
   endif
+
+  call s:BEGrowTabSpace()
 
   if !empty(l) && l[0] == '-1'
     " The first time we add a tab Vim uses the current 
