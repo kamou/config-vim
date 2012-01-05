@@ -126,12 +126,42 @@ class UI(ui.UIFactory):
         return ret
 
     def get_boolean(self, prompt):
+        choice = self.choose(prompt + '?', '&yes\n&no', default=None)
+        return 0 == choice
+
+    def choose(self, msg, choices, default=None):
         self.output.flush()
-        ret = int(vim.eval('confirm(\'' + escape(prompt) + '\', "&Yes\n&No", 2)'))
-        if 1 != ret:
-            ret = 0
-        self.output.write(prompt + '? ' + ['no', 'yes'][ret] + '\n')
-        return 1 == ret
+        shortcuts = ''
+        help_list = []
+        name_list = []
+        for c in choices.split('\n'):
+            shortcut = c.find('&')
+            if -1 != shortcut and (shortcut + 1) < len(c):
+                help = c[:shortcut]
+                help += '[' + c[shortcut + 1] + ']'
+                help += c[(shortcut + 2):]
+                shortcut = c[shortcut + 1]
+            else:
+                help = c.strip('&')
+                shortcut = c[0]
+            shortcuts += shortcut.lower()
+            name = c.strip('&').lower()
+            help_list.append(help)
+            name_list.append(name)
+        if default is None:
+            default = 0
+        else:
+            default = default + 1
+        ret = int(vim.eval('confirm(\'' + escape(msg) + '\', \'' +
+                           escape(choices) + '\',' +
+                           str(default) + ')'))
+        if 0 == ret:
+            answer = None
+        else:
+            answer = ret - 1
+        help = ', '.join(help_list)
+        self.output.write('%s (%s): %s\n' % (msg, help, name_list[answer]))
+        return answer
 
     def prompt(self, prompt, **kwargs):
         self.output.flush()
