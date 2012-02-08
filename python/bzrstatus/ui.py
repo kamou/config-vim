@@ -131,9 +131,10 @@ class UI(ui.UIFactory):
 
     def choose(self, msg, choices, default=None):
         self.output.flush()
-        shortcuts = ''
+        shortcuts = {}
         help_list = []
         name_list = []
+        index = 0
         for c in choices.split('\n'):
             shortcut = c.find('&')
             if -1 != shortcut and (shortcut + 1) < len(c):
@@ -144,24 +145,41 @@ class UI(ui.UIFactory):
             else:
                 help = c.strip('&')
                 shortcut = c[0]
-            shortcuts += shortcut.lower()
+            shortcuts[shortcut.lower()] = index
             name = c.strip('&').lower()
             help_list.append(help)
             name_list.append(name)
-        if default is None:
-            default = 0
-        else:
-            default = default + 1
-        ret = int(vim.eval('confirm(\'' + escape(msg) + '\', \'' +
-                           escape(choices) + '\',' +
-                           str(default) + ')'))
-        if 0 == ret:
-            answer = None
-        else:
-            answer = ret - 1
+            index += 1
+        if default is not None:
+            shortcuts['\r'] = default
+
+        scroll_keys = {}
+        for key, scroll in [
+            ('Up', '<C-y>'),
+            ('Down', '<C-e>'),
+            ('PageUp', '<C-u>'),
+            ('PageDown', '<C-d>')
+        ]:
+            scroll_keys[vim.eval('strtrans("\<%s>")' % key)] = scroll
+
         help = ', '.join(help_list)
-        self.output.write('%s (%s): %s\n' % (msg, help, name_list[answer]))
-        return answer
+        prompt = msg + ' ' + help + ': '
+        show_prompt_cmd = 'echohl MoreMsg | echo \'' + escape(prompt) + '\' | echohl None'
+
+        vim.command(show_prompt_cmd)
+        while True:
+            key = vim.eval('strtrans(getchar())')
+            scroll = scroll_keys.get(key, None)
+            if scroll is not None:
+                vim.command('exe "normal \%s" | redraw' % scroll)
+                vim.command(show_prompt_cmd)
+                continue
+            if key[0] in "0123456789":
+                key = chr(int(key))
+            answer = shortcuts.get(key.lower(), None)
+            if answer is not None:
+                self.output.write('%s (%s): %s\n' % (msg, help, name_list[answer]))
+                return answer
 
     def prompt(self, prompt, **kwargs):
         self.output.flush()
