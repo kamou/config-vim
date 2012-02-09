@@ -791,7 +791,7 @@ python <<EOF
 from sys import path
 import vim
 
-path.insert(0, vim.eval('$USERVIM') + '/python')
+path.insert(0, vim.eval('$USERVIM') + '/lib/python')
 
 EOF
 
