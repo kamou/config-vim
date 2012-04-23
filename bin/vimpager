@@ -144,5 +144,5 @@ system(*cmd)
 
 stdin_file.unlink if edit_stdin
 
-exit $?
+exit $?.to_i >> 8
 
