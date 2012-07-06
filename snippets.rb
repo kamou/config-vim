@@ -26,7 +26,8 @@ def load_skeleton_snippets(directory, *filetypes)
         args << skel
 
         defsksnippet(*args)
-      }
+
+      } if File.directory?(directory)
 
     ensure
 
@@ -42,5 +43,10 @@ load_skeleton_snippets('general', :all)
 
 Dir.glob(File.join(ENV['USERVIM'], 'snippets', '*.rb')) { |entry|
 
-  load(entry)
+  begin
+    load(entry)
+  rescue
+    puts "error loading: #{entry}: #{$!} [#{$!.class}]"
+    puts $@
+  end
 }
