@@ -37,4 +37,11 @@ cmap <S-Insert> <MiddleMouse>
 imap <S-Insert> <MiddleMouse>
 nmap <S-Insert> <MiddleMouse>
 
+" Support for SunPaste key.
+if has('bpierre')
+  cmap <t_FS> <MiddleMouse>
+  imap <t_FS> <MiddleMouse>
+  nmap <t_FS> <MiddleMouse>
+endif
+
 " vim: ft=vim sw=2 foldmethod=marker
