@@ -263,13 +263,16 @@ g:bufExplorerFindActive	bufexplorer.txt	/*g:bufExplorerFindActive*
 g:bufExplorerFuncRef	bufexplorer.txt	/*g:bufExplorerFuncRef*
 g:bufExplorerReverseSort	bufexplorer.txt	/*g:bufExplorerReverseSort*
 g:bufExplorerShowDirectories	bufexplorer.txt	/*g:bufExplorerShowDirectories*
+g:bufExplorerShowNoName	bufexplorer.txt	/*g:bufExplorerShowNoName*
 g:bufExplorerShowRelativePath	bufexplorer.txt	/*g:bufExplorerShowRelativePath*
 g:bufExplorerShowTabBuffer	bufexplorer.txt	/*g:bufExplorerShowTabBuffer*
 g:bufExplorerShowUnlisted	bufexplorer.txt	/*g:bufExplorerShowUnlisted*
 g:bufExplorerSortBy	bufexplorer.txt	/*g:bufExplorerSortBy*
 g:bufExplorerSplitBelow	bufexplorer.txt	/*g:bufExplorerSplitBelow*
+g:bufExplorerSplitHorzSize	bufexplorer.txt	/*g:bufExplorerSplitHorzSize*
 g:bufExplorerSplitOutPathName	bufexplorer.txt	/*g:bufExplorerSplitOutPathName*
 g:bufExplorerSplitRight	bufexplorer.txt	/*g:bufExplorerSplitRight*
+g:bufExplorerSplitVertSize	bufexplorer.txt	/*g:bufExplorerSplitVertSize*
 g:decho_bufenter	Decho.txt	/*g:decho_bufenter*
 g:decho_bufname	Decho.txt	/*g:decho_bufname*
 g:decho_hide	Decho.txt	/*g:decho_hide*
