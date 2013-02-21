@@ -10,10 +10,14 @@ squeeze_blank_lines = false
 quit_if_one_screen = false
 edit_stdin = false
 man_page = false
+gui = false
 
 ARGV.collect! do |arg|
 
   case arg
+  when '-g'
+    gui = true
+    nil
   when '-s'
     squeeze_blank_lines = true
     nil
@@ -79,6 +83,7 @@ end
 
 cmd = %w{ view -u }
 cmd << VIMPAGER_RC
+cmd << '-g' if gui
 
 if man_page
   cmd << '-c'
