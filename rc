@@ -347,6 +347,7 @@ nmap <unique> <Leader>tU :call CtagsUpdate()<CR>
 
 " Ctags list plugin config.
 let Tlist_Enable_Fold_Column = 0
+let Tlist_Inc_Winwidth = 0
 let Tlist_Sort_Type = 'name'
 let Tlist_Show_One_File = 1
 let Tlist_Show_Menu = 0

@@ -149,6 +149,7 @@ NERDComYankComment	NERD_commenter.txt	/*NERDComYankComment*
 NERDCommenter	NERD_commenter.txt	/*NERDCommenter*
 NERDCommenterContents	NERD_commenter.txt	/*NERDCommenterContents*
 NERD_commenter.txt	NERD_commenter.txt	/*NERD_commenter.txt*
+Tlist_Get_Filenames()	taglist.txt	/*Tlist_Get_Filenames()*
 Tlist_Get_Tag_Prototype_By_Line()	taglist.txt	/*Tlist_Get_Tag_Prototype_By_Line()*
 Tlist_Get_Tagname_By_Line()	taglist.txt	/*Tlist_Get_Tagname_By_Line()*
 Tlist_Set_App()	taglist.txt	/*Tlist_Set_App()*
