@@ -69,7 +69,7 @@ VIMPAGER_RC = ENV.fetch('VIMPAGER_RC', File.join(ENV['HOME'], '.vim', 'rc.pager'
 
 unless File.readable?(VIMPAGER_RC)
 
-  cmd = %w{ less }
+  cmd = %w{ /usr/bin/less }
   cmd << '-s' if squeeze_blank_lines
   cmd << '-F' if quit_if_one_screen
   cmd.concat(ARGV)
