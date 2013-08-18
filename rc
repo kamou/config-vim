@@ -388,8 +388,8 @@ let g:DirDiffDynamicDiffText = 1
 
 function VimDirDiff()
 
-  let dir1 = argv(0)
-  let dir2 = argv(1)
+  let dir1 = fnameescape(argv(0))
+  let dir2 = fnameescape(argv(1))
   silent! exe 'bd '.dir1
   silent! exe 'bd '.dir2
   silent exe 'DirDiff '.dir1.' '.dir2
