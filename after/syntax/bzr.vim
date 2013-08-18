@@ -1,14 +1,9 @@
 
-" Switch to diff highlighting (better for ci --show-diff).
-unlet b:current_syntax
-runtime syntax/diff.vim
-
-" Show trailing whitespaces.
-set list
-
-" Check for spelling errors.
-set spell
-
-" Don't limit textwidth.
-set tw=0
+" We only want spelling on the commit message part.
+if has("spell")
+  syn spell toplevel
+endif
+syn match bzrFirstLine "\%^[^#].*"  nextgroup=bzrRegion skipnl
+syn match bzrSummary   "^.\{0,50\}" contained containedin=bzrFirstLine nextgroup=bzrOverflow contains=@Spell
+syn match bzrOverflow  ".*" contained contains=@Spell
 
