@@ -2,7 +2,9 @@ __FILE__
 __FUNCTION__
 __LINE__
 __PRETTY_FUNCTION__
+__VA_ARGS__
 __attribute__
+__func__
 asm
 auto
 break
