@@ -27,9 +27,15 @@ Goals:
 ==============================================================================
 3. Installation						*bpierre-config-install*
 
- * fetch with bzr on launchpad: bzr branch lp:bpierre-config-vim .vim
- * link/copy bootstrap file: ln -s .vim/vimrc .vimrc
- * edit .vim/user
+ * fetch a copy of the code from GitHub:
+
+  git clone http://github.com/benoit-pierre/config-vim.git ~/.vim
+
+ * link/copy bootstrap file:
+ 
+ ln -s ~/.vim/vimrc ~/.vimrc
+
+ * edit ~/.vim/user
  
  On Windows: you can install Cygwin (with ctags and mlcscope), and make sure
  $CYGPATH is correctly set in ~/.vimrc. You can also install Ruby, for those
