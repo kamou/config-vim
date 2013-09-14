@@ -404,6 +404,8 @@ endif
 
 " }}}
 
+" }}}
+
 " Custom text-objects. {{{
 
 for mapping in [ ['=', 'indent'], ['%', 'entire'] ]
