@@ -30,35 +30,49 @@ gui = false
 
 ARGV.collect! do |arg|
 
-  case arg
-  when '-g'
+  next arg unless '-' == arg[0]
+
+  opts = arg[1..-1]
+  if '-' == opts[0]
+    # --: stop options parsing.
+    break if 1 == opts.size
+    # Long option.
+    opts = [ opts ]
+  else
+    # -: stdin.
+    next '-' if 0 == opts.size
+    # Short option(s).
+    opts = opts.chars
+  end
+
+  opts.collect! do |o| case o
+  when 'g'
     gui = true
     nil
-  when '-s'
+  when 's'
     squeeze_blank_lines = true
     nil
-  when '-X'
+  when 'X'
     no_alternate_screen = true
     nil
-  when '-F'
+  when 'F'
     quit_if_one_screen = true
     nil
-  when '--version'
+  when '-version'
     puts "vimpager #{$VERSION}"
     exit 0
-  when '--man'
+  when '-man'
     man_page = true
     nil
-  when '--'
-    break
-  when /^-./
-    raise "unsupported option #{arg}"
   else
-    arg
-  end
+    raise "unsupported option -#{o}"
+  end end
+
+  opts
 
 end
 
+ARGV.flatten!
 ARGV.compact!
 ARGV.shift if '--' == ARGV[0]
 
