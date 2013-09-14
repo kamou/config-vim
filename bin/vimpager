@@ -6,6 +6,22 @@ $VERSION = '0.8.0'
 
 $DEBUG = false
 
+if $DEBUG
+
+  require 'pp'
+
+  def dbg(hdr, obj)
+    STDERR.print '%s: ' % hdr
+    PP.pp(obj, out=STDERR)
+  end
+
+else
+
+  def dbg(hdr, obj)
+  end
+
+end
+
 squeeze_blank_lines = false
 no_alternate_screen = false
 quit_if_one_screen = false
@@ -46,6 +62,8 @@ end
 ARGV.compact!
 ARGV.shift if '--' == ARGV[0]
 
+dbg(:ARGV, ARGV)
+
 unless STDOUT.isatty
 
   previous_line_blank = false
@@ -76,7 +94,7 @@ unless File.readable?(VIMPAGER_RC)
   cmd << '-F' if quit_if_one_screen
   cmd.concat(ARGV)
 
-  STDERR.puts cmd if $DEBUG
+  dbg(:cmd, cmd)
 
   exec(*cmd)
   exit 255
@@ -104,6 +122,8 @@ vless_opt << '-X' if no_alternate_screen
 
 ENV['VLESS_OPT'] = vless_opt.join(' ') unless vless_opt.empty?
 
+dbg(:VLESS_OPT, ENV['VLESS_OPT'])
+
 if ARGV.empty?
 
   if STDIN.isatty
@@ -129,8 +149,6 @@ ARGV.collect! do |arg|
 
     child_cmd = %w{ col -x -b }
 
-    STDERR.write "#{child_cmd} | " if $DEBUG
-
     exec(*child_cmd)
     exit 255
   }
@@ -147,7 +165,7 @@ end
 cmd << '--'
 cmd.concat(ARGV)
 
-STDERR.puts cmd if $DEBUG
+dbg(:cmd, cmd)
 
 system(*cmd)
 
