@@ -74,6 +74,7 @@ end
 
 ARGV.flatten!
 ARGV.compact!
+ARGV.uniq!
 ARGV.shift if '--' == ARGV[0]
 
 dbg(:ARGV, ARGV)
