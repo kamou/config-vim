@@ -7,6 +7,7 @@ $VERSION = '0.8.0'
 $DEBUG = false
 
 squeeze_blank_lines = false
+no_alternate_screen = false
 quit_if_one_screen = false
 edit_stdin = false
 man_page = false
@@ -20,6 +21,9 @@ ARGV.collect! do |arg|
     nil
   when '-s'
     squeeze_blank_lines = true
+    nil
+  when '-X'
+    no_alternate_screen = true
     nil
   when '-F'
     quit_if_one_screen = true
@@ -71,6 +75,7 @@ unless File.readable?(VIMPAGER_RC)
 
   cmd = %w{ /usr/bin/less }
   cmd << '-s' if squeeze_blank_lines
+  cmd << '-X' if no_alternate_screen
   cmd << '-F' if quit_if_one_screen
   cmd.concat(ARGV)
 
@@ -91,9 +96,11 @@ if man_page
   cmd << 'set ft=man'
 end
 
-if quit_if_one_screen
-  ENV['VLESS_OPT'] = '-F'
-end
+vless_opt = []
+vless_opt << '-F' if quit_if_one_screen
+vless_opt << '-X' if no_alternate_screen
+
+ENV['VLESS_OPT'] = vless_opt.join(' ') unless vless_opt.empty?
 
 args = ARGV
 
