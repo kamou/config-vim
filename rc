@@ -557,6 +557,9 @@ if !has('ruby')
   let loaded_rb_align = 1
 end
 
+" VCSCommand configuration.
+let g:VCSCommandVCSTypePreference='git'
+
 " }}}
 
 " Buffer navigation. {{{
