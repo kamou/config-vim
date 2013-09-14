@@ -577,6 +577,9 @@ nmap <silent> <M-8> :brewind <bar> bn 7<CR>
 nmap <silent> <M-9> :brewind <bar> bn 8<CR>
 nmap <silent> <M-0> :blast<CR>
 
+" Quick navigation to the current buffer directory.
+nmap <silent> ,d :e %:h<CR>
+
 " }}}
 
 " For iterating on errors.
