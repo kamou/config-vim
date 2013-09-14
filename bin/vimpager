@@ -176,6 +176,15 @@ ARGV.collect! do |arg|
 
 end
 
+if stdin_file
+  stdin_cmd = 'setl noro buftype=nofile'
+  if stdin_file.path == ARGV[0]
+    cmd << "+#{stdin_cmd}"
+  else
+    cmd << "+autocmd BufRead #{stdin_file.path} #{stdin_cmd}"
+  end
+end
+
 cmd << '--'
 cmd.concat(ARGV)
 
