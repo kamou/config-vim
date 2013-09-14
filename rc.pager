@@ -20,7 +20,7 @@ map <space> <C-f><C-g>
 set hlsearch
 set readonly
 set nonumber
-set foldcolumn=0
+set nofoldenable foldcolumn=0
 
 " Options parsing. {{{
 
