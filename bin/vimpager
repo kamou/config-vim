@@ -82,7 +82,7 @@ unless STDOUT.isatty
 
   previous_line_blank = false
 
-  while STDIN.gets
+  while gets
 
     if squeeze_blank_lines and $_ =~ /^\s*$/
       print $_ unless previous_line_blank
