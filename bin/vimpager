@@ -22,9 +22,23 @@ else
 
 end
 
+def cat(io, squeeze_blank_lines=false)
+  previous_line_blank = false
+  while line = io.gets
+    if squeeze_blank_lines and line =~ /^\s*$/
+      print line unless previous_line_blank
+      previous_line_blank = true
+    else
+      previous_line_blank = false
+      print line
+    end
+  end
+end
+
 squeeze_blank_lines = false
 no_alternate_screen = false
 quit_if_one_screen = false
+pipe_edit = false
 man_page = false
 gui = false
 
@@ -64,6 +78,9 @@ ARGV.collect! do |arg|
   when '-man'
     man_page = true
     nil
+  when '-pipe-edit'
+    pipe_edit = true
+    nil
   else
     raise "unsupported option -#{o}"
   end end
@@ -79,24 +96,9 @@ ARGV.shift if '--' == ARGV[0]
 
 dbg(:ARGV, ARGV)
 
-unless STDOUT.isatty
-
-  previous_line_blank = false
-
-  while gets
-
-    if squeeze_blank_lines and $_ =~ /^\s*$/
-      print $_ unless previous_line_blank
-      previous_line_blank = true
-    else
-      print $_
-      previous_line_blank = false
-    end
-
-  end
-
+unless pipe_edit or STDOUT.isatty
+  cat(Kernel, squeeze_blank_lines)
   exit 0
-
 end
 
 VIMPAGER_RC = ENV.fetch('VIMPAGER_RC', File.join(ENV['HOME'], '.vim', 'rc.pager'))
@@ -170,20 +172,21 @@ ARGV.collect! do |arg|
 
   Process.waitpid(pid)
 
-  STDIN.reopen('/dev/tty')
-
   stdin_file.close
   stdin_file.path
 
 end
 
 if stdin_file
-  stdin_cmd = 'setl noro buftype=nofile'
+  stdin_cmd = 'setl noro'
+  stdin_cmd << ' buftype=nofile' unless pipe_edit
   if stdin_file.path == ARGV[0]
     cmd << "+#{stdin_cmd}"
   else
     cmd << "+autocmd BufRead #{stdin_file.path} #{stdin_cmd}"
   end
+else
+  pipe_edit = false
 end
 
 cmd << '--'
@@ -191,7 +194,26 @@ cmd.concat(ARGV)
 
 dbg(:cmd, cmd)
 
-system(*cmd)
+pid = fork {
+
+  unless gui
+    STDIN.reopen('/dev/tty') unless STDIN.isatty
+    STDOUT.reopen('/dev/tty') unless STDOUT.isatty
+  end
+
+  exec(*cmd)
+  exit 255
+
+}
+
+Process.waitpid(pid)
+
+dbg(:pipe_edit, pipe_edit)
+
+if 0 == $? and pipe_edit
+  stdin_file.open
+  cat(stdin_file, squeeze_blank_lines)
+end
 
 stdin_file.unlink if stdin_file
 
