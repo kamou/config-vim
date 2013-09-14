@@ -817,4 +817,4 @@ endif
 
 " }}}
 
-" vim: ft=vim sw=2 foldmethod=marker
+" vim: ft=vim sw=2 foldmethod=marker foldlevel=0

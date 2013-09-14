@@ -44,4 +44,4 @@ if has('bpierre')
   nmap <t_FS> <MiddleMouse>
 endif
 
-" vim: ft=vim sw=2 foldmethod=marker
+" vim: ft=vim sw=2 foldmethod=marker foldlevel=0
