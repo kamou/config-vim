@@ -86,6 +86,11 @@ unless File.readable?(VIMPAGER_RC)
 
 end
 
+if gui
+  no_alternate_screen = false
+  quit_if_one_screen = false
+end
+
 cmd = %w{ view -u }
 cmd << VIMPAGER_RC
 cmd << '-g' if gui
