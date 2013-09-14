@@ -44,6 +44,7 @@ ARGV.collect! do |arg|
 end
 
 ARGV.compact!
+ARGV.shift if '--' == ARGV[0]
 
 unless STDOUT.isatty
 
@@ -143,6 +144,7 @@ ARGV.collect! do |arg|
 
 end
 
+cmd << '--'
 cmd.concat(ARGV)
 
 STDERR.puts cmd if $DEBUG
