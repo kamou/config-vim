@@ -147,7 +147,8 @@ set statusline=
 " }}}
 
 " Need -w to correctly parse compilation errors when switching directories.
-set makeprg=make\ -w
+" Multiple jobs will confuse VIM, so disable those too.
+set makeprg=make\ -w\ -j1
 
 " Put swap files in $USERVIM/swap or ~/tmp
 " (fallback to current dir if not possible).
