@@ -84,6 +84,7 @@ end
 cmd = %w{ view -u }
 cmd << VIMPAGER_RC
 cmd << '-g' if gui
+cmd << '-f' if gui
 
 if man_page
   cmd << '-c'
