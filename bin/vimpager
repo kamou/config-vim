@@ -9,7 +9,6 @@ $DEBUG = false
 squeeze_blank_lines = false
 no_alternate_screen = false
 quit_if_one_screen = false
-edit_stdin = false
 man_page = false
 gui = false
 
@@ -36,10 +35,7 @@ ARGV.collect! do |arg|
     nil
   when '--'
     break
-  when '-'
-    edit_stdin = true
-    '-'
-  when /^-/
+  when /^-./
     raise "unsupported option #{arg}"
   else
     arg
@@ -107,60 +103,53 @@ vless_opt << '-X' if no_alternate_screen
 
 ENV['VLESS_OPT'] = vless_opt.join(' ') unless vless_opt.empty?
 
-args = ARGV
-
-if args.empty?
+if ARGV.empty?
 
   if STDIN.isatty
     STDERR.puts 'Missing filename'
     exit 0
   end
 
-  edit_stdin = true
-  args = ['-']
+  ARGV << '-'
 
 end
 
 stdin_file = nil
 
-if edit_stdin
+ARGV.collect! do |arg|
 
-  args.collect! do |arg|
+  next arg unless arg == '-'
 
-    next arg unless arg == '-'
+  stdin_file = Tempfile.open('stdin-')
 
-    stdin_file = Tempfile.open('stdin-')
+  pid = fork {
 
-    pid = fork {
+    STDOUT.reopen(stdin_file)
 
-      STDOUT.reopen(stdin_file)
+    child_cmd = %w{ col -x -b }
 
-      child_cmd = %w{ col -x -b }
+    STDERR.write "#{child_cmd} | " if $DEBUG
 
-      STDERR.write "#{child_cmd} | " if $DEBUG
+    exec(*child_cmd)
+    exit 255
+  }
 
-      exec(*child_cmd)
-      exit 255
-    }
+  Process.waitpid(pid)
 
-    Process.waitpid(pid)
+  STDIN.reopen('/dev/tty')
 
-    STDIN.reopen('/dev/tty')
-
-    stdin_file.close
-    stdin_file.path
-
-  end
+  stdin_file.close
+  stdin_file.path
 
 end
 
-cmd.concat(args)
+cmd.concat(ARGV)
 
 STDERR.puts cmd if $DEBUG
 
 system(*cmd)
 
-stdin_file.unlink if edit_stdin
+stdin_file.unlink if stdin_file
 
 exit $?.to_i >> 8
 
