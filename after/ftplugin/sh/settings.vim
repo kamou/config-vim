@@ -1,5 +1,5 @@
 
-" Correct indent level, tab replaced by 4 spaces.
+" Correct indent level, tab replaced by 2 spaces.
 setlocal expandtab
 setlocal shiftwidth=2
 setlocal softtabstop=2
