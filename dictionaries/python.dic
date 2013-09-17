@@ -50,6 +50,7 @@ XXX
 ZeroDivisionError
 __doc__
 __import__
+__init__
 abs
 and
 apply
@@ -134,6 +135,7 @@ repr
 return
 reversed
 round
+self
 set
 setattr
 skipwhite
