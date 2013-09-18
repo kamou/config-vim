@@ -6,63 +6,99 @@ $VERSION = '0.8.0'
 
 $DEBUG = false
 
+if $DEBUG
+
+  require 'pp'
+
+  def dbg(hdr, obj)
+    STDERR.print '%s: ' % hdr
+    PP.pp(obj, out=STDERR)
+  end
+
+else
+
+  def dbg(hdr, obj)
+  end
+
+end
+
+def cat(io, squeeze_blank_lines=false)
+  previous_line_blank = false
+  while line = io.gets
+    if squeeze_blank_lines and line =~ /^\s*$/
+      print line unless previous_line_blank
+      previous_line_blank = true
+    else
+      previous_line_blank = false
+      print line
+    end
+  end
+end
+
 squeeze_blank_lines = false
+no_alternate_screen = false
 quit_if_one_screen = false
-edit_stdin = false
+pipe_edit = false
 man_page = false
 gui = false
 
 ARGV.collect! do |arg|
 
-  case arg
-  when '-g'
+  next arg unless '-' == arg[0]
+
+  opts = arg[1..-1]
+  if '-' == opts[0]
+    # --: stop options parsing.
+    break if 1 == opts.size
+    # Long option.
+    opts = [ opts ]
+  else
+    # -: stdin.
+    next '-' if 0 == opts.size
+    # Short option(s).
+    opts = opts.chars
+  end
+
+  opts.collect! do |o| case o
+  when 'g'
     gui = true
     nil
-  when '-s'
+  when 's'
     squeeze_blank_lines = true
     nil
-  when '-F'
+  when 'X'
+    no_alternate_screen = true
+    nil
+  when 'F'
     quit_if_one_screen = true
     nil
-  when '--version'
+  when '-version'
     puts "vimpager #{$VERSION}"
     exit 0
-  when '--man'
+  when '-man'
     man_page = true
     nil
-  when '--'
-    break
-  when '-'
-    edit_stdin = true
-    '-'
-  when /^-/
-    raise "unsupported option #{arg}"
+  when '-pipe-edit'
+    pipe_edit = true
+    nil
   else
-    arg
-  end
+    raise "unsupported option -#{o}"
+  end end
+
+  opts
 
 end
 
+ARGV.flatten!
 ARGV.compact!
+ARGV.uniq!
+ARGV.shift if '--' == ARGV[0]
 
-unless STDOUT.isatty
+dbg(:ARGV, ARGV)
 
-  previous_line_blank = false
-
-  while STDIN.gets
-
-    if squeeze_blank_lines and $_ =~ /^\s*$/
-      print $_ unless previous_line_blank
-      previous_line_blank = true
-    else
-      print $_
-      previous_line_blank = false
-    end
-
-  end
-
+unless pipe_edit or STDOUT.isatty
+  cat(Kernel, squeeze_blank_lines)
   exit 0
-
 end
 
 VIMPAGER_RC = ENV.fetch('VIMPAGER_RC', File.join(ENV['HOME'], '.vim', 'rc.pager'))
@@ -71,83 +107,137 @@ unless File.readable?(VIMPAGER_RC)
 
   cmd = %w{ /usr/bin/less }
   cmd << '-s' if squeeze_blank_lines
+  cmd << '-X' if no_alternate_screen
   cmd << '-F' if quit_if_one_screen
   cmd.concat(ARGV)
 
-  STDERR.puts cmd if $DEBUG
+  dbg(:cmd, cmd)
 
   exec(*cmd)
   exit 255
 
 end
 
+if gui
+  no_alternate_screen = false
+  quit_if_one_screen = false
+end
+
 cmd = %w{ view -u }
 cmd << VIMPAGER_RC
 cmd << '-g' if gui
+cmd << '-f' if gui
 
 if man_page
   cmd << '-c'
   cmd << 'set ft=man'
 end
 
-if quit_if_one_screen
-  ENV['VLESS_OPT'] = '-F'
-end
+vless_opt = []
+vless_opt << '-F' if quit_if_one_screen
+vless_opt << '-X' if no_alternate_screen
 
-args = ARGV
+ENV['VLESS_OPT'] = vless_opt.join(' ') unless vless_opt.empty?
 
-if args.empty?
+dbg(:VLESS_OPT, ENV['VLESS_OPT'])
 
-  if STDIN.isatty
-    STDERR.puts 'Missing filename'
-    exit 0
-  end
-
-  edit_stdin = true
-  args = ['-']
-
-end
-
+# Default to adding stdin at the end of the arguments list.
+explicit_stdin = false
+add_stdin = ARGV.size
 stdin_file = nil
 
-if edit_stdin
+# Check for filename (do we need to add stdin?).
+ARGV.each_with_index do |arg, n|
 
-  args.collect! do |arg|
+  if '--' == arg then
+    # End of options/commands, check if we have at least one more argument.
+    add_stdin = nil unless nil == ARGV[n + 1]
+    break
+  end
 
-    next arg unless arg == '-'
+  if '-' == arg then
+    # Stdin marker, will be replaced by temporary file name.
+    explicit_stdin = true
+    ARGV.delete_at(n)
+    add_stdin = n
+    break
+  end
 
-    stdin_file = Tempfile.open('stdin-')
-
-    pid = fork {
-
-      STDOUT.reopen(stdin_file)
-
-      child_cmd = %w{ col -x -b }
-
-      STDERR.write "#{child_cmd} | " if $DEBUG
-
-      exec(*child_cmd)
-      exit 255
-    }
-
-    Process.waitpid(pid)
-
-    STDIN.reopen('/dev/tty')
-
-    stdin_file.close
-    stdin_file.path
-
+  # Check for command or option.
+  unless '+' == arg[0] or '-' == arg[0] then
+    # We've found a filename! No need to add stdin.
+    add_stdin = nil
+    break
   end
 
 end
 
-cmd.concat(args)
+if add_stdin
 
-STDERR.puts cmd if $DEBUG
+  # Don't try to read from a terminal.
+  if STDIN.isatty
+    STDERR.puts explicit_stdin ? 'Input is a terminal' : 'Missing filename'
+    exit 1
+  end
 
-system(*cmd)
+  stdin_file = Tempfile.open('stdin-')
 
-stdin_file.unlink if edit_stdin
+  pid = fork {
+
+    STDOUT.reopen(stdin_file)
+
+    child_cmd = %w{ col -x -b }
+
+    exec(*child_cmd)
+    exit 255
+  }
+
+  Process.waitpid(pid)
+
+  stdin_file.close
+
+  ARGV.insert(add_stdin, stdin_file.path)
+
+  stdin_cmd = 'setl noro'
+  stdin_cmd << ' buftype=nofile' unless pipe_edit
+  if stdin_file.path == ARGV[0]
+    cmd << "+#{stdin_cmd}"
+  else
+    cmd << "+autocmd BufRead #{stdin_file.path} #{stdin_cmd}"
+  end
+
+else
+
+  pipe_edit = false
+
+end
+
+cmd.concat(ARGV)
+
+dbg(:cmd, cmd)
+
+pid = fork {
+
+  unless gui
+    STDIN.reopen('/dev/tty') unless STDIN.isatty
+    STDOUT.reopen('/dev/tty') unless STDOUT.isatty
+  end
+
+  exec(*cmd)
+  exit 255
+
+}
+
+Process.waitpid(pid)
+
+dbg(:pipe_edit, pipe_edit)
+
+if 0 == $? and pipe_edit
+  stdin_file.open
+  cat(stdin_file, squeeze_blank_lines)
+end
+
+stdin_file.unlink if stdin_file
 
 exit $?.to_i >> 8
 

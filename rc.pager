@@ -20,15 +20,19 @@ map <space> <C-f><C-g>
 set hlsearch
 set readonly
 set nonumber
-set foldcolumn=0
+set nofoldenable foldcolumn=0
 
 " Options parsing. {{{
 
 let g:vless_opt_F=0
+let g:vless_opt_X=0
 
 for opt in split($VLESS_OPT)
   if opt ==# '-F'
     let g:vless_opt_F=1
+  endif
+  if opt ==# '-X'
+    let g:vless_opt_X=1
   endif
 endfor
 
@@ -36,23 +40,30 @@ endfor
 
 " Emulate less -F option. {{{
 
-if g:vless_opt_F
+" Automatically exit if the entire file can be displayed.
+"
+" N.B.: only applicable when only one file is edited.
 
-  let g:vless_orig_laststatus=&laststatus
-
-  set laststatus=0
+if g:vless_opt_F && 1 == argc()
 
   function QuitIfWholeBufferVisible()
 
     let blines=line('$')
 
     if blines <= winheight(0) && (blines + 1) <= &lines
+      " Hide ~ after EOF.
+      highlight NonText ctermfg=bg guifg=bg
+      set nocursorcolumn nocursorline nolist
+      set laststatus=0 showtabline=0
       redraw
+      if g:vless_opt_X
+        " Move terminal cursor after the last line.
+        let t_seq='['.(blines + 1).';1H'
+        let &t_ti=&t_ti.t_seq
+        let &t_te=&t_te.t_seq
+      endif
       q
     endif
-
-    let &laststatus=g:vless_orig_laststatus
-    unlet g:vless_orig_laststatus
 
     augroup vless
       autocmd!
@@ -61,11 +72,19 @@ if g:vless_opt_F
   endfunction
 
   augroup vless
-    if 1 == argc()
-      autocmd BufWinEnter * call QuitIfWholeBufferVisible()
-    endif
+    autocmd BufWinEnter * call QuitIfWholeBufferVisible()
   augroup END
 
+endif
+
+" }}}
+
+" Emulate less -X option. {{{
+
+" Don't use terminal alternate screen.
+
+if g:vless_opt_X
+  set t_ti= t_te=
 endif
 
 " }}}
