@@ -141,22 +141,44 @@ ENV['VLESS_OPT'] = vless_opt.join(' ') unless vless_opt.empty?
 
 dbg(:VLESS_OPT, ENV['VLESS_OPT'])
 
-if ARGV.empty?
+# Default to adding stdin at the end of the arguments list.
+explicit_stdin = false
+add_stdin = ARGV.size
+stdin_file = nil
 
-  if STDIN.isatty
-    STDERR.puts 'Missing filename'
-    exit 0
+# Check for filename (do we need to add stdin?).
+ARGV.each_with_index do |arg, n|
+
+  if '--' == arg then
+    # End of options/commands, check if we have at least one more argument.
+    add_stdin = nil unless nil == ARGV[n + 1]
+    break
   end
 
-  ARGV << '-'
+  if '-' == arg then
+    # Stdin marker, will be replaced by temporary file name.
+    explicit_stdin = true
+    ARGV.delete_at(n)
+    add_stdin = n
+    break
+  end
+
+  # Check for command or option.
+  unless '+' == arg[0] or '-' == arg[0] then
+    # We've found a filename! No need to add stdin.
+    add_stdin = nil
+    break
+  end
 
 end
 
-stdin_file = nil
+if add_stdin
 
-ARGV.collect! do |arg|
-
-  next arg unless arg == '-'
+  # Don't try to read from a terminal.
+  if STDIN.isatty
+    STDERR.puts explicit_stdin ? 'Input is a terminal' : 'Missing filename'
+    exit 1
+  end
 
   stdin_file = Tempfile.open('stdin-')
 
@@ -173,11 +195,9 @@ ARGV.collect! do |arg|
   Process.waitpid(pid)
 
   stdin_file.close
-  stdin_file.path
 
-end
+  ARGV.insert(add_stdin, stdin_file.path)
 
-if stdin_file
   stdin_cmd = 'setl noro'
   stdin_cmd << ' buftype=nofile' unless pipe_edit
   if stdin_file.path == ARGV[0]
@@ -185,11 +205,13 @@ if stdin_file
   else
     cmd << "+autocmd BufRead #{stdin_file.path} #{stdin_cmd}"
   end
+
 else
+
   pipe_edit = false
+
 end
 
-cmd << '--'
 cmd.concat(ARGV)
 
 dbg(:cmd, cmd)
