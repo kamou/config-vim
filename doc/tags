@@ -209,6 +209,7 @@ bpierre-config-plugins	bpierre-config.txt	/*bpierre-config-plugins*
 bpierre-config.txt	bpierre-config.txt	/*bpierre-config.txt*
 bufexplorer	bufexplorer.txt	/*bufexplorer*
 bufexplorer-changelog	bufexplorer.txt	/*bufexplorer-changelog*
+bufexplorer-copyright	bufexplorer.txt	/*bufexplorer-copyright*
 bufexplorer-credits	bufexplorer.txt	/*bufexplorer-credits*
 bufexplorer-customization	bufexplorer.txt	/*bufexplorer-customization*
 bufexplorer-installation	bufexplorer.txt	/*bufexplorer-installation*
