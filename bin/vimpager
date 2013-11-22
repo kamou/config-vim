@@ -59,37 +59,30 @@ ARGV.collect! do |arg|
     opts = opts.chars
   end
 
-  opts.collect! do |o| case o
+  opts.each do |o| case o
   when 'g'
     gui = true
-    nil
   when 's'
     squeeze_blank_lines = true
-    nil
   when 'X'
     no_alternate_screen = true
-    nil
   when 'F'
     quit_if_one_screen = true
-    nil
   when '-version'
     puts "vimpager #{$VERSION}"
     exit 0
   when '-man'
     man_page = true
-    nil
   when '-pipe-edit'
     pipe_edit = true
-    nil
   else
     raise "unsupported option -#{o}"
   end end
 
-  opts
+  nil
 
 end
 
-ARGV.flatten!
 ARGV.compact!
 ARGV.uniq!
 ARGV.shift if '--' == ARGV[0]
