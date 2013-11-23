@@ -5,7 +5,11 @@
 
 " }}}
 
-let $USERVIM=$HOME.'/.vim'
+if strlen($XDG_CONFIG_HOME)
+  let $USERVIM=$XDG_CONFIG_HOME.'/vim'
+else
+  let $USERVIM=$HOME.'/.config/vim'
+endif
 
 if has('win32') && !strlen($CYGPATH)
   let $CYGPATH='c:/cygwin'

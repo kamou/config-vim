@@ -94,7 +94,7 @@ unless pipe_edit or STDOUT.isatty
   exit 0
 end
 
-VIMPAGER_RC = ENV.fetch('VIMPAGER_RC', File.join(ENV['HOME'], '.vim', 'rc.pager'))
+VIMPAGER_RC = ENV.fetch('VIMPAGER_RC', '%s/vim/rc.pager' % ENV.fetch('XDG_CONFIG_HOME', File.expand_path('~/.config')))
 
 unless File.readable?(VIMPAGER_RC)
 
