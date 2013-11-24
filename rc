@@ -89,7 +89,7 @@ filetype indent on
 filetype plugin on
 
 " Syntax highlighting.
-syntax on
+syntax enable
 
 " More info during some commands (like visual selection).
 set showcmd
