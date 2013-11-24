@@ -645,6 +645,9 @@ endfunction
 " For deleting current buffer (and closing window when needed).
 map <silent> <F4> :call DeleteBuffer()<CR>
 
+" Use space to scroll one page down.
+map <space> <C-f>
+
 " }}}
 
 " Trailing spaces/tabs, excess columns highlighting. {{{
