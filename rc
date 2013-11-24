@@ -94,6 +94,9 @@ syntax on
 " More info during some commands (like visual selection).
 set showcmd
 
+" Fine-tune how VIM formats comments and long lines.
+set formatoptions+=croql
+
 " Win32 specific config. {{{
 
 if has('win32')
