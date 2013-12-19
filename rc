@@ -269,7 +269,11 @@ map <BS> X
 
 if has('cscope')
 
-  let g:cscopedb = './cscope.out'
+  if strlen($CSCOPE_DB)
+    let g:cscopedb=$CSCOPE_DB
+  else
+    let g:cscopedb='cscope.out'
+  endif
 
   set cscopequickfix=s-,g-,d-,c-,t-,e-,f-,i-
   set cspc=3
@@ -285,22 +289,19 @@ if has('cscope')
     endif
   endif
 
-  " Add any database in current directory.
+  " Automatically add database if it exists.
   if filereadable(g:cscopedb)
     exe 'silent cs add '.g:cscopedb
-    " Add database pointed to by environment.
-  elseif strlen($CSCOPE_DB)
-    silent cs add $CSCOPE_DB
   endif
 
   " Uses cstag (and so cscope if available...).
   set cst
-  " Search the tags database before the scope database...
+  " Search the tags database before the cscope database...
   set csto=1
 
   function CscopeUpdate()
 
-    exe 'silent! cs kill '.g:cscopedb
+    exe 'silent! cs kill '.fnamemodify(g:cscopedb, ':p')
 
     let cmd = '!'.&cscopeprg.' -q -b -f '.g:cscopedb
     let files = 'cscope.files'
