@@ -233,7 +233,9 @@ if !has('gui_running')
   " Colorscheme.
   let g:moria_style = 'black'
   set background=dark
-  colorscheme moria_256
+  if 'linux' != $TERM
+    colorscheme moria_256
+  endif
 
   " Enable mouse support for all modes but command line.
   set mouse=nvi
