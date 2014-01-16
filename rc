@@ -521,6 +521,8 @@ let g:tskelUserEmail = useremail
 " Configure netrw plugin to use wget rather than elinks; this fix the case
 " where VIM will ask and fetch missing dictionaries.
 let g:netrw_http_cmd = 'wget -O'
+" Also disable banner.
+let g:netrw_banner = 0
 
 " Configure yasnippets.
 if has('ruby') && !exists('g:vless')
