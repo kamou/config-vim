@@ -53,8 +53,16 @@ if g:vless_opt_F && 1 == argc()
     if blines <= winheight(0) && (blines + 1) <= &lines
       " Hide ~ after EOF.
       highlight NonText ctermfg=bg guifg=bg
-      set nocursorcolumn nocursorline nolist
+      " If list was set, disable it, and show tabs underlined:
+      " this way, the actual content is not changed.
+      if &list
+        syn match ListTabs /\t\+/ containedin=ALL
+        highlight ListTabs cterm=underline
+        set nolist
+      endif
+      set nocursorcolumn nocursorline
       set laststatus=0 showtabline=0
+
       redraw
       if g:vless_opt_X
         " Move terminal cursor after the last line.
