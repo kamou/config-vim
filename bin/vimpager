@@ -179,7 +179,7 @@ if add_stdin
 
     STDOUT.reopen(stdin_file)
 
-    child_cmd = %w{ col -x -b }
+    child_cmd = %w{ col -b }
 
     exec(*child_cmd)
     exit 255
