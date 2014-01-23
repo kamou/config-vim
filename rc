@@ -376,7 +376,7 @@ map <unique> <silent> <Leader>d<space> :
       \ endif <CR>
 map <unique> <silent> <Leader>dd :
       \ if &diff <Bar>
-      \   set nodiff noscrollbind <Bar>
+      \   set nodiff noscrollbind nocursorbind <Bar>
       \ else <Bar>
       \   diffthis <Bar>
       \ endif <CR>
