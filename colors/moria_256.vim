@@ -117,7 +117,7 @@ if &background == "dark"
 
     hi Comment guibg=bg guifg=#d0d0a0 ctermfg=187 gui=none
     hi Constant guibg=bg guifg=#87df71 ctermfg=113 gui=none
-    hi Error guibg=bg guifg=#ee2c2c ctermfg=9 gui=none
+    hi Error guibg=bg guifg=#ee2c2c ctermfg=9 ctermfg=15 gui=none
     hi Identifier guibg=bg guifg=#7ee0ce ctermfg=116 gui=none
     hi Ignore guibg=bg guifg=bg gui=none
     hi lCursor guibg=#00e700 ctermbg=40 guifg=#000000 ctermfg=0 gui=none
