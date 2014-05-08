@@ -1,6 +1,6 @@
 " textobj-entire - Text objects for entire buffer
-" Version: 0.0.1
-" Copyright (C) 2009 kana <http://whileimautomaton.net/>
+" Version: 0.0.3
+" Copyright (C) 2009-2014 Kana Natsuno <http://whileimautomaton.net/>
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -38,8 +38,8 @@ endif
 call textobj#user#plugin('entire', {
 \      '-': {
 \        '*sfile*': expand('<sfile>:p'),
-\        'select-a': 'a%',  '*select-a-function*': 's:select_a',
-\        'select-i': 'i%',  '*select-i-function*': 's:select_i'
+\        'select-a': 'ae',  '*select-a-function*': 's:select_a',
+\        'select-i': 'ie',  '*select-i-function*': 's:select_i'
 \      }
 \    })
 
@@ -52,21 +52,29 @@ call textobj#user#plugin('entire', {
 
 " Misc.  "{{{1
 function! s:select_a()
-  normal! gg0
+  " To easily back to the last position after a command.
+  " For example: yae<C-o>
+  mark '
+
+  keepjumps normal! gg0
   let start_pos = getpos('.')
 
-  normal! G$
+  keepjumps normal! G$
   let end_pos = getpos('.')
 
   return ['V', start_pos, end_pos]
 endfunction
 
 function! s:select_i()
-  normal! gg0
+  " To easily back to the last position after a command.
+  " For example: yie<C-o>
+  mark '
+
+  keepjumps normal! gg0
   call search('^.', 'cW')
   let start_pos = getpos('.')
 
-  normal! G$
+  keepjumps normal! G$
   call search('^.', 'bcW')
   normal! $
   let end_pos = getpos('.')
