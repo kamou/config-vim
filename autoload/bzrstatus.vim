@@ -152,7 +152,7 @@ function! bzrstatus#clear_tagged()
 
 endfunction
 
-function! bzrstatus:select_line(ln)
+function! bzrstatus#select_line(ln)
 
   if has('signs')
     if has_key(t:bzrstatus_tagged, a:ln)
@@ -283,7 +283,7 @@ function! bzrstatus#showdiff()
 
   call bzrstatus#clean_state(0)
 
-  call bzrstatus:select_line(ln)
+  call bzrstatus#select_line(ln)
 
   if 1 == winnr('$')
     new
