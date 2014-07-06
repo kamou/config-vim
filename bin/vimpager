@@ -116,7 +116,7 @@ if gui
   quit_if_one_screen = false
 end
 
-cmd = %w{ view -u }
+cmd = %w{ vim -R -u }
 cmd << VIMPAGER_RC
 cmd << '-g' if gui
 cmd << '-f' if gui
