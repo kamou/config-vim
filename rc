@@ -630,6 +630,19 @@ function! DeleteBuffer()
   let nbw = winnr('$')
   let dodel = 1
 
+  if &modified
+    let choice = confirm('Save changes to "'.bufname(bid).'"?', "&Yes\n&No\n&Cancel")
+    if 1 == choice
+      " Yes.
+      silent update
+    elseif 2 == choice
+      " No.
+    else
+      " Cancel or interrupted.
+      return
+    endif
+  endif
+
   if &previewwindow
     let dodel = 0
     silent! close
