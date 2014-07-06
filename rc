@@ -603,7 +603,7 @@ nmap <silent> <M-down> :cn<CR>
 " Buffer save/deletion. {{{
 
 " For saving current buffer.
-map <silent> <F2> :w<CR>
+map <silent> <F2> :update<CR>
 
 " A buffer with a filetype in this dictionary will have its window closed when
 " calling DeleteBuffer.
