@@ -50,6 +50,9 @@ set lcs=precedes:^,extends:$
 set number
 set numberwidth=5
 
+" Try to always keep 4 lines of context around cursor.
+set scrolloff=4
+
 " To keep hidden buffers
 " (so we can change buffer without
 " the need to write changes...).
