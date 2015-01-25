@@ -140,6 +140,9 @@ VCSCommandVCSTypeOverride	vcscommand.txt	/*VCSCommandVCSTypeOverride*
 VCSCommandVCSTypePreference	vcscommand.txt	/*VCSCommandVCSTypePreference*
 Vimball-copyright	pi_vimball.txt	/*Vimball-copyright*
 [%	matchit.txt	/*[%*
+\\	commentary.txt	/*\\\\*
+\\\	commentary.txt	/*\\\\\\*
+\\u	commentary.txt	/*\\\\u*
 ]%	matchit.txt	/*]%*
 aF	textobj-function.txt	/*aF*
 af	textobj-function.txt	/*af*
@@ -199,6 +202,7 @@ cecutil-saveusermaps	cecutil.txt	/*cecutil-saveusermaps*
 cecutil-savewinposn	cecutil.txt	/*cecutil-savewinposn*
 cecutil-swp	cecutil.txt	/*cecutil-swp*
 cecutil.txt	cecutil.txt	/*cecutil.txt*
+commentary.txt	commentary.txt	/*commentary.txt*
 cvscommand-changes	vcscommand.txt	/*cvscommand-changes*
 decho	Decho.txt	/*decho*
 decho-contents	Decho.txt	/*decho-contents*
@@ -285,6 +289,9 @@ g:textobj_indent_no_default_key_mappings	textobj-indent.txt	/*g:textobj_indent_n
 g:textobj_{plugin}_no_default_key_mappings	textobj-user.txt	/*g:textobj_{plugin}_no_default_key_mappings*
 g:vimball_home	pi_vimball.txt	/*g:vimball_home*
 g:vimball_mkdir	pi_vimball.txt	/*g:vimball_mkdir*
+gc	commentary.txt	/*gc*
+gcc	commentary.txt	/*gcc*
+gcu	commentary.txt	/*gcu*
 getlatestvimscripts-install	pi_getscript.txt	/*getlatestvimscripts-install*
 getscript	pi_getscript.txt	/*getscript*
 getscript-autoinstall	pi_getscript.txt	/*getscript-autoinstall*
@@ -480,9 +487,11 @@ textobj-user-region-type	textobj-user.txt	/*textobj-user-region-type*
 textobj-user-specs	textobj-user.txt	/*textobj-user-specs*
 textobj-user.txt	textobj-user.txt	/*textobj-user.txt*
 v_[%	matchit.txt	/*v_[%*
+v_\\	commentary.txt	/*v_\\\\*
 v_]%	matchit.txt	/*v_]%*
 v_a%	matchit.txt	/*v_a%*
 v_g%	matchit.txt	/*v_g%*
+v_gc	commentary.txt	/*v_gc*
 vba	pi_vimball.txt	/*vba*
 vcscommand	vcscommand.txt	/*vcscommand*
 vcscommand-buffer-management	vcscommand.txt	/*vcscommand-buffer-management*
