@@ -1,9 +1,9 @@
 " vimball.vim : construct a file containing both paths and files
-" Author:	Charles E. Campbell, Jr.
-" Date:		Apr 02, 2011
-" Version:	33
+" Author:	Charles E. Campbell
+" Date:		Jul 18, 2014
+" Version:	37b	ASTRO-ONLY
 " GetLatestVimScripts: 1502 1 :AutoInstall: vimball.vim
-" Copyright: (c) 2004-2011 by Charles E. Campbell, Jr.
+" Copyright: (c) 2004-2011 by Charles E. Campbell
 "            The VIM LICENSE applies to Vimball.vim, and Vimball.txt
 "            (see |copyright|) except use "Vimball" instead of "Vim".
 "            No warranty, express or implied.
@@ -14,7 +14,7 @@
 if &cp || exists("g:loaded_vimball")
  finish
 endif
-let g:loaded_vimball = "v33"
+let g:loaded_vimball = "v37b"
 if v:version < 702
  echohl WarningMsg
  echo "***warning*** this version of vimball needs vim 7.2"
@@ -142,7 +142,7 @@ fun! vimball#MkVimball(line1,line2,writelevel,...) range
  
    let lastline= line("$") + 1
    if lastline == 2 && getline("$") == ""
-	call setline(1,'" Vimball Archiver by Charles E. Campbell, Jr., Ph.D.')
+	call setline(1,'" Vimball Archiver by Charles E. Campbell')
 	call setline(2,'UseVimball')
 	call setline(3,'finish')
 	let lastline= line("$") + 1
@@ -220,7 +220,16 @@ fun! vimball#Vimball(really,...)
 
   " go to vim plugin home
   if a:0 > 0
+   " let user specify the directory where the vimball is to be unpacked.
+   " If, however, the user did not specify a full path, set the home to be below the current directory
    let home= expand(a:1)
+   if has("win32") || has("win95") || has("win64") || has("win16")
+	if home !~ '^\a:[/\\]'
+	 let home= getcwd().'/'.a:1
+	endif
+   elseif home !~ '^/'
+	let home= getcwd().'/'.a:1
+   endif
   else
    let home= vimball#VimballHome()
   endif
@@ -282,11 +291,14 @@ fun! vimball#Vimball(really,...)
 "    call Decho("making directories if they don't exist yet (fname<".fname.">)")
     let fnamebuf= substitute(fname,'\\','/','g')
 	let dirpath = substitute(home,'\\','/','g')
+"	call Decho("init: fnamebuf<".fnamebuf.">")
+"	call Decho("init: dirpath <".dirpath.">")
     while fnamebuf =~ '/'
      let dirname  = dirpath."/".substitute(fnamebuf,'/.*$','','')
 	 let dirpath  = dirname
      let fnamebuf = substitute(fnamebuf,'^.\{-}/\(.*\)$','\1','')
 "	 call Decho("dirname<".dirname.">")
+"	 call Decho("dirpath<".dirpath.">")
      if !isdirectory(dirname)
 "      call Decho("making <".dirname.">")
       if exists("g:vimball_mkdir")
@@ -569,9 +581,19 @@ endfun
 fun! s:ChgDir(newdir)
 "  call Dfunc("ChgDir(newdir<".a:newdir.">)")
   if (has("win32") || has("win95") || has("win64") || has("win16"))
-   exe 'silent cd '.fnameescape(substitute(a:newdir,'/','\\','g'))
+   try
+    exe 'silent cd '.fnameescape(substitute(a:newdir,'/','\\','g'))
+   catch  /^Vim\%((\a\+)\)\=:E/
+    call mkdir(fnameescape(substitute(a:newdir,'/','\\','g')))
+    exe 'silent cd '.fnameescape(substitute(a:newdir,'/','\\','g'))
+   endtry
   else
-   exe 'silent cd '.fnameescape(a:newdir)
+   try
+    exe 'silent cd '.fnameescape(a:newdir)
+   catch  /^Vim\%((\a\+)\)\=:E/
+    call mkdir(fnameescape(a:newdir))
+    exe 'silent cd '.fnameescape(a:newdir)
+   endtry
   endif
 "  call Dret("ChgDir : curdir<".getcwd().">")
 endfun
@@ -693,7 +715,7 @@ fun! vimball#SaveSettings()
 "  call Dfunc("SaveSettings()")
   let s:makeep  = getpos("'a")
   let s:regakeep= @a
-  if exists("&acd")
+  if exists("+acd")
    let s:acdkeep = &acd
   endif
   let s:eikeep  = &ei
@@ -706,7 +728,7 @@ fun! vimball#SaveSettings()
   let s:vekeep  = &ve
   let s:ffkeep  = &l:ff
   let s:swfkeep = &l:swf
-  if exists("&acd")
+  if exists("+acd")
    setlocal ei=all ve=all noacd nofen noic report=999 nohid bt= ma lz pm= ff=unix noswf
   else
    setlocal ei=all ve=all       nofen noic report=999 nohid bt= ma lz pm= ff=unix noswf
@@ -721,7 +743,7 @@ endfun
 fun! vimball#RestoreSettings()
 "  call Dfunc("RestoreSettings()")
   let @a      = s:regakeep
-  if exists("&acd")
+  if exists("+acd")
    let &acd   = s:acdkeep
   endif
   let &l:fen  = s:fenkeep
@@ -738,12 +760,15 @@ fun! vimball#RestoreSettings()
 "   call Decho("restore mark-a: makeep=".string(makeep))
    call setpos("'a",s:makeep)
   endif
-  if exists("&acd")
+  if exists("+acd")
    unlet s:acdkeep
   endif
   unlet s:regakeep s:eikeep s:fenkeep s:hidkeep s:ickeep s:repkeep s:vekeep s:makeep s:lzkeep s:pmkeep s:ffkeep
 "  call Dret("RestoreSettings")
 endfun
+
+let &cpo = s:keepcpo
+unlet s:keepcpo
 
 " ---------------------------------------------------------------------
 " Modelines: {{{1
