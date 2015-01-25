@@ -74,3 +74,8 @@ if !exists("g:DirDiffTextOnlyIn")
     let g:DirDiffTextOnlyIn = "Only in "
 endif
 
+" Confirm quit operation?
+if !exists("g:DirDiffQuitConfirm")
+  let g:DirDiffQuitConfirm = 1
+endif
+

@@ -382,7 +382,7 @@ endfun
 
 " Quit the DirDiff mode
 function! DirDiff#DirDiffQuit()
-    let in = confirm ("Are you sure you want to quit DirDiff?", "&Yes\n&No", 2)
+    let in = !g:DirDiffQuitConfirm || confirm ("Are you sure you want to quit DirDiff?", "&Yes\n&No", 2)
     if (in == 1)
         call <SID>CloseDiffWindows()
         bd!

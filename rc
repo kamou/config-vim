@@ -393,6 +393,7 @@ let g:DirDiffExcludes = 'CVS,.svn,.bzr,.git,.hg,cscope*.out*,tags,*_debug,*.~[0-
 let g:DirDiffAddArgs = '--strip-trailing-cr'
 let g:DirDiffVerboseSync = 0
 let g:DirDiffDynamicDiffText = 1
+let g:DirDiffQuitConfirm = 0
 
 " Support for automatically using DirDiff when calling 'vim -d dir1 dir2'. {{{
 
