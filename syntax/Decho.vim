@@ -1,6 +1,6 @@
 " DrChip's debugger syntax file
 " Language   : DrChip's Dfunc/Decho/Dret output
-" Maintainer : Charles E. Campbell, Jr.
+" Maintainer : Charles E. Campbell
 " Last change: Aug 12, 2008
 " Version    : 5
 
@@ -22,6 +22,7 @@ syn match   dechoNumber				"\<-\=[0-9]\+\ze:"
 syn match   dechoNumber				"\<=-\=[0-9a-fA-F]\+\>"
 syn match   dechoNumber				"\<[0-9a-fA-F]\+x$"
 syn match   dechoNumber				"\<[0-9a-fA-F]\+x[^a-zA-Z=]"me=e-1
+syn match	dechoIgnore				'\~\d\+$'
 
 " Let me see errors/warnings/severe messages easily
 syn keyword dechoNotify				fatal error severe
@@ -59,14 +60,15 @@ if !exists("did_drchip_decho_syntax")
   hi link dechoComment		Comment
   hi link dechoDelimiter	Delimiter
   hi link dechoFunction		Statement
+  hi link dechoIgnore		Ignore
   hi link dechoMatrixBar	Delimiter
   hi link dechoNotify		Error
   hi link dechoNumber		Number
   hi link dechoProblem		Error
   hi link dechoString		String
-  hi link dechoWarning		Warning
   hi link dechoTabTitle		PreProc
   hi link dechoTabTitleSep	Delimiter
+  hi link dechoWarning		Warning
 
   " HLTest: tests if a highlighting group has been set up {{{2
   fun! s:HLTest(hlname)
