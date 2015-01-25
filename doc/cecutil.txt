@@ -1,8 +1,8 @@
-*cecutil.txt*	DrChip's Utilities				Sep 04, 2007
+*cecutil.txt*	DrChip's Utilities				Apr 05, 2010
 
-Author:  Charles E. Campbell, Jr.  <NdrOchip@ScampbellPfamily.AbizM>
+Author:  Charles E. Campbell  <NdrOchip@ScampbellPfamily.AbizM>
 	  (remove NOSPAM from Campbell's email first)
-Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*cecutil-copyright*
+Copyright: (c) 2004-2006 by Charles E. Campbell		*cecutil-copyright*
            The VIM LICENSE applies to cecutil.vim and cecutil.txt
            (see |copyright|) except use "cecutil" instead of "Vim"
 	   No warranty, express or implied.  Use At-Your-Own-Risk.
@@ -31,7 +31,7 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*cecutil-copyright*
     let winposn= SaveWinPosn(0)
 
 	This operation will _only_ save the window position in winposn variable.
-	Ie. the window position will not appear on the b:winposn{} stack.  You 
+	Ie. the window position will not appear on the b:winposn{} stack.  You
 	will then need to use RestoreWinPosn(winposn) to restore to this window
 	position.
 
@@ -65,9 +65,10 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*cecutil-copyright*
 		let savemarkb= SaveMark("b")
 		:SM a
 <
-	This function saves a string in the global variable g:savemark_{markname}
-	which contains sufficient information to completely restore the position
-	of a mark.  It also returns that string.
+	This function saves a string in the global variable >
+		g:savemark_{markname}
+<	which contains sufficient information to completely restore the
+	position of a mark.  It also returns that string.
 
    call RestoreMark(markname)				*cecutil-restoremark*
    call RestoreMark(savemark)
@@ -100,46 +101,71 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*cecutil-copyright*
     call SaveUserMaps(mapmode,maplead,mapchx,suffix)
 
 	This function sets up a script-variable (ie. a variable that can
-	generally be accessed only from within cecutil's own functions;
-	see |s:|) called s:restoremap.  The selected user's maps are appended
+	generally be accessed only from within cecutil's own functions; see
+	|s:var|) called s:restoremap_SUFFIX, where the suffix is specified by
+	the "suffix" argument.
+
+	The selected user's maps are saved by appending a restoration command
 	to this variable; the RestoreUserMaps() (|cecutil-restoreusermaps|)
 	function uses the contents of this variable to restore user maps.
 
-		mapmode	- see :help maparg for its list (see |maparg()|) >
-			  ex. "n" = Normal
-<			  Will now accept an optional leading "u"; if present,
-			  SaveUserMaps() will save and unmap (otherwise, it
-			  will save only)
-		mapchx	- "<something>" handled as a single map item. >
-			  ex. "<left>"
-<       		- "string" a string of single letters which are actually
-			  multiple two-letter maps
-		maplead - the maps are assumed to have the form >
+		mapmode	- (see |maparg()|for additional information)
+			  leading "u": SaveUserMaps() will unmap any existing
+			               map matches after saving them
+			  leading "b": the map(s) have a <buffer> qualifier
+			  ""         : normal, visual, and operator-pending
+			  "n"        : normal mode maps
+			  "o"        : operator pending maps
+			  "i"        : insert mode maps
+			  "c"        : command line maps
+			  "l"        : language map (see |language-mapping|) >
+			    ex. "un"  = Normal + unmapping
+			    ex. "bn"  = Normal + <buffer>
+			    ex. "bun" = Normal + <buffer> + unmapping
+			    ex. "ubn" = Normal + <buffer> + unmapping
+<		maplead - The single letter maps being saved are assumed to have
+			  the form >
 				maplead . each_character_in_string
 <			  ex. maplead="\" and mapchx="abc" saves mappings for >
 			    \a, \b, and \c
 <			  Of course, if maplead is "", then for mapchx="abc",
 			  mappings for just a, b, and c are saved.
+		mapchx	- This argument specifies which mapped keys to save.
+			- "<something>" handled as a single map item. >
+			  ex. "<left>"
+<       		- "string" a string of single letters which are actually
+			  multiple two-letter maps (ie. maplead + character).
 			- :something  handled as a single map item, w/o the ":" >
 			  ex.  mapchx= ":abc"
 <			  will save the user mapping for "abc"
 		suffix  - a string unique to your plugin >
 			  ex.  suffix= "DrawIt"
-<
+<			  This suffix is appended to the internal save
+			  variable name.
+
 	Some examples follow: >
 
 		call SaveUserMaps("n","","webWEBjklh$0%;,nN","HiMtchBrkt")
-<		normal mode maps for w, e, b, W, E, B, j, k, l, etc
-		(if any) are all saved in the variable
-		s:restoremaps_HiMtchBrkt >
+<		mapmode is "n" : normal maps are to be saved
+		maplead is ""  : no mapleader is used
+		mapchx         : normal mode maps for w, e, b, W, E, B, j,
+		                 k, l, etc (if any) are all saved
+		suffix         : saving is done using the variable
+		                 s:restoremaps_HiMtchBrkt >
+
+		call SaveUserMaps("n",'\',"webWEBjklh$0%;,nN","HiMtchBrkt")
+<		This example is just like the previous one, except that
+		maplead is '\' : so normal mode maps for \w, \e, \b, ...
+		                 will be saved. >
 
 		call SaveUserMaps("n","","<up>","DrawIt")
-<		the normal mode map (if any) for the <up> key is saved in
+<		The normal mode map (if any) for the <up> key is saved in
 		the variable s:restoremaps_DrawIt >
 
 		call SaveUserMaps("n","",":F(","HiMtchBrkt")
-<		the normal mode map for F( (if any) is saved in the
-		variable s:restoremaps_HiMtchBrkt
+<		The normal mode map for >
+			F(
+<		(if any) is saved in the variable s:restoremaps_HiMtchBrkt
 
     call RestoreUserMaps(suffix)
 
@@ -153,6 +179,31 @@ Copyright: (c) 2004-2006 by Charles E. Campbell, Jr.	*cecutil-copyright*
 ==============================================================================
 5. History						*cecutil-history* {{{1
 
+	v18 Aug 27, 2008 : * after norm! 0 (ie. cursor at left hand side),
+			     a wincol() normally returns 1.  However, with
+			     signs enabled, wincol() returned 3, and the
+			     result was that RestoreWinPosn() was beeping
+			     (near the "seems to be something odd" comment)
+	    Aug 20, 2009   * changed some keep&restore options to use local
+			     options rather than global ones.
+			   * adjust saved window column for being past the
+			     end-of-line (which can happen with |'virtualedit'|)
+			   * with wrap enabled, lines longer than the
+	                     window width (which take several screen lines)
+			     caused SaveWinPosn() to not restore the window
+			     line correctly.
+			   * fixed some map save and restore issues with
+			     handling <buffer> maps
+	    Apr 05, 2010   * (Greg Klein) keepjumps used more often to prevent
+			     adding unwanted lines to the jump table (|jumps|)
+			   * (Greg Klein) moved screenline adjusting to a
+			     separate function (s:WinLineRestore) as having a
+			     while loop embedded in a string for execution,
+			     even with |:keepjumps|, added lines to the jump
+			     table
+			   * (Greg Klein) fixed s:WinLineRestore() so that it
+			     wouldn't hang on shorter than a screen text but
+			     having longer than screenwidth lines.
 	v17 Sep 04, 2007 : * new function, QArgSplitter(), included
 	v16 Oct 30, 2006 : * com -> com! so AsNeeded is happier
 	    Feb 12, 2007   * fixed a bug where :somemap (a map of "somemap")
