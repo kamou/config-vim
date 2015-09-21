@@ -1,6 +1,4 @@
-/GetLatest/*
-/cache
 /info
 /swap
+/plugged
 /.netrwhist
-*.pyc

@@ -36,6 +36,40 @@ if filereadable(user)
   execute 'source '.user
 endif
 
+" load needed plugins
+call plug#begin('~/.nvim/plugged')
+" load themes
+ Plug 'tomasr/molokai'
+ Plug 'altercation/vim-colors-solarized'
+ Plug 'chriskempson/vim-tomorrow-theme'
+ Plug 'nanotech/jellybeans.vim'
+ " Plug 'octol/vim-cpp-enhanced-highlight'
+ Plug 'critiqjo/lldb.nvim'                 " lldb debug integration for neovim.
+ Plug 'bling/vim-airline'                  " Lean & mean status/tabline.
+ Plug 'tpope/vim-commentary'               " Comment stuff out.
+ Plug 'jiangmiao/auto-pairs'               " Insert or delete brackets, parens, 
+                                           " quotes in pair.
+ Plug 'vim-scripts/Mark'                   " Useful highlighter
+ Plug 'tpope/vim-fugitive'                 " The best git wrapper of all time
+ Plug 'tpope/vim-eunuch'                   " Vim sugar for the UNIX shell
+                                           " commands
+ Plug 'vim-scripts/DirDiff.vim'            " Recursive diff
+ Plug 'hynek/vim-python-pep8-indent'       " TODO: is this really useful ?
+ Plug 'vim-scripts/TagHighlight'
+ Plug 'git://repo.or.cz/vcscommand'
+ Plug 'majutsushi/tagbar'
+ Plug 'scrooloose/syntastic'
+ Plug 'wesQ3/vim-windowswap'
+ Plug 'szw/vim-ctrlspace'
+ Plug 'tpope/vim-surround'
+ Plug 'benmills/vimux'
+ Plug 'michaeljsmith/vim-indent-object'
+ Plug 'AndrewRadev/linediff.vim'
+call plug#end()
+
+ " Unicode by default
+scriptencoding utf-8
+
 " Not VI compatible.
 set nocompatible
 
@@ -48,6 +82,7 @@ set lcs=precedes:^,extends:$
 
 " Show line numbers.
 set number
+set relativenumber
 set numberwidth=5
 
 " Try to always keep 4 lines of context around cursor.
@@ -58,10 +93,6 @@ set scrolloff=4
 " the need to write changes...).
 set hidden
 
-" Use status line to display possible completions.
-set wildmenu
-set wildmode=list:longest,full
-
 " No search highlight, incremental search.
 set nohlsearch
 set incsearch
@@ -69,14 +100,21 @@ set incsearch
 " Do not redraw while running macros (much faster).
 set lazyredraw
 
-" Always show tabline.
-set showtabline=2
+" Disable tabline for better ctrlspace use
+set showtabline=0
 
 " Increase command line history.
 set history=200
 
-" Needed so Bazaar hardlinked lightweight checkouts work ok.
-set backupcopy=breakhardlink,auto
+" mark lines exceeding 80 characters.
+" call matchadd('ColorColumn', '\%81v', 100)
+
+" set splitting behaviour
+set splitbelow
+set splitright
+
+set foldcolumn=2
+set foldlevelstart=99
 
 " Save info file in the user VIM directory.
 let &viminfo = "!,h,'20,\"50,n".$USERVIM.'/info'
@@ -86,6 +124,10 @@ filetype on
 filetype indent on
 filetype plugin on
 
+set tabstop=4
+set shiftwidth=4
+set expandtab
+
 " Syntax highlighting.
 syntax enable
 
@@ -94,6 +136,13 @@ set showcmd
 
 " Fine-tune how VIM formats comments and long lines.
 set formatoptions+=croql
+
+" Use ';' instead of ':'
+nnoremap ; :
+" Use Esc as escape key in terminal mode
+if has('nvim')
+  tnoremap <Esc> <C-\><C-n>
+endif
 
 " Win32 specific config. {{{
 
@@ -228,13 +277,6 @@ if !has('gui_running')
   " Fast escape key.
   set timeout timeoutlen=3000 ttimeoutlen=100
 
-  " Colorscheme.
-  let g:moria_style = 'black'
-  set background=dark
-  if 'linux' != $TERM
-    colorscheme moria_256
-  endif
-
   " Enable mouse support for all modes but command line.
   set mouse=nvi
 
@@ -242,6 +284,11 @@ if !has('gui_running')
   set vb t_vb=
 
 endif
+
+" Colorscheme.
+set background=dark
+colorscheme jellybeans
+
 
 " }}}
 
@@ -347,11 +394,13 @@ function CtagsUpdate()
 endfunction
 
 " To update a ctags database.
-let g:ctags_flags = '--c-kinds=+cdefgmnpstuvx --fields=+S'
+let g:ctags_flags = '--c-kinds=+lcdefgmnpstuvx --fields=+S'
 nmap <unique> <Leader>tU :call CtagsUpdate()<CR>
 
 " }}}
 
+" Mappings for blockdiff plugin.
+vmap <unique> <silent> <Leader>dd :Linediff<CR>
 
 " DirDiff options.
 let g:DirDiffExcludes = 'CVS,.svn,.bzr,.git,.hg,cscope*.out*,tags,*_debug,*.~[0-9]~,*.~[0-9][0-9]~,*.orig'
@@ -411,8 +460,28 @@ if !has('ruby')
 end
 
 
-" }}}
+let g:cpp_class_scope_highlight = 1
+let g:cpp_experimental_template_highlight = 1
 
+" set ailine options
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#ctrlspace#enabled = 1
+
+if executable("ag")                                     
+    let g:CtrlSpaceGlobCommand = 'ag -l --nocolor -g ""'
+endif                                                   
+
+let g:syntastic_cpp_include_dirs = ['/usr/include/qt5/QtCore/', '/usr/include/qt5/QtNetwork/', '/usr/include/qt5/QtConcurrent',  '/usr/include/qt5/QtCore',  '/usr/include/qt5/QtDBus',  '/usr/include/qt5/QtGui',  '/usr/include/qt5/QtNetwork',  '/usr/include/qt5/QtOpenGL',  '/usr/include/qt5/QtPlatformHeaders',  '/usr/include/qt5/QtPrintSupport',  '/usr/include/qt5/QtSql',  '/usr/include/qt5/QtTest',  '/usr/include/qt5/QtWidgets',  '/usr/include/qt5/QtXml']
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_loc_list_height = 3
+let g:syntastic_cpp_check_header = 1
+let g:syntastic_cpp_remove_include_errors = 1
+
+" }}}
 
 " Quick navigation to the current buffer directory.
 nmap <silent> ,d :e %:h<CR>
@@ -521,12 +590,14 @@ nmap <silent> ,ss :call SwapText_line()<CR>
 
 " Cursor cross.
 if has('autocmd')
+  autocmd VimEnter    * set cursorline cursorcolumn
   autocmd BufWinEnter * set cursorline cursorcolumn
   autocmd WinEnter    * set cursorline cursorcolumn
   autocmd WinLeave    * set nocursorline nocursorcolumn
 endif
 
 
+if !has('nvim')
 " Python. {{{
 
 if has('python')
@@ -557,5 +628,6 @@ EOF
 endif
 
 " }}}
+endif
 
 " vim: ft=vim sw=2 foldmethod=marker foldlevel=0

@@ -4,11 +4,16 @@
 " profile start vim.prof | profile! file *
 
 " }}}
+if has('nvim')
+  let $VIMFOLDER='nvim'
+else
+  let $VIMFOLDER='vim'
+endif
 
 if strlen($XDG_CONFIG_HOME)
-  let $USERVIM=$XDG_CONFIG_HOME.'/vim'
+  let $USERVIM=$XDG_CONFIG_HOME.'/'.$VIMFOLDER
 else
-  let $USERVIM=$HOME.'/.config/vim'
+  let $USERVIM=$HOME.'/.config/'.$VIMFOLDER
 endif
 
 if has('win32') && !strlen($CYGPATH)

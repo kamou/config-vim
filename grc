@@ -1,9 +1,4 @@
 
-" Colorscheme.
-let g:moria_style='black'
-set background=dark
-colorscheme moria
-
 " Font.
 if has('win32')
   " Since selecting an unavailable font will crash the GUI in Windows, and the
