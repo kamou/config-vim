@@ -81,11 +81,6 @@ set backupcopy=breakhardlink,auto
 " Save info file in the user VIM directory.
 let &viminfo = "!,h,'20,\"50,n".$USERVIM.'/info'
 
-" Change the select/visual mode behavior.
-behave xterm
-set selectmode=key
-set keymodel=startsel
-
 " Activate use of filetype, indent, and plugin.
 filetype on
 filetype indent on
@@ -355,38 +350,8 @@ endfunction
 let g:ctags_flags = '--c-kinds=+cdefgmnpstuvx --fields=+S'
 nmap <unique> <Leader>tU :call CtagsUpdate()<CR>
 
-" Ctags list plugin config.
-let Tlist_Enable_Fold_Column = 0
-let Tlist_Inc_Winwidth = 0
-let Tlist_Sort_Type = 'name'
-let Tlist_Show_One_File = 1
-let Tlist_Show_Menu = 0
-nmap <silent> <unique> <Leader>tl :exe 'Tlist'\|wincmd p<CR>
-
 " }}}
 
-" Diffing. {{{
-
-" To toggle whitespace ignore for diffs.
-map <unique> <silent> <Leader>dg :diffget<CR>
-map <unique> <silent> <Leader>dp :diffput<CR>
-map <unique> <silent> <Leader>du :diffupdate<CR>
-map <unique> <silent> <Leader>d<space> :
-      \ if &diffopt =~ ',\?iwhite\>' <Bar>
-      \   set diffopt-=iwhite <Bar>
-      \ else <Bar>
-      \   set diffopt+=iwhite <Bar>
-      \ endif <CR>
-map <unique> <silent> <Leader>dd :
-      \ if &diff <Bar>
-      \   set nodiff noscrollbind nocursorbind <Bar>
-      \ else <Bar>
-      \   diffthis <Bar>
-      \ endif <CR>
-
-" Mappings for blockdiff plugin.
-vmap <unique> <silent> <Leader>d1 :call BlockDiff_GetBlock1()<CR>
-vmap <unique> <silent> <Leader>d2 :call BlockDiff_GetBlock2()<CR>
 
 " DirDiff options.
 let g:DirDiffExcludes = 'CVS,.svn,.bzr,.git,.hg,cscope*.out*,tags,*_debug,*.~[0-9]~,*.~[0-9][0-9]~,*.orig'
@@ -416,96 +381,6 @@ endif
 
 " }}}
 
-" Custom text-objects. {{{
-
-for mapping in [ ['=', 'indent'], ['%', 'entire'] ]
-
-  let key = mapping[0]
-  let obj = mapping[1]
-
-  exe 'let g:textobj_'.obj.'_no_default_key_mappings = 1'
-
-  for type in ['i', 'a']
-    for mode in ['v', 'o']
-      exe mode.'map '.type.key.' <Plug>(textobj-'.obj.'-'.type.')'
-    endfor
-  endfor
-
-endfor
-
-" }}}
-
-" Man/info pages support. {{{
-
-let g:manpageview_multimanpage = 0
-
-autocmd FileType man set buftype=nofile
-
-" }}}
-
-" Improved completion. {{{
-
-set complete=.,t,i,k
-set completeopt-=preview
-
-function! CleverTab()
-  set completeopt-=longest
-  if pumvisible()
-    return "\<C-P>"
-  endif
-  let text = IMAP_LookupCharacter("\t")
-  if text != "\t"
-    return text
-  end
-  let to_pos = strpart(getline('.'), 0, col('.') - 1 )
-  let from_pos = strpart(getline('.'), col('.') - 2, col('$'))
-  if has('ruby') && !exists('g:vless')
-    if to_pos =~ '<%=\f*$'
-      set completefunc=yasnippets#CompleteSkeleton
-      set completeopt+=longest
-      return "\<C-X>\<C-U>"
-    end
-  end
-  if to_pos =~ '<%=\w\+>'
-    return IMAP_LookupCharacter('>')
-  end
-  if to_pos =~ '\w\(\.\|->\)$'
-    return "\<C-X>\<C-O>"
-  endif
-  let fn = matchlist(to_pos, '\<\(\w\+\)($')
-  if !empty(fn)
-    return FunctionComplete(fn[1])
-  endif
-  if to_pos =~ '^\s*#\s*include'
-    if to_pos =~ '^\s*#\s*include\s*$'
-      return " \"\<C-X>\<C-F>\"\<Left>"
-    endif
-    return "\<C-X>\<C-F>"
-  elseif from_pos =~ '^\k'
-    return "\<C-P>"
-  endif
-  return "\<Tab>"
-endfunction
-inoremap <silent> <Tab> <C-R>=CleverTab()<CR>
-
-function! SCleverTab()
-  let to_pos = strpart(getline('.'), 0, col('.') - 1 )
-  let from_pos = strpart(getline('.'), col('.') - 2, col('$'))
-  if from_pos =~ '^\k'
-    return "\<C-N>"
-  endif
-  return "\<Tab>"
-endfunction
-inoremap <silent> <S-Tab> <C-R>=SCleverTab()<CR>
-
-inoremap <C-]> <C-x><C-]>
-inoremap <C-f> <C-x><C-f>
-inoremap <C-d> <C-x><C-d>
-inoremap <C-l> <C-x><C-l>
-inoremap <C-k> <C-x><C-k>
-
-" }}}
-
 " Plugins. {{{
 
 " Mappings for mark plugin.
@@ -514,13 +389,6 @@ vmap <unique> <silent> <leader>mm <Plug>MarkSet
 nmap <unique> <silent> <leader>mr <Plug>MarkRegex
 vmap <unique> <silent> <leader>mr <Plug>MarkRegex
 nmap <unique> <silent> <leader>mn <Plug>MarkClear
-
-" Have vimball put file in $USERVIM.
-let g:vimball_home = $USERVIM
-
-" Configure tSkeleton plugin.
-let g:tskelUserName = username
-let g:tskelUserEmail = useremail
 
 " Configure netrw plugin to use wget rather than elinks; this fix the case
 " where VIM will ask and fetch missing dictionaries.
@@ -531,48 +399,20 @@ let g:netrw_banner = 0
 let g:netrw_hide = 1
 let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'
 
-" Configure yasnippets.
-if has('ruby') && !exists('g:vless')
-  ruby $AUTHOR = VIM::evaluate('g:tskelUserName')
-  ruby $EMAIL = VIM::evaluate('g:tskelUserEmail')
-else
-  let loaded_yasnippets = 1
-end
-
 " Configure commentary plugin.
 xmap ,c <Plug>Commentary
 nmap ,c <Plug>Commentary
 nmap ,cc <Plug>CommentaryLine
 nmap ,cu <Plug>CommentaryUndo
 
-" Do not switch tab/window when selecting an already opened buffer with
-" bufexplorer.
-let g:bufExplorerFindActive = 0
-
 " Don't load rb_align plugin if ruby feature is not available.
 if !has('ruby')
   let loaded_rb_align = 1
 end
 
-" VCSCommand configuration.
-let g:VCSCommandVCSTypePreference='git'
 
 " }}}
 
-" Buffer navigation. {{{
-
-nmap <silent> <M-Right> :bn<CR>
-nmap <silent> <M-Left> :bp<CR>
-nmap <silent> <M-1> :brewind<CR>
-nmap <silent> <M-2> :brewind <bar> bn<CR>
-nmap <silent> <M-3> :brewind <bar> bn 2<CR>
-nmap <silent> <M-4> :brewind <bar> bn 3<CR>
-nmap <silent> <M-5> :brewind <bar> bn 4<CR>
-nmap <silent> <M-6> :brewind <bar> bn 5<CR>
-nmap <silent> <M-7> :brewind <bar> bn 6<CR>
-nmap <silent> <M-8> :brewind <bar> bn 7<CR>
-nmap <silent> <M-9> :brewind <bar> bn 8<CR>
-nmap <silent> <M-0> :blast<CR>
 
 " Quick navigation to the current buffer directory.
 nmap <silent> ,d :e %:h<CR>
@@ -580,84 +420,15 @@ nmap <silent> ,d :e %:h<CR>
 " }}}
 
 " For iterating on errors.
-nmap <silent> <M-up> :cp<CR>
-nmap <silent> <M-down> :cn<CR>
-
-" Buffer save/deletion. {{{
-
-" For saving current buffer.
-map <silent> <F2> :update<CR>
-
-" A buffer with a filetype in this dictionary will have its window closed when
-" calling DeleteBuffer.
-let g:DeleteBufferFileTypes =
-      \ {
-      \ 'Decho':1,
-      \ 'man':1
-      \ }
-
-" Same as above for buffer type.
-let g:DeleteBufferBufferTypes =
-      \ {
-      \ 'help':1,
-      \ 'nofile':1,
-      \ 'nowrite':1,
-      \ 'quickfix':1
-      \ }
-
-" Delete the current buffer, issuing bnext in all windows
-" where displayed before that.
-function! DeleteBuffer()
-
-  let bid = bufnr('%')
-  let nbw = winnr('$')
-  let dodel = 1
-
-  if &modified
-    let choice = confirm('Save changes to "'.bufname(bid).'"?', "&Yes\n&No\n&Cancel")
-    if 1 == choice
-      " Yes.
-      silent update
-    elseif 2 == choice
-      " No.
-    else
-      " Cancel or interrupted.
-      return
-    endif
-  endif
-
-  if &previewwindow
-    let dodel = 0
-    silent! close
-  elseif
-\ (!empty(&buftype) && has_key(g:DeleteBufferBufferTypes, &buftype)) ||
-\ (!empty(&filetype) && has_key(g:DeleteBufferFileTypes, &filetype))
-    if 1 != nbw
-      silent! close
-    endif
-  else
-    silent! bprev
-  end
-
-  if dodel
-    silent! exe 'bdel '.bid
-  endif
-
-  if bid == bufnr('%')
-    :q
-  end
-
-endfunction
-
-" For deleting current buffer (and closing window when needed).
-map <silent> <F4> :call DeleteBuffer()<CR>
+nmap <silent> <M-k> :cp<CR>
+nmap <silent> <M-j> :cn<CR>
 
 " Use space to scroll one page down.
 map <space> <C-f>
 
 " }}}
 
-" Trailing spaces/tabs, excess columns highlighting. {{{
+" Trailing spaces/tabs highlighting. {{{
 
 set listchars+=tab:__,trail:_
 
@@ -670,24 +441,6 @@ function! ToggleListBlanks()
 endfunction
 
 map <silent> <F5> :call ToggleListBlanks()<CR>
-
-" Function to toggle highlighting the offending parts of lines that are "too
-" long", where "too long" is defined by &textwidth or an arg passed to the
-" function.
-
-function! ToggleHighlightExcessColumns(width)
-  if exists('b:highlight_excess_columns')
-    call matchdelete(b:highlight_excess_columns)
-    unlet b:highlight_excess_columns
-    return
-  endif
-  let width = a:width != '' ? a:width : &textwidth
-  if width > 0
-    let b:highlight_excess_columns = matchadd('TODO', '\%>'.(width+1).'v')
-  endif
-endfunction
-
-map <silent> <C-F5> :call ToggleHighlightExcessColumns('')<CR>
 
 " }}}
 
@@ -702,31 +455,6 @@ function! ToggleSearchHighlighting()
 endfunction
 
 map <silent> <F6> :call ToggleSearchHighlighting()<CR>
-
-" }}}
-
-" Launch various commands. {{{
-
-let cmd_1 = 'make'
-let cmd_2 = 'make clean'
-let cmd_3 = 'make -C %:p:h'
-let cmd_4 = 'make -C %:p:h clean'
-
-function! Launch_Command(name)
-  if exists('b:'.a:name)
-    execute 'let l:cmd=b:'.a:name
-  elseif exists('g:'.a:name)
-    execute 'let l:cmd=g:'.a:name
-  else
-    return
-  endif
-  execute 'echo "' . cmd . '" | ' . cmd
-endfunction
-
-noremap <F9>  :call Launch_Command('cmd_1')<CR>
-noremap <F10> :call Launch_Command('cmd_2')<CR>
-noremap <F11> :call Launch_Command('cmd_3')<CR>
-noremap <F12> :call Launch_Command('cmd_4')<CR>
 
 " }}}
 
@@ -798,12 +526,6 @@ if has('autocmd')
   autocmd WinLeave    * set nocursorline nocursorcolumn
 endif
 
-" Folding. {{{
-
-set foldcolumn=2
-set foldlevelstart=99
-
-" }}}
 
 " Python. {{{
 
