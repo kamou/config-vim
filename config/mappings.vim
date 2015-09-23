@@ -44,7 +44,6 @@ map <silent> <F6> :call ToggleSearchHighlighting()<CR>
     nmap <unique> <Leader>tU :call CtagsUpdate()<CR>
 
     " LineDiff:
-    " Mappings for blockdiff plugin.
     vmap <unique> <silent> <Leader>dd :Linediff<CR>
 
 " }}}
