@@ -29,7 +29,7 @@ call plug#begin('~/.nvim/plugged')
  Plug 'vim-scripts/DirDiff.vim'            " Recursive diff
  Plug 'hynek/vim-python-pep8-indent'       " TODO: is this really useful ?
  Plug 'vim-scripts/TagHighlight'
- Plug 'git://repo.or.cz/vcscommand'
+ Plug 'http://repo.or.cz/vcscommand'
  Plug 'majutsushi/tagbar'
  Plug 'scrooloose/syntastic'
  Plug 'wesQ3/vim-windowswap'
