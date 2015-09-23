@@ -69,6 +69,8 @@ set showcmd
 " Fine-tune how VIM formats comments and long lines.
 set formatoptions+=croql
 
+" Show statusline even if only one window is visible.
+set laststatus=2
 
 " Need -w to correctly parse compilation errors when switching directories.
 " Multiple jobs will confuse VIM, so disable those too.
