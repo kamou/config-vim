@@ -84,6 +84,10 @@ if !isdirectory(swap)
 endif
 let &directory = swap.'//,~/tmp//,.'
 
+" avoid displaying error messages when /etc/vimrc already have laoded the
+" cscope DB
+set nocscopeverbose
+
 " Terminal only settings. {{{
 
 if !has('gui_running')
