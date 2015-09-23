@@ -1,10 +1,5 @@
 
 " Font.
-if has('win32')
-  " Since selecting an unavailable font will crash the GUI in Windows, and the
-  " default font looks ok, don't override it...
-else
-endif
 
 " Force sane default window size.
 set columns=80 lines=26
