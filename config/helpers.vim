@@ -18,18 +18,6 @@ endif
 
 " }}}
 "
-" Search highlighting. {{{
-
-function! ToggleSearchHighlighting()
-  if &hlsearch
-    set nohlsearch
-  else
-    set hlsearch
-  endif
-endfunction
-
-" }}}
-
 if has('cscope')
 
   if strlen($CSCOPE_DB)
@@ -96,11 +84,4 @@ function CtagsUpdate()
 
 endfunction
 
-function! ToggleSearchHighlighting()
-  if &hlsearch
-    set nohlsearch
-  else
-    set hlsearch
-  endif
-endfunction
 " vim: ft=vim sw=2 foldmethod=marker foldlevel=0

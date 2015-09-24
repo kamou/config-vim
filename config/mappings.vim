@@ -25,7 +25,7 @@ cmap <M-Del> <C-Right><C-BS>
 imap <M-Del> <C-o>de
 nmap <M-Del> de
 
-map <silent> <F6> :call ToggleSearchHighlighting()<CR>
+map <silent> <F6> :set hlsearch!<CR>
 
 " Plugin related mappings {{{
 
