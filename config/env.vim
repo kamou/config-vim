@@ -165,7 +165,7 @@ if !has('gui_running')
   set vb t_vb=
 
 endif
-"
+
 " Cursor cross.
 autocmd VimEnter    * set cursorline cursorcolumn
 autocmd BufWinEnter * set cursorline cursorcolumn
