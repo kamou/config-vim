@@ -1,7 +1,7 @@
 
 " Support for automatically using DirDiff when calling 'vim -d dir1 dir2'. {{{
 
-function VimDirDiff()
+function! VimDirDiff()
 
   let dir1 = fnameescape(argv(0))
   let dir2 = fnameescape(argv(1))
@@ -50,7 +50,7 @@ if has('cscope')
   " Search the tags database before the cscope database...
   set csto=1
 
-  function CscopeUpdate()
+  function! CscopeUpdate()
 
     exe 'silent! cs kill '.fnamemodify(g:cscopedb, ':p')
 
@@ -69,7 +69,7 @@ if has('cscope')
   endfunction
 endif
 
-function CtagsUpdate()
+function! CtagsUpdate()
 
   let cmd = '!ctags '.g:ctags_flags.' -o tags -R '
   let files = 'tags.files'

@@ -37,20 +37,20 @@ map <silent> <F6> :set hlsearch!<CR>
 " Plugin related mappings {{{
 
     " Cscope:
-    nmap <unique> <silent> <Leader>tg <C-]>
-    nmap <unique> <silent> <Leader>ts :exe 'cscope find s <cword>'<CR>
-    nmap <unique> <silent> <Leader>td :exe 'cscope find d <cword>'<CR>
-    nmap <unique> <silent> <Leader>tc :exe 'cscope find c <cword>'<CR>
-    nmap <unique> <silent> <Leader>ta :exe 'cscope find t <cword>'<CR>
-    nmap <unique> <silent> <Leader>tf :exe 'cscope find f <cfile>'<CR>
-    nmap <unique> <silent> <Leader>ti :exe 'cscope find i %:t'<CR>
-    nmap <unique> <silent> <Leader>tu :call CscopeUpdate()<CR>
+    nmap <silent> <Leader>tg <C-]>
+    nmap <silent> <Leader>ts :exe 'cscope find s <cword>'<CR>
+    nmap <silent> <Leader>td :exe 'cscope find d <cword>'<CR>
+    nmap <silent> <Leader>tc :exe 'cscope find c <cword>'<CR>
+    nmap <silent> <Leader>ta :exe 'cscope find t <cword>'<CR>
+    nmap <silent> <Leader>tf :exe 'cscope find f <cfile>'<CR>
+    nmap <silent> <Leader>ti :exe 'cscope find i %:t'<CR>
+    nmap <silent> <Leader>tu :call CscopeUpdate()<CR>
     
     " Ctags:
     let g:ctags_flags = '--c-kinds=+lcdefgmnpstuvx --fields=+S'
-    nmap <unique> <Leader>tU :call CtagsUpdate()<CR>
+    nmap <Leader>tU :call CtagsUpdate()<CR>
 
     " LineDiff:
-    vmap <unique> <silent> <Leader>dd :Linediff<CR>
+    vmap <silent> <Leader>dd :Linediff<CR>
 
 " }}}
