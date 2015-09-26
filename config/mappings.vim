@@ -11,20 +11,21 @@ if has('nvim')
 endif
 
 " For iterating on errors.
-nmap <silent> <M-k> :cp<CR>
-nmap <silent> <M-j> :cn<CR>
+nnoremap <silent> <M-k> :cp<CR>
+nnoremap <silent> <M-j> :cn<CR>
 
 " Quick navigation to the current buffer directory.
-nmap <silent> ,d :e %:h<CR>
+nnoremap <silent> ,d :e %:h<CR>
 
 " Backward delete word and delete word in insert and command mode.
-cmap <M-BS> <C-w>
-imap <M-BS> <C-w>
-nmap <M-BS> db
-cmap <M-Del> <C-Right><C-BS>
-imap <M-Del> <C-o>de
-nmap <M-Del> de
+cnoremap <M-BS> <C-w>
+inoremap <M-BS> <C-w>
+nnoremap <M-BS> db
+cnoremap <M-Del> <C-Right><C-BS>
+inoremap <M-Del> <C-o>de
+nnoremap <M-Del> de
 
+" Toggle search highlighting
 map <silent> <F6> :set hlsearch!<CR>
 
 " Plugin related mappings {{{
