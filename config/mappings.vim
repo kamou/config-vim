@@ -4,6 +4,7 @@ map <BS> X
 
 " Use ';' instead of ':'
 nnoremap ; :
+vnoremap ; :
 
 " Use Esc as escape key in neovim's terminal mode
 if has('nvim')
