@@ -167,8 +167,11 @@ if !has('gui_running')
 endif
 
 " Cursor cross.
-autocmd VimEnter    * set cursorline cursorcolumn
-autocmd BufWinEnter * set cursorline cursorcolumn
-autocmd WinEnter    * set cursorline cursorcolumn
-autocmd WinLeave    * set nocursorline nocursorcolumn
+augroup crosscursor
+    autocmd!
+    autocmd VimEnter    * set cursorline cursorcolumn
+    autocmd BufWinEnter * set cursorline cursorcolumn
+    autocmd WinEnter    * set cursorline cursorcolumn
+    autocmd WinLeave    * set nocursorline nocursorcolumn
+augroup END
 
