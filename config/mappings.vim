@@ -6,6 +6,11 @@ map <BS> X
 nnoremap ; :
 vnoremap ; :
 
+" Use jk to exit insert mode
+inoremap jk <esc>
+" disable <esc> key in insert mode
+inoremap <esc> <nop>
+
 " Use Esc as escape key in neovim's terminal mode
 if has('nvim')
   tnoremap <Esc> <C-\><C-n>
