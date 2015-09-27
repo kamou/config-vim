@@ -41,6 +41,7 @@ call plug#begin('~/.nvim/plugged')
  Plug 'idanarye/vim-merginal'
  Plug 'Valloric/YouCompleteMe'
  Plug 'tommcdo/vim-exchange'
+ Plug 'bogado/file-line'
 call plug#end()
 " }}}
 
