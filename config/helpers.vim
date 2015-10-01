@@ -28,7 +28,6 @@ if has('cscope')
 
   set cscopequickfix=s-,g-,d-,c-,t-,e-,f-,i-
   set cspc=3
-  set csverb
 
   " Check for either stock cscope executable or for the multi-lingual cscope
   " version (which is the one available in Cygwin).
