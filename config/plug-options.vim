@@ -39,3 +39,6 @@ let g:syntastic_cpp_remove_include_errors = 1
 let g:syntastic_c_check_header = 1
 let g:syntastic_c_remove_include_errors = 0
 let g:syntastic_c_no_include_search = 0
+
+" tmux-navigator options
+ let g:tmux_navigator_no_mappings = 1

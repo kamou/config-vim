@@ -60,6 +60,13 @@ map <silent> <F6> :set hlsearch!<CR>
     nnoremap <silent> <Leader>gpl :Gpull<cr>
     nnoremap <silent> <Leader>gps :Gpush<cr>
 
+    " TmuxNavigator:
+    nnoremap <silent> <C-w>h :TmuxNavigateLeft<cr>
+    nnoremap <silent> <C-w>j :TmuxNavigateDown<cr>
+    nnoremap <silent> <C-w>k :TmuxNavigateUp<cr>
+    nnoremap <silent> <C-w>l :TmuxNavigateRight<cr>
+    nnoremap <silent> <C-w>w :TmuxNavigatePrevious<cr>
+
     " TagBar:
     nnoremap <silent> <Leader>tb :TagbarOpenAutoClose<cr>
 
