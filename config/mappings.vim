@@ -60,5 +60,7 @@ map <silent> <F6> :set hlsearch!<CR>
     nnoremap <silent> <Leader>gpl :Gpull<cr>
     nnoremap <silent> <Leader>gps :Gpush<cr>
 
+    " TagBar:
+    nnoremap <silent> <Leader>tb :TagbarOpenAutoClose<cr>
 
 " }}}
