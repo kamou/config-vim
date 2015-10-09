@@ -54,11 +54,11 @@ map <silent> <F6> :set hlsearch!<CR>
     vmap <silent> <Leader>dd :Linediff<CR>
 
     " Fugitive:
-    nnoremap <silent> ,gd :Gdiff<cr>
-    nnoremap <silent> ,gs :Gstatus<cr>
-    nnoremap <silent> ,gc :Gcommit<cr>
-    nnoremap <silent> ,gpl :Gpull<cr>
-    nnoremap <silent> ,gps :Gpush<cr>
+    nnoremap <silent> <Leader>gd :Gdiff<cr>
+    nnoremap <silent> <Leader>gs :Gstatus<cr>
+    nnoremap <silent> <Leader>gc :Gcommit<cr>
+    nnoremap <silent> <Leader>gpl :Gpull<cr>
+    nnoremap <silent> <Leader>gps :Gpush<cr>
 
 
 " }}}
