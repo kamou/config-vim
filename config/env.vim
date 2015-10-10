@@ -90,6 +90,14 @@ let &directory = swap.'//,~/tmp//,.'
 " cscope DB
 set nocscopeverbose
 
+set cscopequickfix=s-,g-,d-,c-,t-,e-,f-,i-
+set cspc=3
+
+" Uses cstag (and so cscope if available...).
+set cst
+" Search the tags database before the cscope database...
+set csto=1
+
 " Terminal only settings. {{{
 
 if !has('gui_running')

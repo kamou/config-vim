@@ -43,6 +43,7 @@ call plug#begin('~/.nvim/plugged')
  Plug 'tommcdo/vim-exchange'
  Plug 'bogado/file-line'
  Plug 'christoomey/vim-tmux-navigator'
+ Plug 'vim-scripts/autoload_cscope.vim'
 call plug#end()
 " }}}
 
