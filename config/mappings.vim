@@ -47,8 +47,10 @@ map <silent> <F6> :set hlsearch!<CR>
     nmap <silent> <Leader>tu :call CscopeUpdate()<CR>
     
     " Ctags:
-    let g:ctags_flags = '--c-kinds=+lcdefgmnpstuvx --fields=+S'
-    nmap <Leader>tU :call CtagsUpdate()<CR>
+    if executable('ctags')
+        let g:ctags_flags = '--c-kinds=+lcdefgmnpstuvx --fields=+S'
+        nmap <Leader>tU :call CtagsUpdate()<CR>
+    endif
 
     " LineDiff:
     vmap <silent> <Leader>dd :Linediff<CR>
