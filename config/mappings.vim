@@ -73,4 +73,10 @@ map <silent> <F6> :set hlsearch!<CR>
     " TagBar:
     nnoremap <silent> <Leader>tb :TagbarOpenAutoClose<cr>
 
+    " IndentWise:
+    map <C-k> <Plug>(IndentWisePreviousEqualIndent)
+    map <C-j> <Plug>(IndentWiseNextEqualIndent)
+    map <C-h> <Plug>(IndentWisePreviousLesserIndent)
+    map <C-l> <Plug>(IndentWiseNextGreaterIndent)
+
 " }}}

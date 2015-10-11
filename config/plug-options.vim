@@ -41,4 +41,7 @@ let g:syntastic_c_remove_include_errors = 0
 let g:syntastic_c_no_include_search = 0
 
 " tmux-navigator options
- let g:tmux_navigator_no_mappings = 1
+let g:tmux_navigator_no_mappings = 1
+
+" use custom indentwise mappings
+let g:indentwise_suppress_keymaps = 1
