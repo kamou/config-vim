@@ -1,4 +1,4 @@
- " Unicode by default
+" Unicode by default
 scriptencoding utf-8
 
 execute 'source '.$USERVIM.'/config/init.vim'
@@ -11,7 +11,7 @@ call plug#begin('~/.nvim/plugged')
  Plug 'chriskempson/vim-tomorrow-theme'
  Plug 'nanotech/jellybeans.vim'
 
-" load sytax plugins
+ " load sytax plugins
  Plug 'd3vas3m/Improved-Syntax-Highlighting-Vim'
  Plug 'octol/vim-cpp-enhanced-highlight'
  Plug 'justinmk/vim-syntax-extra'
