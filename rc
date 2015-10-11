@@ -45,6 +45,7 @@ call plug#begin('~/.nvim/plugged')
  Plug 'christoomey/vim-tmux-navigator'
  Plug 'klen/python-mode'
  Plug 'vim-scripts/autoload_cscope.vim'
+ Plug 'tpope/vim-unimpaired'
 call plug#end()
 " }}}
 

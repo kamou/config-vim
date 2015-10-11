@@ -16,9 +16,6 @@ if has('nvim')
   tnoremap <Esc> <C-\><C-n>
 endif
 
-" For iterating on errors.
-nnoremap <silent> <M-k> :cp<CR>
-nnoremap <silent> <M-j> :cn<CR>
 
 " Quick navigation to the current buffer directory.
 nnoremap <silent> ,d :e %:h<CR>
