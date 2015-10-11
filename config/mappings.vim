@@ -57,8 +57,12 @@ map <silent> <F6> :set hlsearch!<CR>
     nnoremap <silent> <Leader>gd :Gdiff<cr>
     nnoremap <silent> <Leader>gs :Gstatus<cr>
     nnoremap <silent> <Leader>gc :Gcommit<cr>
-    nnoremap <silent> <Leader>gpl :Gpull<cr>
-    nnoremap <silent> <Leader>gps :Gpush<cr>
+    nnoremap <silent> <Leader>gl :Glog<cr>
+    nnoremap <silent> <Leader>ge :Gedit<cr>
+    nnoremap <silent> <Leader>gb :Gblame<cr>
+    " TODO: prompt for branch names if current branch is not master
+    nnoremap <silent> <Leader>gpl :Gpull origin master:master<cr>
+    nnoremap <silent> <Leader>gps :Gpush origin master:master<cr>
 
     " TmuxNavigator:
     nnoremap <silent> <C-w>h :TmuxNavigateLeft<cr>
