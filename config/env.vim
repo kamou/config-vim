@@ -76,7 +76,7 @@ set laststatus=2
 " Multiple jobs will confuse VIM, so disable those too.
 set makeprg=make\ -w\ -j1
 
-let mapleader="\'"
+let mapleader=" "
 
 " Put swap files in $USERVIM/swap or ~/tmp
 " (fallback to current dir if not possible).
