@@ -7,9 +7,6 @@ execute 'source '.$USERVIM.'/config/init.vim'
 call plug#begin('~/.nvim/plugged')
 " load themes
  Plug 'tomasr/molokai'
- Plug 'altercation/vim-colors-solarized'
- Plug 'chriskempson/vim-tomorrow-theme'
- Plug 'nanotech/jellybeans.vim'
 
  " load sytax plugins
  Plug 'd3vas3m/Improved-Syntax-Highlighting-Vim'
