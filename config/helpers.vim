@@ -22,9 +22,9 @@ if has('cscope')
 
   function! CscopeUpdate()
 
-    exe 'silent! cs kill '.fnamemodify(g:cscopedb, ':p')
+    exe 'silent! cs kill cscope.out'
 
-    let cmd = '!'.&cscopeprg.' -q -b -f '.g:cscopedb
+    let cmd = '!cscope -q -b -f cscope.out'
     let files = 'cscope.files'
 
     if filereadable(files)
@@ -34,7 +34,7 @@ if has('cscope')
     endif
 
     exe cmd
-    exe 'silent cs add '.g:cscopedb
+    exe 'silent cs add cscope.out'
 
   endfunction
 endif
