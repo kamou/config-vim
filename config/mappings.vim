@@ -35,12 +35,12 @@ map <silent> <F6> :set hlsearch!<CR>
 
     " Cscope:
     nmap <silent> <Leader>tg <C-]>
-    nmap <silent> <Leader>ts :exe 'cscope find s <cword>'<CR>
-    nmap <silent> <Leader>td :exe 'cscope find d <cword>'<CR>
-    nmap <silent> <Leader>tc :exe 'cscope find c <cword>'<CR>
-    nmap <silent> <Leader>ta :exe 'cscope find t <cword>'<CR>
-    nmap <silent> <Leader>tf :exe 'cscope find f <cfile>'<CR>
-    nmap <silent> <Leader>ti :exe 'cscope find i %:t'<CR>
+    nmap <silent> <Leader>ts :exe 'lcscope find s <cword>'<CR>
+    nmap <silent> <Leader>td :exe 'lcscope find d <cword>'<CR>
+    nmap <silent> <Leader>tc :exe 'lcscope find c <cword>'<CR>
+    nmap <silent> <Leader>ta :exe 'lcscope find t <cword>'<CR>
+    nmap <silent> <Leader>tf :exe 'lcscope find f <cfile>'<CR>
+    nmap <silent> <Leader>ti :exe 'lcscope find i %:t'<CR>
     nmap <silent> <Leader>tu :call CscopeUpdate()<CR>
     
     " Ctags:
