@@ -28,6 +28,10 @@ cnoremap <M-Del> <C-Right><C-BS>
 inoremap <M-Del> <C-o>de
 nnoremap <M-Del> de
 
+" open Explorer on split
+nnoremap <C-w>v :Sexplore!<CR>
+nnoremap <C-w>s :Sexplore<CR>
+
 " Toggle search highlighting
 map <silent> <F6> :set hlsearch!<CR>
 
