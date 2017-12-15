@@ -83,4 +83,8 @@ map <silent> <F6> :set hlsearch!<CR>
     nmap <Leader>l <Plug>(IndentWiseNextGreaterIndent)
     nmap <Leader>h <Plug>(IndentWisePreviousGreaterIndent)
 
+    " CtrlSpace:
+    " dunno why I need this for ubuntu...
+    nmap <C-Space> :CtrlSpace<cr>
+
 " }}}

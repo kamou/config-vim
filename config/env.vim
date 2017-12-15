@@ -36,7 +36,8 @@ set showtabline=0
 set history=200
 
 " mark lines exceeding 80 characters.
-" call matchadd('ColorColumn', '\%81v', 100)
+hi ColorColumn ctermbg=red ctermfg=red
+call matchadd('ColorColumn', '\%81v', 100)
 
 " set splitting behaviour
 set splitbelow
@@ -168,9 +169,6 @@ if !has('gui_running')
   " Fast escape key.
   set timeout timeoutlen=3000 ttimeoutlen=100
 
-  " Enable mouse support for all modes but command line.
-  set mouse=nvi
-
   " No beep, and no visual bell.
   set vb t_vb=
 
@@ -185,3 +183,5 @@ augroup crosscursor
     autocmd WinLeave    * set nocursorline nocursorcolumn
 augroup END
 
+set guicursor=
+set mouse=

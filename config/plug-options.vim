@@ -45,3 +45,7 @@ let g:tmux_navigator_no_mappings = 1
 
 " use custom indentwise mappings
 let g:indentwise_suppress_keymaps = 1
+
+
+let g:clang_format#command = "clang-format-3.9"
+let g:clang_format#detect_style_file = 1

@@ -9,7 +9,7 @@ call plug#begin('~/.nvim/plugged')
  Plug 'tomasr/molokai'
 
  " load sytax plugins
- Plug 'd3vas3m/Improved-Syntax-Highlighting-Vim'
+ " Plug 'd3vas3m/Improved-Syntax-Highlighting-Vim'
  Plug 'octol/vim-cpp-enhanced-highlight'
  Plug 'justinmk/vim-syntax-extra'
  Plug 'vim-scripts/aftersyntaxc.vim'
@@ -26,9 +26,9 @@ call plug#begin('~/.nvim/plugged')
  Plug 'vim-scripts/DirDiff.vim'            " Recursive diff
  Plug 'hynek/vim-python-pep8-indent'       " TODO: is this really useful ?
  Plug 'vim-scripts/TagHighlight'
- Plug 'http://repo.or.cz/vcscommand'
+ " Plug 'http://repo.or.cz/vcscommand'
  Plug 'majutsushi/tagbar'
- Plug 'scrooloose/syntastic'
+ " Plug 'scrooloose/syntastic'
  Plug 'wesQ3/vim-windowswap'
  Plug 'szw/vim-ctrlspace'
  Plug 'tpope/vim-surround'
@@ -36,7 +36,7 @@ call plug#begin('~/.nvim/plugged')
  Plug 'michaeljsmith/vim-indent-object'
  Plug 'AndrewRadev/linediff.vim'
  Plug 'idanarye/vim-merginal'
- Plug 'Valloric/YouCompleteMe'
+ " Plug 'Valloric/YouCompleteMe'
  Plug 'tommcdo/vim-exchange'
  Plug 'bogado/file-line'
  Plug 'christoomey/vim-tmux-navigator'
@@ -44,8 +44,14 @@ call plug#begin('~/.nvim/plugged')
  Plug 'vim-scripts/autoload_cscope.vim'
  Plug 'jeetsukumaran/vim-indentwise'
  Plug 'tpope/vim-unimpaired'
+ Plug 'rhysd/vim-clang-format'
+ Plug 'airblade/vim-gitgutter'
 call plug#end()
 " }}}
+
+
+set background=dark
+colorscheme molokai
 
 
 execute 'source '.$USERVIM.'/config/env.vim'
@@ -54,7 +60,19 @@ execute 'source '.$USERVIM.'/config/plug-options.vim'
 execute 'source '.$USERVIM.'/config/mappings.vim'
 
 " Colorscheme.
-set background=dark
-colorscheme molokai
+hi DiffAdd    ctermbg=235  ctermfg=108  guibg=#262626 guifg=#87af87 cterm=reverse gui=reverse
+hi DiffChange ctermbg=235  ctermfg=103  guibg=#262626 guifg=#8787af cterm=reverse gui=reverse
+hi DiffDelete ctermbg=235  ctermfg=131  guibg=#262626 guifg=#af5f5f cterm=reverse gui=reverse
+hi DiffText   ctermbg=235  ctermfg=208  guibg=#262626 guifg=#ff8700 cterm=reverse gui=reverse
+
+
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
+
+hi ColorColumn ctermbg=red ctermfg=red
 
 " vim: ft=vim sw=2 foldmethod=marker foldlevel=0
