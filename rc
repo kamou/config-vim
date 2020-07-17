@@ -4,20 +4,23 @@ scriptencoding utf-8
 execute 'source '.$USERVIM.'/config/init.vim'
 
 " load needed plugins {{{
-call plug#begin('~/.nvim/plugged')
+call plug#begin('~/.'.$VIMFOLDER.'/plugged')
 " load themes
+"
  Plug 'tomasr/molokai'
+ Plug 'junegunn/gv.vim'
+ Plug 'cohama/agit.vim'
 
  " load sytax plugins
  " Plug 'd3vas3m/Improved-Syntax-Highlighting-Vim'
- Plug 'octol/vim-cpp-enhanced-highlight'
+ " Plug 'octol/vim-cpp-enhanced-highlight'
  Plug 'justinmk/vim-syntax-extra'
  Plug 'vim-scripts/aftersyntaxc.vim'
 
  Plug 'critiqjo/lldb.nvim'                 " lldb debug integration for neovim.
  Plug 'bling/vim-airline'                  " Lean & mean status/tabline.
  Plug 'tpope/vim-commentary'               " Comment stuff out.
- Plug 'jiangmiao/auto-pairs'               " Insert or delete brackets, parens,
+ " Plug 'jiangmiao/auto-pairs'               " Insert or delete brackets, parens,
                                            " quotes in pair.
  Plug 'vim-scripts/Mark'                   " Useful highlighter
  Plug 'tpope/vim-fugitive'                 " The best git wrapper of all time
@@ -26,11 +29,11 @@ call plug#begin('~/.nvim/plugged')
  Plug 'vim-scripts/DirDiff.vim'            " Recursive diff
  Plug 'hynek/vim-python-pep8-indent'       " TODO: is this really useful ?
  Plug 'vim-scripts/TagHighlight'
- " Plug 'http://repo.or.cz/vcscommand'
  Plug 'majutsushi/tagbar'
  " Plug 'scrooloose/syntastic'
  Plug 'wesQ3/vim-windowswap'
  Plug 'szw/vim-ctrlspace'
+ " Plug 'ctrlpvim/ctrlp.vim'
  Plug 'tpope/vim-surround'
  Plug 'benmills/vimux'
  Plug 'michaeljsmith/vim-indent-object'
@@ -40,12 +43,32 @@ call plug#begin('~/.nvim/plugged')
  Plug 'tommcdo/vim-exchange'
  Plug 'bogado/file-line'
  Plug 'christoomey/vim-tmux-navigator'
- Plug 'klen/python-mode'
+ Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
+
  Plug 'vim-scripts/autoload_cscope.vim'
  Plug 'jeetsukumaran/vim-indentwise'
  Plug 'tpope/vim-unimpaired'
  Plug 'rhysd/vim-clang-format'
  Plug 'airblade/vim-gitgutter'
+ Plug 'vim-scripts/ZoomWin'
+ Plug 'vim-scripts/ClassTree'
+ Plug 'vim-scripts/taglist.vim'
+ " Plug 'oblitum/rainbow'
+ " Plug 'ludovicchabant/vim-gutentags'
+ " Plug 'skywind3000/gutentags_plus'
+ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+ Plug 'junegunn/fzf.vim'
+ Plug 'neoclide/coc.nvim', {'branch': 'release'}
+ Plug 'm-pilia/vim-ccls'
+ Plug 'pboettch/vim-cmake-syntax'
+ Plug 'ryanoasis/vim-devicons'
+ Plug 'jremmen/vim-ripgrep'
+ " Plug 'metakirby5/codi.vim'
+ Plug 'Pablo1107/codi.vim'
+ Plug 'easymotion/vim-easymotion'
+ Plug 'sakhnik/nvim-gdb', { 'do': ':!./install.sh \| UpdateRemotePlugins' }
+ Plug 'mhinz/vim-startify'
+
 call plug#end()
 " }}}
 

@@ -46,10 +46,10 @@ map <silent> <F6> :set hlsearch!<CR>
     nmap <silent> <Leader>tf :exe 'lcscope find f <cfile>'<CR>
     nmap <silent> <Leader>ti :exe 'lcscope find i %:t'<CR>
     nmap <silent> <Leader>tu :call CscopeUpdate()<CR>
-    
+
     " Ctags:
     if executable('ctags')
-        let g:ctags_flags = '--c-kinds=+lcdefgmnpstuvx --fields=+S'
+        let g:ctags_flags = '--c++-kinds=+p --c-kinds=+lcdefgmnpstuvx --fields=+S+i'
         nmap <Leader>tU :call CtagsUpdate()<CR>
     endif
 
@@ -87,4 +87,19 @@ map <silent> <F6> :set hlsearch!<CR>
     " dunno why I need this for ubuntu...
     nmap <C-Space> :CtrlSpace<cr>
 
-" }}}
+    noremap Zz <c-w>_ \| <c-w>\|
+    noremap Zo <c-w>=
+
+" }}
+"
+" Coc:
+    noremap <silent> <Leader>ls :CocList<cr>
+    noremap <silent> <Leader>e :CocCommand explorer<cr>
+    noremap <silent> <Leader>cad :call CocAction("jumpDefinition")<cr>
+    noremap <silent> <Leader>caD :call CocAction("jumpDeclaration")<cr>
+    noremap <silent> <Leader>car :call CocAction("jumpReferences")<cr>
+    noremap <silent> <Leader>cai :call CocAction("jumpImplementation")<cr>
+    noremap <silent> <Leader>cah :call CocAction("doHover")<cr>
+" Pymode:
+    noremap <silent> <Leader>pr :PymodeRun<cr>
+

@@ -30,7 +30,7 @@ set incsearch
 set lazyredraw
 
 " Disable tabline for better ctrlspace use
-set showtabline=0
+set showtabline=2
 
 " Increase command line history.
 set history=200
